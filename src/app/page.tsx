@@ -36,9 +36,7 @@ export default function HomePage() {
             </div>
             <div className="hero-ctas">
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try a free class</a>
-              <a className="btn btn--ghost" href="#book">Book a free call</a>
-              <a className="btn btn--ghost" href="/courses/">Explore other courses and mocks <small className="btn-note">from ₹{OTHERS_FROM.toLocaleString("en-IN")}</small></a>
+              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try demo class</a>
             </div>
             <div className="d75" aria-hidden="true">
               <div className="d75-h">
