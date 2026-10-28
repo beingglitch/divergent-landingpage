@@ -1,7 +1,7 @@
 /* The home page: prices, countdowns, the course tabs, the hero dots and the
    sticky bar. Prices, dates and links come from src/lib/config.ts.
    Returns a cleanup that undoes everything it set up. */
-import { APP_URL, CONFIG, COURSE_SLUG, PLAN_NAMES, bundleSlug, checkoutUrl, ist, planLabel, pricePeriod, tierKey, type Batch, type Exam, type PayCode, type Plan } from "./config";
+import { APP_URL, CONFIG, COURSE_SLUG, bundleSlug, checkoutUrl, ist, planLabel, pricePeriod, tierKey, type Batch, type Exam, type Plan } from "./config";
 
 import { PLAN_EVENT, type PlanPick } from "./plan-event";
 
@@ -106,10 +106,6 @@ export function initHome(): () => void {
     const t = CONFIG.prices[tierKey(plan, pack)][batch], per = period();
     return { slug, now: t.price[per], list: t.price.list, two: t.twoParts?.[per] || 0, three: t.threeParts?.[per] || 0 };
   };
-  const PERK: Record<string, string> = {
-    mentor: "Pay in full and get a 1:1 onboarding call with Devansh. 15 minutes, in your first two weeks.",
-    live: "Pay in full and join Devansh's onboarding session in week 1.",
-  };
   const renderPricing = () => {
     const per = period();
     $$("#planPick .pcol").forEach((col) => {
@@ -126,24 +122,8 @@ export function initHome(): () => void {
         if (per === "diwali" && A.diwaliGift) { g.textContent = "Diwali gift: an extra sketch review" + (plan === "recorded" ? "." : " and a 5-mock pack."); g.hidden = false; }
         else g.hidden = true;
       }
-      /* Payment options: pay in full first, then the part totals, then the perk. */
-      const opts = $("[data-opts]", col);
-      if (opts) {
-        const row = (code: PayCode, text: string) => '<li><a href="' + checkoutUrl(q.slug, code) + '">' + text + "</a></li>";
-        opts.innerHTML = row("full", "Pay in full: " + inr(q.now))
-          + (q.two ? row("2-parts", "2 parts: " + inr(q.two) + " total") : "")
-          + (q.three ? row("3-parts", "3 parts: " + inr(q.three) + " total") : "");
-      }
-      const perk = $("[data-perk]", col);
-      if (perk) {
-        const txt = plan === "recorded" ? (pack && state.batch === "combo" ? PERK.live : "") : PERK[plan];
-        perk.textContent = txt;
-        perk.hidden = !txt;
-      }
-      const emi = $("[data-emi]", col);
-      if (emi) emi.hidden = !(A.emi && q.two);
       const join = $<HTMLAnchorElement>("[data-join]", col);
-      if (join) join.href = checkoutUrl(q.slug, "join");
+      if (join) join.href = checkoutUrl(q.slug);
       const packBox = $<HTMLInputElement>("[data-pack]", col);
       if (packBox) packBox.checked = state.pack;
       const packAdd = $("[data-pack-add]", col);
@@ -164,8 +144,6 @@ export function initHome(): () => void {
     const epw = $("#examPickWrap");
     if (epw) epw.hidden = state.batch !== "single";
     const pack = state.plan === "recorded" && state.pack, cur = quote(state.plan, state.batch, pack);
-    const pn = $("#pickName");
-    if (pn) pn.textContent = PLAN_NAMES[state.plan] + (pack ? " + Pack" : "") + " · " + (state.batch === "combo" ? "Combo" : state.exam) + " · " + inr(cur.now);
     // Every Enrol now on the page goes straight to checkout for the plan picked.
     $$<HTMLAnchorElement>("[data-enrol]").forEach((a) => { a.href = checkoutUrl(cur.slug); });
     const from = quote("recorded", "single", false).now;
@@ -314,7 +292,7 @@ export function initHome(): () => void {
   (() => {
     const st = $("#sticky"), hero = $(".hero");
     if (!st || !hero) return;
-    const avoid = [$("#book"), $(".foot"), $(".psum")];
+    const avoid = [$("#book"), $(".foot")];
     let past = false;
     const blocked: Record<number, boolean> = {};
     const upd = () => {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { CONFIG, FREE_CLASS_URL, OTHERS_FROM, bundleSlug, checkoutUrl } from "@/lib/config";
+import { CONFIG, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
 
@@ -257,10 +257,7 @@ export default function HomePage() {
               </ul>
               <div className="ppay" data-pay="recorded">
                 <label className="ppack"><input type="checkbox" data-pack="" /><span>Add Mock &amp; Live Pack <b data-pack-add="">+₹{CONFIG.mockPack.toLocaleString("en-IN")}</b></span></label>
-                <ul className="popts" data-opts="" aria-label="Payment options"></ul>
-                <p className="pperk" data-perk="" hidden></p>
-                <p className="pemi" data-emi="" data-req="emi" hidden>Pay in parts, or use EMI on your credit card.</p>
-                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("recorded", "combo", "UCEED"), "join")}>Pay ₹{CONFIG.joinAmount.toLocaleString("en-IN")} to join</a>
+                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("recorded", "combo", "UCEED"))}>Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               </div>
             </div>
             <div className="pcol" data-col="live">
@@ -278,10 +275,7 @@ export default function HomePage() {
                 <li><b data-pv="mocks">10</b><span>mocks</span></li>
               </ul>
               <div className="ppay" data-pay="live">
-                <ul className="popts" data-opts="" aria-label="Payment options"></ul>
-                <p className="pperk" data-perk="" hidden></p>
-                <p className="pemi" data-emi="" data-req="emi" hidden>Pay in parts, or use EMI on your credit card.</p>
-                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("live", "combo", "UCEED"), "join")}>Pay ₹{CONFIG.joinAmount.toLocaleString("en-IN")} to join</a>
+                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("live", "combo", "UCEED"))}>Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               </div>
             </div>
             <div className="pcol" data-col="mentor">
@@ -299,30 +293,18 @@ export default function HomePage() {
                 <li><b data-pv="mocks">10</b><span>mocks</span></li>
               </ul>
               <div className="ppay" data-pay="mentor">
-                <ul className="popts" data-opts="" aria-label="Payment options"></ul>
-                <p className="pperk" data-perk="" hidden></p>
-                <p className="pemi" data-emi="" data-req="emi" hidden>Pay in parts, or use EMI on your credit card.</p>
-                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("mentor", "combo", "UCEED"), "join")}>Pay ₹{CONFIG.joinAmount.toLocaleString("en-IN")} to join</a>
+                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("mentor", "combo", "UCEED"))}>Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               </div>
             </div>
           </div>
 
-          <div className="psum" aria-live="polite">
-            <p className="pick" style={{"margin": "0"} as CSSProperties}>You picked <b id="pickName">Live · Combo</b></p>
-            <div className="acts">
-              <a className="btn" href={checkoutUrl(bundleSlug("live", "combo", "UCEED"))} id="enrolBtn" data-enrol="">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try a free class</a>
-              <a className="btn btn--ghost" href="#book">Book a free call</a>
-              <a className="btn btn--ghost" href="/courses/">Explore other courses and mocks <small className="btn-note">from ₹{OTHERS_FROM.toLocaleString("en-IN")}</small></a>
-            </div>
-          </div>
           <div className="pfoot">
             <ul className="terms" aria-label="Payment terms">
               <li data-req="gst"><svg aria-hidden="true"><use href="#tick" /></svg>GST included</li>
               <li data-req="refund"><svg aria-hidden="true"><use href="#tick" /></svg>Full refund within 7 days of the batch start (by 10 November).</li>
               <li data-req="upgrades"><svg aria-hidden="true"><use href="#tick" /></svg>Upgrade any time</li>
             </ul>
-            <p className="dsat"><b>Join with ₹{CONFIG.joinAmount.toLocaleString("en-IN")}.</b> It counts toward your fee and locks the price live that day. Pay the rest in full or in parts. Have a scholarship code? Add it at checkout.</p>
+            <p className="dsat"><b>Join with ₹{CONFIG.joinAmount.toLocaleString("en-IN")}.</b> It counts toward your fee and locks the price live that day. Pay the rest in full or in parts. Have a coupon code? Add it at checkout.</p>
           </div>
           <details className="cmpx" data-req="planInclusions">
             <summary><span>Compare plans</span><span className="chev" aria-hidden="true"></span></summary>
