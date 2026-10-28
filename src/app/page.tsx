@@ -299,12 +299,17 @@ export default function HomePage() {
           </div>
 
           <div className="pfoot">
+            <div className="pjoinbox">
+              <p className="pj-k">Join with</p>
+              <p className="pj-v">₹{CONFIG.joinAmount.toLocaleString("en-IN")}</p>
+              <p className="pj-t">Counts toward your fee and locks today&apos;s price. Pay the rest in full or in parts.</p>
+            </div>
             <ul className="terms" aria-label="Payment terms">
-              <li data-req="gst"><svg aria-hidden="true"><use href="#tick" /></svg>GST included</li>
-              <li data-req="refund"><svg aria-hidden="true"><use href="#tick" /></svg>Full refund within 7 days of the batch start (by 10 November).</li>
-              <li data-req="upgrades"><svg aria-hidden="true"><use href="#tick" /></svg>Upgrade any time</li>
+              <li data-req="gst"><svg aria-hidden="true"><use href="#tick" /></svg><span><b>GST included</b><small>Nothing extra at checkout</small></span></li>
+              <li data-req="refund"><svg aria-hidden="true"><use href="#tick" /></svg><span><b>Full refund till 10 November</b><small>Within 7 days of the batch start</small></span></li>
+              <li data-req="upgrades"><svg aria-hidden="true"><use href="#tick" /></svg><span><b>Upgrade any time</b><small>Pay only the difference</small></span></li>
+              <li><svg aria-hidden="true"><use href="#tick" /></svg><span><b>Have a coupon code?</b><small>Add it at checkout</small></span></li>
             </ul>
-            <p className="dsat"><b>Join with ₹{CONFIG.joinAmount.toLocaleString("en-IN")}.</b> It counts toward your fee and locks the price live that day. Pay the rest in full or in parts. Have a coupon code? Add it at checkout.</p>
           </div>
           <details className="cmpx" data-req="planInclusions">
             <summary><span>Compare plans</span><span className="chev" aria-hidden="true"></span></summary>
