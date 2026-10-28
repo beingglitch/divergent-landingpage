@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { APP_URL, BUNDLES, CONTACT, planLabel, type Batch, type Exam, type Plan } from "@/lib/config";
+import { APP_URL, CONTACT, PLAN_LIST } from "@/lib/config";
 import { PLAN_EVENT, type PlanPick } from "@/lib/plan-event";
 
 type Status = "CLASS_11" | "CLASS_12" | "DROPPER";
@@ -12,12 +12,7 @@ const STATUSES: Array<[Status, string]> = [["CLASS_11", "Class 11"], ["CLASS_12"
 const EXAMS: Array<[LeadExam, string]> = [["UCEED", "UCEED"], ["NID", "NID"], ["NIFT", "NIFT"]];
 
 /* Every 75-day plan, in the order the picker shows them. */
-const PLAN_OPTIONS = Object.entries(BUNDLES).map(([key, slug]) => {
-  const [plan, b] = key.split("-") as [Plan, string];
-  const batch: Batch = b === "combo" ? "combo" : "single";
-  const exam: Exam = b === "nid" ? "NID" : "UCEED";
-  return { slug, label: planLabel(plan, batch, exam) };
-});
+const PLAN_OPTIONS = PLAN_LIST.map(({ slug, label }) => ({ slug, label }));
 
 /* Accepts 98765 43210, +91 98765 43210, 098765 43210 and so on. */
 function normalisePhone(raw: string): string | null {

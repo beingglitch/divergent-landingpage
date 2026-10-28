@@ -51,7 +51,8 @@ function CourseCard({ c }: { c: Course }) {
         <p className="ccard-m">{c.meta}</p>
         <div className="ccard-f">
           <p className="ccard-p">
-            <b>{c.price}</b>
+            {/* The 75-day price follows the date; site.ts fills it in. */}
+            <b data-crash-from={c.slug === "crash-75" ? "" : undefined}>{c.price}</b>
             {c.mrp ? (
               <>
                 <s>{c.mrp}</s>

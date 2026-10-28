@@ -120,7 +120,7 @@ export default function ResultsPage() {
           <div className="arc">
             <div className="wrap">
               <h2 className="h2" id="start-h">Your rank could be next.</h2>
-              <p className="lede">The 75-day crash course starts 1–2 November.</p>
+              <p className="lede">The 75-day crash course starts 3 November.</p>
               <div className="acts">
                 <a className="btn btn--dark" href="/#plans">See plans <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
                 <a className="btn btn--light" href="/#book">Book a free call</a>

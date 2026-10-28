@@ -1,7 +1,7 @@
 /* The home page: prices, countdowns, the course tabs, the hero dots and the
    sticky bar. Prices, dates and links come from src/lib/config.ts.
    Returns a cleanup that undoes everything it set up. */
-import { CONFIG, PLAN_NAMES, bundleSlug, checkoutUrl, planLabel, type Batch, type Exam, type Plan } from "./config";
+import { APP_URL, CONFIG, COURSE_SLUG, PLAN_NAMES, bundleSlug, checkoutUrl, ist, planLabel, pricePeriod, tierKey, type Batch, type Exam, type PayCode, type Plan } from "./config";
 
 import { PLAN_EVENT, type PlanPick } from "./plan-event";
 
@@ -17,7 +17,6 @@ export function initHome(): () => void {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- time (IST) ---------- */
-  const ist = (s: string) => new Date(s + "+05:30");
   // Preview another day: ?preview-date=2026-11-07 (or 2026-11-07T10:00).
   const pm = /[?&]preview-date=(\d{4}-\d{2}-\d{2})(T\d{2}:\d{2})?/.exec(location.search);
   const NOW = pm ? () => ist(pm[1] + (pm[2] ? pm[2] + ":00" : "T12:00:00")) : () => new Date();
@@ -38,9 +37,9 @@ export function initHome(): () => void {
     const t = NOW();
     if (t > D.batchStartEnd) {
       const es = $("[data-eyebrow-start]"), hk = $("[data-hf-k]"), fh = $("[data-final-h]");
-      if (es) es.textContent = "1–2 Nov · recordings ready";
+      if (es) es.textContent = "3 Nov · recordings ready";
       if (hk) hk.textContent = "Classes started";
-      if (fh) fh.textContent = "Classes have started. Every recording is waiting.";
+      if (fh) fh.textContent = "Classes started 3 November. Recordings of everything you missed are waiting.";
     }
     const n = $("#nudge"), nt = $("#nudge-t");
     let msg = "";
@@ -89,53 +88,87 @@ export function initHome(): () => void {
   cleanups.push(() => clearInterval(cdTimer));
 
   /* ---------- pricing ---------- */
-  const state: { batch: Batch; plan: Plan; exam: Exam } = { batch: "combo", plan: "live", exam: "UCEED" };
-  const period = (): "launch" | "diwali" | "list" => {
-    const t = NOW();
-    if (A.launchPrice && t <= D.launchEnds) return "launch";
-    if (A.diwaliPrice && t >= D.diwaliStart && t <= D.diwaliEnds) return "diwali";
-    return "list";
+  /* Prices come from the app so the page and checkout always agree. Until
+     they arrive, or if the app can't be reached, CONFIG is used. */
+  type LiveOption = { code: string; total: number };
+  type LivePlan = { price: number; listPrice: number; options: LiveOption[] };
+  const live: Record<string, LivePlan> = {};
+  const state: { batch: Batch; plan: Plan; exam: Exam; pack: boolean } = { batch: "combo", plan: "live", exam: "UCEED", pack: false };
+  const period = () => pricePeriod(NOW());
+  type Quote = { slug: string; now: number; list: number; two: number; three: number };
+  /* What a plan costs today. two and three are part-payment totals, 0 when not offered. */
+  const quote = (plan: Plan, batch: Batch, pack: boolean): Quote => {
+    const slug = bundleSlug(plan, batch, state.exam, pack), lp = live[slug];
+    if (lp) {
+      const tot = (c: string) => lp.options.find((o) => o.code === c)?.total || 0;
+      return { slug, now: lp.price, list: lp.listPrice, two: tot("2-parts"), three: tot("3-parts") };
+    }
+    const t = CONFIG.prices[tierKey(plan, pack)][batch], per = period();
+    return { slug, now: t.price[per], list: t.price.list, two: t.twoParts?.[per] || 0, three: t.threeParts?.[per] || 0 };
   };
-  const priceOf = (plan: Plan, batch: Batch) => {
-    const p = CONFIG.prices[plan][batch], per = period();
-    return { now: per === "list" ? p.list : p[per], list: p.list };
+  const PERK: Record<string, string> = {
+    mentor: "Pay in full and get a 1:1 onboarding call with Devansh. 15 minutes, in your first two weeks.",
+    live: "Pay in full and join Devansh's onboarding session in week 1.",
   };
   const renderPricing = () => {
     const per = period();
-    $$("#planPick .pcard").forEach((card) => {
-      const plan = card.getAttribute("data-plan") as Plan, pr = priceOf(plan, state.batch);
+    $$("#planPick .pcol").forEach((col) => {
+      const plan = col.getAttribute("data-col") as Plan, pack = plan === "recorded" && state.pack;
+      const q = quote(plan, state.batch, pack), card = $(".pcard", col);
+      if (!card) return;
       const prEl = $("[data-pr]", card);
-      if (prEl) prEl.innerHTML = '<span class="cur">₹</span>' + pr.now.toLocaleString("en-IN");
-      const save = pr.list - pr.now, sw = $("[data-save-wrap]", card);
-      if (sw) sw.innerHTML = save > 0 ? '<span class="save">Save ' + inr(save) + (per === "launch" ? " till 1 Nov" : " till 11 Nov") + "</span>" : "";
+      if (prEl) prEl.innerHTML = '<span class="cur">₹</span>' + q.now.toLocaleString("en-IN");
+      const save = q.list - q.now, sw = $("[data-save-wrap]", card);
+      const till = per === "launch" ? " till 2 November" : per === "diwali" ? " till 11 November" : "";
+      if (sw) sw.innerHTML = save > 0 ? '<span class="save">Save ' + inr(save) + till + "</span>" : "";
       const g = $("[data-gift]", card);
       if (g) {
-        if (per === "diwali" && A.diwaliGift) { g.textContent = "Diwali gift: an extra sketch review" + (plan === "recorded" ? "." : " and 5 mocks."); g.hidden = false; }
+        if (per === "diwali" && A.diwaliGift) { g.textContent = "Diwali gift: an extra sketch review" + (plan === "recorded" ? "." : " and a 5-mock pack."); g.hidden = false; }
         else g.hidden = true;
       }
-      const e = $("[data-emi]", card);
-      if (e) {
-        if (A.emi && pr.now >= CONFIG.emiFrom) { e.textContent = "No-cost EMI"; e.hidden = false; }
-        else e.hidden = true;
+      /* Payment options: pay in full first, then the part totals, then the perk. */
+      const opts = $("[data-opts]", col);
+      if (opts) {
+        const row = (code: PayCode, text: string) => '<li><a href="' + checkoutUrl(q.slug, code) + '">' + text + "</a></li>";
+        opts.innerHTML = row("full", "Pay in full: " + inr(q.now))
+          + (q.two ? row("2-parts", "2 parts: " + inr(q.two) + " total") : "")
+          + (q.three ? row("3-parts", "3 parts: " + inr(q.three) + " total") : "");
+      }
+      const perk = $("[data-perk]", col);
+      if (perk) {
+        const txt = plan === "recorded" ? (pack && state.batch === "combo" ? PERK.live : "") : PERK[plan];
+        perk.textContent = txt;
+        perk.hidden = !txt;
+      }
+      const emi = $("[data-emi]", col);
+      if (emi) emi.hidden = !(A.emi && q.two);
+      const join = $<HTMLAnchorElement>("[data-join]", col);
+      if (join) join.href = checkoutUrl(q.slug, "join");
+      const packBox = $<HTMLInputElement>("[data-pack]", col);
+      if (packBox) packBox.checked = state.pack;
+      const packAdd = $("[data-pack-add]", col);
+      if (packAdd) {
+        const base = live[bundleSlug("recorded", state.batch, state.exam)], withPack = live[bundleSlug("recorded", state.batch, state.exam, true)];
+        const add = base && withPack ? withPack.price - base.price : CONFIG.mockPack;
+        packAdd.textContent = "+" + inr(add);
       }
       const pop = $("[data-popular]", card);
       if (pop) pop.hidden = !(plan === "live" && state.batch === "combo");
       const sel = plan === state.plan;
       card.setAttribute("aria-checked", String(sel));
       card.tabIndex = sel ? 0 : -1;
-      const col = card.closest(".pcol");
-      if (col) col.classList.toggle("on", sel);
+      col.classList.toggle("on", sel);
     });
     $$("#batchPick .tab").forEach((b) => { const s = b.getAttribute("data-batch") === state.batch; b.setAttribute("aria-checked", String(s)); b.tabIndex = s ? 0 : -1; });
     $$("#examPick .tab").forEach((b) => { const s = b.getAttribute("data-exam") === state.exam; b.setAttribute("aria-checked", String(s)); b.tabIndex = s ? 0 : -1; });
     const epw = $("#examPickWrap");
     if (epw) epw.hidden = state.batch !== "single";
-    const cur = priceOf(state.plan, state.batch);
+    const pack = state.plan === "recorded" && state.pack, cur = quote(state.plan, state.batch, pack);
     const pn = $("#pickName");
-    if (pn) pn.textContent = PLAN_NAMES[state.plan] + " · " + (state.batch === "combo" ? "Combo" : state.exam) + " · " + inr(cur.now);
-    // Every Enrol now on the page goes straight to payment for the plan picked.
-    $$<HTMLAnchorElement>("[data-enrol]").forEach((a) => { a.href = checkoutUrl(state.plan, state.batch, state.exam); });
-    const from = priceOf("recorded", "single").now;
+    if (pn) pn.textContent = PLAN_NAMES[state.plan] + (pack ? " + Pack" : "") + " · " + (state.batch === "combo" ? "Combo" : state.exam) + " · " + inr(cur.now);
+    // Every Enrol now on the page goes straight to checkout for the plan picked.
+    $$<HTMLAnchorElement>("[data-enrol]").forEach((a) => { a.href = checkoutUrl(cur.slug); });
+    const from = quote("recorded", "single", false).now;
     $$("[data-from]").forEach((f) => { f.textContent = "from " + inr(from); });
     $$("[data-from-p]").forEach((f) => { f.textContent = inr(from); });
     const was = +(CONFIG.heroWasPrice || 0);
@@ -145,13 +178,35 @@ export function initHome(): () => void {
       if (on) { w.textContent = inr(was); w.setAttribute("aria-label", "Was " + inr(was)); }
     });
     $$("[data-pv]").forEach((el) => {
-      const k = el.getAttribute("data-pv");
-      el.textContent = k === "mocks" ? (state.batch === "combo" ? "20" : "10") : (state.batch === "combo" ? "53+" : "32+");
+      const k = el.getAttribute("data-pv"), combo = state.batch === "combo";
+      if (k === "rmocks") el.textContent = String((combo ? 6 : 3) * (state.pack ? 2 : 1));
+      else el.textContent = k === "mocks" ? (combo ? "20" : "10") : (combo ? "53+" : "32+");
     });
   };
+  /* Load today's prices from the app. */
+  (async () => {
+    try {
+      const res = await fetch(APP_URL + "/api/public/course-plans?course=" + encodeURIComponent(COURSE_SLUG), { signal });
+      if (!res.ok) return;
+      const body = await res.json();
+      const plans: unknown = body?.success ? body.data?.plans : null;
+      if (!Array.isArray(plans)) return;
+      for (const p of plans) {
+        if (!p || typeof p.slug !== "string" || typeof p.price !== "number" || p.price <= 0) continue;
+        const options: LiveOption[] = Array.isArray(p.options)
+          ? p.options.filter((o: LiveOption) => o && typeof o.code === "string" && typeof o.total === "number").map((o: LiveOption) => ({ code: o.code, total: o.total }))
+          : [];
+        live[p.slug] = { price: p.price, listPrice: typeof p.listPrice === "number" ? p.listPrice : p.price, options };
+      }
+      renderPricing();
+    } catch {
+      /* Offline or blocked: CONFIG prices stay. */
+    }
+  })();
   /* Tell the call form which plan the student picked. */
   const announce = () => {
-    const pick: PlanPick = { ...state, slug: bundleSlug(state.plan, state.batch, state.exam), label: planLabel(state.plan, state.batch, state.exam) };
+    const pack = state.plan === "recorded" && state.pack;
+    const pick: PlanPick = { ...state, pack, slug: bundleSlug(state.plan, state.batch, state.exam, pack), label: planLabel(state.plan, state.batch, state.exam, pack) };
     window.__dcPlan = pick;
     window.dispatchEvent(new CustomEvent<PlanPick>(PLAN_EVENT, { detail: pick }));
   };
@@ -173,8 +228,9 @@ export function initHome(): () => void {
   $$("#batchPick .tab").forEach((b) => b.addEventListener("click", () => setBatch(b.getAttribute("data-batch") || "combo"), { signal }));
   $$("#examPick .tab").forEach((b) => b.addEventListener("click", () => setExam(b.getAttribute("data-exam") || "UCEED"), { signal }));
   $$("#planPick .pcard").forEach((c) => c.addEventListener("click", () => setPlan(c.getAttribute("data-plan") || "live"), { signal }));
+  $$<HTMLInputElement>("#planPick [data-pack]").forEach((box) => box.addEventListener("change", () => { state.pack = box.checked; state.plan = "recorded"; renderPricing(); announce(); }, { signal }));
   $$("#planPick .pcol").forEach((col) => col.addEventListener("click", (e) => {
-    if (!(e.target as HTMLElement).closest(".pcard, a")) setPlan(col.getAttribute("data-col") || "live");
+    if (!(e.target as HTMLElement).closest(".pcard, a, .ppack")) setPlan(col.getAttribute("data-col") || "live");
   }, { signal }));
   radioKeys($("#batchPick"), "data-batch", setBatch);
   radioKeys($("#examPick"), "data-exam", setExam);
@@ -229,7 +285,7 @@ export function initHome(): () => void {
   }, { signal });
   setSys("combo");
 
-  /* ---------- hero: 75 dots, one per day (NID Prelims day 49, UCEED day 75) ---------- */
+  /* ---------- hero: 75 dots, one per day from 3 Nov (NID Prelims 20 Dec is day 48, the last dot is labelled UCEED) ---------- */
   (() => {
     const g = $("#dots75");
     if (!g) return;
@@ -237,7 +293,7 @@ export function initHome(): () => void {
     const frag = doc.createDocumentFragment();
     for (let i = 1; i <= 75; i++) {
       const d = doc.createElement("i");
-      if (i === 49) d.className = "mk-n"; else if (i === 75) d.className = "mk-u";
+      if (i === 48) d.className = "mk-n"; else if (i === 75) d.className = "mk-u";
       d.style.setProperty("--i", String(i));
       frag.appendChild(d);
     }

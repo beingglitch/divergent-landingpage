@@ -1,6 +1,7 @@
 /* Runs on every page: top nav, side dots, reveals, FAQs, testimonial
    videos, the work gallery and the "Book a free call" links.
    Returns a cleanup that undoes everything it set up. */
+import { fromPrice } from "./config";
 
 const $ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document) => c.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document) => Array.from(c.querySelectorAll<T>(s));
@@ -172,6 +173,9 @@ export function initSite(): () => void {
       f.classList.toggle("open", !open);
     }, { signal });
   });
+
+  /* ---------- the 75-day course card: "From" price for today ---------- */
+  $$("[data-crash-from]").forEach((el) => { el.textContent = "From ₹" + fromPrice(new Date()).toLocaleString("en-IN"); });
 
   /* ---------- testimonial videos: play one at a time ---------- */
   (() => {

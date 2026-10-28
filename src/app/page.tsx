@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { checkoutUrl, OTHERS_FROM } from "@/lib/config";
+import { CONFIG, OTHERS_FROM, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
 
@@ -25,14 +25,14 @@ export default function HomePage() {
           </div>
           <div className="wrap hero-low">
             <ul className="hfacts">
-              <li><span data-hf-k="">Classes start</span><b data-eyebrow-start="">1–2 November</b></li>
+              <li><span data-hf-k="">Classes start</span><b data-eyebrow-start="">3 November</b></li>
               <li><span>Every week</span><b>3 classes · 5 in Combo</b></li>
               <li><span>Per exam</span><b>32+ classes · 10 mocks</b></li>
             </ul>
             <div className="offer">
               <p className="offer-p"><span className="offer-k">Plans from</span><s className="offer-was" data-was="" hidden></s><b data-from-p="">₹5,999</b></p>
-              <p className="deadline" data-req="launchPrice" data-until="2026-11-01T23:59:59"><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Launch price ends 1 November</p>
-              <p className="deadline" data-req="diwaliPrice" data-after="2026-11-06T00:00:00" data-until="2026-11-11T23:59:59"><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Diwali offer ends 11 November</p>
+              <p className="deadline" data-req="launchPrice" data-until={CONFIG.dates.launchEnds}><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Launch price ends 2 November</p>
+              <p className="deadline" data-req="diwaliPrice" data-after={CONFIG.dates.diwaliStart} data-until={CONFIG.dates.diwaliEnds}><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Diwali offer ends 11 November</p>
             </div>
             <div className="hero-ctas">
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
@@ -45,7 +45,7 @@ export default function HomePage() {
                 <p className="d75-lab">Day 1 → 75<span>one dot per day</span></p>
               </div>
               <div className="dots" id="dots75"></div>
-              <p className="d75-k"><span className="k1">Day 1 · 1–2 Nov</span><span className="k49">NID Prelims · 20 Dec</span><span className="k75">UCEED · 17 Jan</span></p>
+              <p className="d75-k"><span className="k1">Day 1 · 3 Nov</span><span className="k48">NID Prelims · 20 Dec</span><span className="k75">UCEED · 17 Jan</span></p>
             </div>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function HomePage() {
                 <p className="step-k">All 11 weeks</p>
                 <h3>First class to exam day</h3>
               </div>
-              <div className="tl" role="img" aria-label="UCEED and NID tracks run for eleven weeks from 2 November. NID Prelims ends week 7, UCEED ends week 11. A feedback class runs every week.">
+              <div className="tl" role="img" aria-label="UCEED and NID tracks run for eleven weeks from 3 November. NID Prelims ends week 7, UCEED ends week 11. A feedback class runs every week.">
                 <div className="tl-g tl-mo" aria-hidden="true"><span></span><span style={{"gridColumn": "span 4"} as CSSProperties}>Nov</span><span style={{"gridColumn": "span 5"} as CSSProperties}>Dec</span><span style={{"gridColumn": "span 2"} as CSSProperties}>Jan</span></div>
                 <div className="tl-g tl-wk" aria-hidden="true"><span className="tl-l">Week</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span></div>
                 <div className="tl-g tl-r u"><span className="tl-l">UCEED</span><span className="tl-bar"></span></div>
@@ -247,13 +247,19 @@ export default function HomePage() {
                 <span className="price" data-pr=""></span>
                 <span data-save-wrap=""></span>
                 <span className="gift" data-gift="" hidden></span>
-                <span className="emi" data-emi="" hidden></span>
               </button>
               <ul className="pstats" aria-label="Recorded plan at a glance">
                 <li><b>Full</b><span>course</span></li>
-                <li><b data-pv="mocks">10</b><span>mocks</span></li>
+                <li><b data-pv="rmocks">6</b><span>mocks</span></li>
                 <li><b>3</b><span>sketch reviews</span></li>
               </ul>
+              <div className="ppay" data-pay="recorded">
+                <label className="ppack"><input type="checkbox" data-pack="" /><span>Add Mock &amp; Live Pack <b data-pack-add="">+₹{CONFIG.mockPack.toLocaleString("en-IN")}</b></span></label>
+                <ul className="popts" data-opts="" aria-label="Payment options"></ul>
+                <p className="pperk" data-perk="" hidden></p>
+                <p className="pemi" data-emi="" data-req="emi" hidden>Pay in parts, or use EMI on your credit card.</p>
+                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("recorded", "combo", "UCEED"), "join")}>Pay ₹{CONFIG.joinAmount.toLocaleString("en-IN")} to join</a>
+              </div>
             </div>
             <div className="pcol" data-col="live">
               <button className="pcard" type="button" role="radio" aria-checked="true" data-plan="live">
@@ -263,13 +269,18 @@ export default function HomePage() {
                 <span className="price" data-pr=""></span>
                 <span data-save-wrap=""></span>
                 <span className="gift" data-gift="" hidden></span>
-                <span className="emi" data-emi="" hidden></span>
               </button>
               <ul className="pstats" aria-label="Live plan at a glance">
                 <li><b data-pv="live">32+</b><span>live classes</span></li>
                 <li><b>Weekly</b><span>feedback</span></li>
                 <li><b data-pv="mocks">10</b><span>mocks</span></li>
               </ul>
+              <div className="ppay" data-pay="live">
+                <ul className="popts" data-opts="" aria-label="Payment options"></ul>
+                <p className="pperk" data-perk="" hidden></p>
+                <p className="pemi" data-emi="" data-req="emi" hidden>Pay in parts, or use EMI on your credit card.</p>
+                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("live", "combo", "UCEED"), "join")}>Pay ₹{CONFIG.joinAmount.toLocaleString("en-IN")} to join</a>
+              </div>
             </div>
             <div className="pcol" data-col="mentor">
               <button className="pcard" type="button" role="radio" aria-checked="false" data-plan="mentor" tabIndex={-1}>
@@ -279,20 +290,25 @@ export default function HomePage() {
                 <span className="price" data-pr=""></span>
                 <span data-save-wrap=""></span>
                 <span className="gift" data-gift="" hidden></span>
-                <span className="emi" data-emi="" hidden></span>
               </button>
               <ul className="pstats" aria-label="Mentor plan at a glance">
                 <li><b data-pv="live">32+</b><span>live classes</span></li>
                 <li><b>Weekly</b><span>1:1 check-in</span></li>
                 <li><b data-pv="mocks">10</b><span>mocks</span></li>
               </ul>
+              <div className="ppay" data-pay="mentor">
+                <ul className="popts" data-opts="" aria-label="Payment options"></ul>
+                <p className="pperk" data-perk="" hidden></p>
+                <p className="pemi" data-emi="" data-req="emi" hidden>Pay in parts, or use EMI on your credit card.</p>
+                <a className="btn btn--sm btn--block pjoin" data-join="" href={checkoutUrl(bundleSlug("mentor", "combo", "UCEED"), "join")}>Pay ₹{CONFIG.joinAmount.toLocaleString("en-IN")} to join</a>
+              </div>
             </div>
           </div>
 
           <div className="psum" aria-live="polite">
             <p className="pick" style={{"margin": "0"} as CSSProperties}>You picked <b id="pickName">Live · Combo</b></p>
             <div className="acts">
-              <a className="btn" href={checkoutUrl("live", "combo", "UCEED")} id="enrolBtn" data-enrol="">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href={checkoutUrl(bundleSlug("live", "combo", "UCEED"))} id="enrolBtn" data-enrol="">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="#book">Book a free call</a>
               <a className="btn btn--ghost" href="/courses/">Explore other courses and mocks <small className="btn-note">from ₹{OTHERS_FROM.toLocaleString("en-IN")}</small></a>
             </div>
@@ -300,10 +316,10 @@ export default function HomePage() {
           <div className="pfoot">
             <ul className="terms" aria-label="Payment terms">
               <li data-req="gst"><svg aria-hidden="true"><use href="#tick" /></svg>GST included</li>
-              <li data-req="refund"><svg aria-hidden="true"><use href="#tick" /></svg>Full refund till 9 Nov</li>
+              <li data-req="refund"><svg aria-hidden="true"><use href="#tick" /></svg>Full refund within 7 days of the batch start (by 10 November).</li>
               <li data-req="upgrades"><svg aria-hidden="true"><use href="#tick" /></svg>Upgrade any time</li>
             </ul>
-            <p className="dsat"><b>Pay in full or in installments.</b> Have a scholarship code? Add it at checkout.</p>
+            <p className="dsat"><b>Join with ₹{CONFIG.joinAmount.toLocaleString("en-IN")}.</b> It counts toward your fee and locks the price live that day. Pay the rest in full or in parts. Have a scholarship code? Add it at checkout.</p>
           </div>
           <details className="cmpx" data-req="planInclusions">
             <summary><span>Compare plans</span><span className="chev" aria-hidden="true"></span></summary>
@@ -312,11 +328,13 @@ export default function HomePage() {
               <thead><tr><th scope="col">Feature</th><th scope="col">Recorded</th><th scope="col">Live</th><th scope="col">Mentor</th></tr></thead>
               <tbody>
                 <tr><th scope="row">Course, notes, tests</th><td data-label="Recorded">Yes</td><td data-label="Live">Yes</td><td data-label="Mentor">Yes</td></tr>
-                <tr><th scope="row">Full mocks</th><td data-label="Recorded">Yes</td><td data-label="Live">With analysis</td><td data-label="Mentor">With analysis</td></tr>
+                <tr><th scope="row">Full mocks</th><td data-label="Recorded">3 mocks (6 in the Combo)</td><td data-label="Live">10 mocks (20 in the Combo), with analysis</td><td data-label="Mentor">10 mocks (20 in the Combo), with analysis</td></tr>
+                <tr><th scope="row">Mock &amp; Live Pack</th><td data-label="Recorded">+₹{CONFIG.mockPack.toLocaleString("en-IN")}: 3 more mocks (6 in the Combo) and selected live sessions</td><td data-label="Live" className="no">N/A</td><td data-label="Mentor" className="no">N/A</td></tr>
                 <tr><th scope="row">Live classes</th><td data-label="Recorded" className="no">No</td><td data-label="Live">Yes</td><td data-label="Mentor">Yes</td></tr>
                 <tr><th scope="row">Sketch reviews</th><td data-label="Recorded">3</td><td data-label="Live">Weekly</td><td data-label="Mentor">Weekly + log</td></tr>
                 <tr><th scope="row">Personal mentor, 1:1</th><td data-label="Recorded" className="no">No</td><td data-label="Live" className="no">No</td><td data-label="Mentor">Yes</td></tr>
                 <tr><th scope="row">Exam-week call</th><td data-label="Recorded" className="no">No</td><td data-label="Live" className="no">No</td><td data-label="Mentor">Yes</td></tr>
+                <tr><th scope="row">Payment options</th><td data-label="Recorded">Join with ₹1,000, then pay in full. Combo with the pack: 2 parts too.</td><td data-label="Live">Join with ₹1,000, then pay in full or in 2 parts. Combo: 3 parts too.</td><td data-label="Mentor">Join with ₹1,000, then pay in full, in 2 parts or in 3 parts.</td></tr>
               </tbody>
             </table>
           </details>
@@ -344,10 +362,15 @@ export default function HomePage() {
               <h3>The batch</h3>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is 75 days enough?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Mocks show where you lose marks, and classes fix those first.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I prepare for UCEED and NID together?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. The Combo runs both tracks every week, with 20 full mocks.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">What if I miss a class, or join late?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Every class is recorded. Catch up and join from the next live class.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I switch plans?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Upgrade any time. Pay only the difference.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">What if I miss a class?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Every class is recorded. Catch up and join from the next live class.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I join after 3 November?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Classes run from 3 November, and you get recordings of everything you missed. If you join after 10 November, any part payments already due are paid when you join.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I switch plans?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Upgrade any time. Pay only the difference in plan price. The Mock &amp; Live Pack is not credited toward an upgrade.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do you guarantee a rank?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No one can. We guarantee the classes, mocks and feedback in your plan.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">EMI and refunds?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No-cost EMI from ₹9,999. Full refund within 7 days of the start (by 9 November).</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">How does joining with ₹1,000 work?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Pay ₹1,000 and you join the batch straight away, at the price live that day. It counts toward your fee. Then pay the rest in full by 10 November, or in parts.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I pay in parts, or use EMI?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Live, Mentor and Recorded Combo with the Mock &amp; Live Pack can be paid in 2 parts, due 10 November and 1 December. Plans of ₹17,999 and above can also be paid in 3 parts, due 10 November, 1 December and 20 December. Each option shows its total. Other Recorded plans are paid in full. Any plan can use EMI on your credit card at the pay-in-full price; your bank charges its own interest. If a part payment is missed, live classes and new recordings pause 3 days after the due date and return once it is paid.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">How many mocks come with Recorded?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>3 mocks (6 in the Combo). Add the Mock &amp; Live Pack for ₹2,000 to get 3 more mocks (6 more in the Combo) and access to selected live sessions. Mocks are a mix of recorded mock-test resources and live mock sessions.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do I get an onboarding call if I pay in full?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Mentor: pay in full and get a 1:1 onboarding call with Devansh. 15 minutes, in your first two weeks, plus first priority on the 80 Mentor seats. Live, and Recorded Combo with the Mock &amp; Live Pack: pay in full and join Devansh&apos;s onboarding session in week 1. Part payments do not include an onboarding call.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I get a refund?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Full refund within 7 days of the batch start (by 10 November). This includes the ₹1,000 you paid to join.</p></div></div></div></div>
             </div>
             <div className="faq-group" id="faq-exams" role="tabpanel" aria-labelledby="ft-exams">
               <h3>The exams</h3>
@@ -367,7 +390,7 @@ export default function HomePage() {
           <div className="arc">
             <div className="wrap">
               <p className="pills"><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>Free call</span></p>
-              <h2 className="h2" id="enrol-h" data-final-h="">Classes start <span style={{ whiteSpace: "nowrap" }}>1–2 November.</span></h2>
+              <h2 className="h2" id="enrol-h" data-final-h="">Classes start <span style={{ whiteSpace: "nowrap" }}>3 November.</span></h2>
               <p className="lede">Not sure which plan? Leave your number and a counsellor will call you. Free, 10 minutes.</p>
             </div>
           </div>
