@@ -143,6 +143,9 @@ export function bundleSlug(plan: Plan, batch: Batch, exam: Exam, pack = false): 
 
 /* Checkout for a plan in the app. pay picks the payment option; without it
    the app asks. */
+/* "Try a free class": the app opens the course's first free class. */
+export const FREE_CLASS_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}/free`;
+
 export function checkoutUrl(slug: string, pay?: PayCode): string {
   return `${APP_URL}/dashboard/courses/${COURSE_SLUG}/plans/${slug}?checkout=1` + (pay ? `&pay=${pay}` : "");
 }
