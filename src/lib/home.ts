@@ -196,7 +196,16 @@ export function initHome(): () => void {
         const options: LiveOption[] = Array.isArray(p.options)
           ? p.options.filter((o: LiveOption) => o && typeof o.code === "string" && typeof o.total === "number").map((o: LiveOption) => ({ code: o.code, total: o.total }))
           : [];
-        live[p.slug] = { price: p.price, listPrice: typeof p.listPrice === "number" ? p.listPrice : p.price, options };
+        const listPrice = typeof p.listPrice === "number" ? p.listPrice : p.price;
+        live[p.slug] = { price: p.price, listPrice, options };
+        /* Each add-on, keyed "plan+addon", priced and scheduled with it ticked. */
+        for (const a of Array.isArray(p.addOns) ? p.addOns : []) {
+          if (!a || typeof a.slug !== "string" || typeof a.price !== "number") continue;
+          const addOnOptions: LiveOption[] = Array.isArray(a.options)
+            ? a.options.filter((o: LiveOption) => o && typeof o.code === "string" && typeof o.total === "number").map((o: LiveOption) => ({ code: o.code, total: o.total }))
+            : [];
+          live[p.slug + "+" + a.slug] = { price: p.price + a.price, listPrice: listPrice + a.price, options: addOnOptions };
+        }
       }
       renderPricing();
     } catch {

@@ -115,9 +115,9 @@ export const BUNDLES: Record<string, string> = {
   "recorded-uceed": "recorded-uceed",
   "recorded-nid": "recorded-nid",
   "recorded-combo": "recorded-combo",
-  "recorded-pack-uceed": "recorded-pack-uceed",
-  "recorded-pack-nid": "recorded-pack-nid",
-  "recorded-pack-combo": "recorded-pack-combo",
+  "recorded-pack-uceed": "recorded-uceed+mock-live-pack",
+  "recorded-pack-nid": "recorded-nid+mock-live-pack",
+  "recorded-pack-combo": "recorded-combo+mock-live-pack",
   "live-uceed": "live-uceed",
   "live-nid": "live-nid",
   "live-combo": "live-combo",
@@ -146,8 +146,11 @@ export function bundleSlug(plan: Plan, batch: Batch, exam: Exam, pack = false): 
 /* "Try a free class": the app opens the course's first free class. */
 export const FREE_CLASS_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}/free`;
 
+/* A slug may carry add-ons after "+": "recorded-uceed+mock-live-pack" is the
+   Recorded plan with the Mock & Live Pack ticked. */
 export function checkoutUrl(slug: string, pay?: PayCode): string {
-  return `${APP_URL}/dashboard/courses/${COURSE_SLUG}/plans/${slug}?checkout=1` + (pay ? `&pay=${pay}` : "");
+  const [plan, ...addOns] = slug.split("+");
+  return `${APP_URL}/dashboard/courses/${COURSE_SLUG}/plans/${plan}?checkout=1` + (addOns.length ? `&addons=${addOns.join(",")}` : "") + (pay ? `&pay=${pay}` : "");
 }
 
 export function planLabel(plan: Plan, batch: Batch, exam: Exam, pack = false): string {
