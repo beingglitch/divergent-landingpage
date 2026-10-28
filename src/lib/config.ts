@@ -45,18 +45,23 @@ export const CONFIG = {
   } as Record<string, string>,
 };
 
-/* Bundle slug in the app for each 75-day plan. The key is
+/* Shown on the "Explore other courses and mocks" buttons. */
+export const OTHERS_FROM = 999;
+
+/* The 75-day course in the app, and the link name of each of its pricing
+   plans (set in the app under Courses, Pricing plans). The key is
    plan-batch, where batch is combo, uceed or nid. */
+export const COURSE_SLUG = process.env.NEXT_PUBLIC_COURSE_SLUG || "75-days-cc";
 export const BUNDLES: Record<string, string> = {
-  "recorded-combo": "75-day-recorded-combo",
-  "recorded-uceed": "75-day-recorded-uceed",
-  "recorded-nid": "75-day-recorded-nid",
-  "live-combo": "75-day-live-combo",
-  "live-uceed": "75-day-live-uceed",
-  "live-nid": "75-day-live-nid",
-  "mentor-combo": "75-day-mentor-combo",
-  "mentor-uceed": "75-day-mentor-uceed",
-  "mentor-nid": "75-day-mentor-nid",
+  "recorded-combo": "recorded-combo",
+  "recorded-uceed": "recorded-uceed",
+  "recorded-nid": "recorded-nid",
+  "live-combo": "live-combo",
+  "live-uceed": "live-uceed",
+  "live-nid": "live-nid",
+  "mentor-combo": "mentor-combo",
+  "mentor-uceed": "mentor-uceed",
+  "mentor-nid": "mentor-nid",
 };
 
 export const PLAN_NAMES: Record<Plan, string> = { recorded: "Recorded", live: "Live", mentor: "Mentor" };
@@ -69,9 +74,9 @@ export function bundleSlug(plan: Plan, batch: Batch, exam: Exam): string {
   return BUNDLES[bundleKey(plan, batch, exam)];
 }
 
-/* Where Enrol now goes for a plan: the bundle's checkout in the app. */
+/* Where Enrol now goes for a plan: that plan's checkout in the app. */
 export function checkoutUrl(plan: Plan, batch: Batch, exam: Exam): string {
-  return `${APP_URL}/bundles/${bundleSlug(plan, batch, exam)}?checkout=1`;
+  return `${APP_URL}/dashboard/courses/${COURSE_SLUG}/plans/${bundleSlug(plan, batch, exam)}?checkout=1`;
 }
 
 export function planLabel(plan: Plan, batch: Batch, exam: Exam): string {

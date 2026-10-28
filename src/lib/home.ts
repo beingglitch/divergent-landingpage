@@ -133,8 +133,8 @@ export function initHome(): () => void {
     const cur = priceOf(state.plan, state.batch);
     const pn = $("#pickName");
     if (pn) pn.textContent = PLAN_NAMES[state.plan] + " · " + (state.batch === "combo" ? "Combo" : state.exam) + " · " + inr(cur.now);
-    const eb = $<HTMLAnchorElement>("#enrolBtn");
-    if (eb) eb.href = checkoutUrl(state.plan, state.batch, state.exam);
+    // Every Enrol now on the page goes straight to payment for the plan picked.
+    $$<HTMLAnchorElement>("[data-enrol]").forEach((a) => { a.href = checkoutUrl(state.plan, state.batch, state.exam); });
     const from = priceOf("recorded", "single").now;
     $$("[data-from]").forEach((f) => { f.textContent = "from " + inr(from); });
     $$("[data-from-p]").forEach((f) => { f.textContent = inr(from); });

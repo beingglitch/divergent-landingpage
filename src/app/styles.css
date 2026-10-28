@@ -884,3 +884,6 @@ html.sticky-on .wa-float{bottom:calc(92px + env(safe-area-inset-bottom))}
 .doc-foot{margin-top:clamp(36px,4vw,52px);padding:20px 22px;border-radius:var(--radius-lg);background:var(--yellow-50);border:1px solid #F3D67A}
 .doc-foot p{margin:0}
 .hfacts b{overflow-wrap:anywhere}
+
+/* Price note inside a button, e.g. "from ₹999" */
+.btn-note{font-size:.82em;font-weight:500;opacity:.75;margin-left:4px}

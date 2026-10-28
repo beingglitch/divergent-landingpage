@@ -5,11 +5,11 @@ import { APP_URL, BUNDLES, CONTACT, planLabel, type Batch, type Exam, type Plan 
 import { PLAN_EVENT, type PlanPick } from "@/lib/plan-event";
 
 type Status = "CLASS_11" | "CLASS_12" | "DROPPER";
-type LeadExam = "UCEED" | "NID" | "BOTH" | "NIFT";
+type LeadExam = "UCEED" | "NID" | "NIFT";
 type Field = "name" | "phone" | "status" | "exam" | "consent";
 
 const STATUSES: Array<[Status, string]> = [["CLASS_11", "Class 11"], ["CLASS_12", "Class 12"], ["DROPPER", "Dropper"]];
-const EXAMS: Array<[LeadExam, string]> = [["UCEED", "UCEED"], ["NID", "NID"], ["BOTH", "Both"], ["NIFT", "NIFT"]];
+const EXAMS: Array<[LeadExam, string]> = [["UCEED", "UCEED"], ["NID", "NID"], ["NIFT", "NIFT"]];
 
 /* Every 75-day plan, in the order the picker shows them. */
 const PLAN_OPTIONS = Object.entries(BUNDLES).map(([key, slug]) => {
@@ -36,7 +36,7 @@ export function LeadForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<Status | "">("");
-  const [exam, setExam] = useState<LeadExam | "">("");
+  const [exams, setExams] = useState<LeadExam[]>([]);
   const [plan, setPlan] = useState("");
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
@@ -53,7 +53,7 @@ export function LeadForm() {
     const apply = (p: PlanPick | undefined) => {
       if (!p) return;
       if (!planTouched.current) setPlan(p.slug);
-      if (!examTouched.current) setExam(p.batch === "combo" ? "BOTH" : p.exam);
+      if (!examTouched.current) setExams(p.batch === "combo" ? ["UCEED", "NID"] : [p.exam]);
     };
     apply(window.__dcPlan);
     const on = (e: Event) => apply((e as CustomEvent<PlanPick>).detail);
@@ -71,7 +71,7 @@ export function LeadForm() {
     if (!phone.trim()) e.phone = "Enter your WhatsApp number.";
     else if (!normalisePhone(phone)) e.phone = "Enter a 10-digit Indian mobile number.";
     if (!status) e.status = "Pick your class.";
-    if (!exam) e.exam = "Pick an exam.";
+    if (!exams.length) e.exam = "Pick at least one exam.";
     if (!consent) e.consent = "Tick this so we can call you.";
     return e;
   }
@@ -100,7 +100,7 @@ export function LeadForm() {
           name: name.trim(),
           phone: digits,
           academicStatus: status,
-          exam,
+          exam: exams,
           plan: plan || undefined,
           source: "landing",
           page: window.location.pathname,
@@ -206,13 +206,13 @@ export function LeadForm() {
         </fieldset>
 
         <fieldset className={"book-f" + (errors.exam ? " err" : "")} aria-describedby={desc("exam")}>
-          <legend>Exam</legend>
+          <legend>Exam <span className="book-opt">(pick all that apply)</span></legend>
           <div className="book-chips">
             {EXAMS.map(([v, label], i) => (
               <label key={v}>
-                <input type="radio" name="exam" value={v} checked={exam === v}
+                <input type="checkbox" name="exam" value={v} checked={exams.includes(v)}
                   data-field={i === 0 ? "exam" : undefined}
-                  onChange={() => { examTouched.current = true; setExam(v); clear("exam"); }} />
+                  onChange={(e) => { examTouched.current = true; const on = e.target.checked; setExams((cur) => EXAMS.map(([x]) => x).filter((x) => (x === v ? on : cur.includes(x)))); clear("exam"); }} />
                 <span>{label}</span>
               </label>
             ))}

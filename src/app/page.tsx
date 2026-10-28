@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { checkoutUrl } from "@/lib/config";
+import { checkoutUrl, OTHERS_FROM } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
 
@@ -37,6 +37,7 @@ export default function HomePage() {
             <div className="hero-ctas">
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="#book">Book a free call</a>
+              <a className="btn btn--ghost" href="/courses/">Explore other courses and mocks <small className="btn-note">from ₹{OTHERS_FROM.toLocaleString("en-IN")}</small></a>
             </div>
             <div className="d75" aria-hidden="true">
               <div className="d75-h">
@@ -291,8 +292,9 @@ export default function HomePage() {
           <div className="psum" aria-live="polite">
             <p className="pick" style={{"margin": "0"} as CSSProperties}>You picked <b id="pickName">Live · Combo</b></p>
             <div className="acts">
-              <a className="btn" href={checkoutUrl("live", "combo", "UCEED")} id="enrolBtn">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href={checkoutUrl("live", "combo", "UCEED")} id="enrolBtn" data-enrol="">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="#book">Book a free call</a>
+              <a className="btn btn--ghost" href="/courses/">Explore other courses and mocks <small className="btn-note">from ₹{OTHERS_FROM.toLocaleString("en-IN")}</small></a>
             </div>
           </div>
           <div className="pfoot">
