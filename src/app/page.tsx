@@ -19,7 +19,10 @@ export default function HomePage() {
           <div className="arc">
             <div className="wrap">
               <p className="pills"><span className="pill">UCEED &amp; NID 2027</span><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>75-Day Crash Course</span></p>
-              <h1 className="h1" id="hero-h"><span className="num">75 days</span> to <span className="hl">UCEED and NID.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></h1>
+              <h1 className="h1 h1-swap" id="hero-h">
+                <span className="h1-line"><span className="num">75 days</span> to <span className="hl">UCEED and NID.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></span>
+                <span className="h1-line"><span className="num">Focus on prep,</span> <span className="hl">leave planning to us.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></span>
+              </h1>
               <p className="hero-sub">Live classes, full mocks and weekly feedback from mentors who cleared it.</p>
             </div>
           </div>

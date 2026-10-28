@@ -133,6 +133,12 @@ html.js .dots i.mk-n::after{animation-delay:2.4s}
 @keyframes halo{0%{transform:scale(1);opacity:.5}45%{transform:scale(2.8);opacity:0}100%{transform:scale(2.8);opacity:0}}
 .h1{font-size:clamp(36px,10.5vw,92px);line-height:.96;letter-spacing:-.04em;font-weight:720;max-width:13ch;margin:0 auto;text-wrap:balance}
 .h1 .num{color:#fff;text-shadow:0 2px 0 rgba(11,11,12,.12)}
+/* The hero heading takes turns between two lines, stacked in one spot so
+   the page does not jump. */
+.h1-swap{display:grid}
+.h1-line{grid-area:1/1;align-self:center;animation:h1-swap 10s var(--ease-out) infinite}
+.h1-line+.h1-line{animation-delay:-5s}
+@keyframes h1-swap{0%,42%{opacity:1;transform:none}50%,92%{opacity:0;transform:translateY(-.12em)}100%{opacity:1;transform:none}}
 .hl{position:relative;display:inline-block;white-space:nowrap;z-index:0}
 .hl svg{position:absolute;left:-2%;width:104%;bottom:-.05em;height:.3em;z-index:-1;overflow:visible}
 .hl path{fill:none;stroke:var(--yellow);stroke-width:13;stroke-linecap:round}
@@ -914,4 +920,4 @@ html.has-promo{--promo-h:36px}
 .promo-item svg{fill:var(--ink)}
 @keyframes promo-run{to{transform:translateX(-50%)}}
 @media (max-width:640px){html.has-promo{--promo-h:32px}.promo{font-size:13px}.promo-track{animation-duration:30s}}
-@media (prefers-reduced-motion:reduce){.promo-track{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.promo-track,.h1-line{animation:none!important}.h1-line+.h1-line{display:none}}
