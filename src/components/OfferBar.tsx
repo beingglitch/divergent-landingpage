@@ -27,7 +27,7 @@ export function OfferBar() {
     const show = () => {
       const next = lines(new Date());
       setItems(next);
-      document.documentElement.classList.toggle("has-offer", !!next);
+      document.documentElement.classList.toggle("has-promo", !!next);
     };
     show();
     const timer = setInterval(show, 60_000);
@@ -36,9 +36,9 @@ export function OfferBar() {
   if (!items) return null;
 
   const run = (
-    <span className="offer-run">
+    <span className="promo-run">
       {items.map((text) => (
-        <span key={text} className="offer-item">
+        <span key={text} className="promo-item">
           <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 0l1.6 4.4L12 6 7.6 7.6 6 12 4.4 7.6 0 6l4.4-1.6z" /></svg>
           {text}
         </span>
@@ -46,8 +46,8 @@ export function OfferBar() {
     </span>
   );
   return (
-    <a className="offer" href="/#plans" aria-label={`${items.join(". ")}. See plans.`}>
-      <span className="offer-track" aria-hidden="true">
+    <a className="promo" href="/#plans" aria-label={`${items.join(". ")}. See plans.`}>
+      <span className="promo-track" aria-hidden="true">
         {run}
         {run}
       </span>
