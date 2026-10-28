@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { OfferBar } from "@/components/OfferBar";
 
 const EXAMS = ["uceed", "nid", "nift"];
 
@@ -12,6 +13,7 @@ export function Header() {
   return (
     <>
       <header className="nav" id="nav">
+        <OfferBar />
         <div className="wrap nav-in">
           <a className="brand" href="/" aria-label="Divergent Classes home">
             <img src="/assets/logo.png" alt="Divergent Classes" width="227" height="88" />
