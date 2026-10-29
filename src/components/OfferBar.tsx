@@ -13,8 +13,8 @@ function lines(now: Date): string[] | null {
   const from = `Plans from ₹${CONFIG.prices.recorded.single.price.diwali.toLocaleString("en-IN")}`;
   return [
     live ? "Diwali bonus is live till 11 November" : "Diwali bonus, 6 to 11 November",
+    live ? "Use code DIWALI75 at checkout" : "Code DIWALI75 works 6 to 11 November",
     A.diwaliPrice ? `Early price returns: ${from}` : "",
-    live ? "Use code DIWALI75 at checkout" : "",
     "A free extra sketch review on every plan",
     "Live and Mentor plans also get a 5-mock pack",
     !live && A.launchPrice && now <= ist(D.launchEnds) ? "Early price on now, till 2 November" : "",

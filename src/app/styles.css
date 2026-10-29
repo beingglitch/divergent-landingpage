@@ -139,8 +139,21 @@ html.js .dots i.mk-n::after{animation-delay:2.4s}
 .h1-line{grid-area:1/1;align-self:center;animation:h1-swap 10s var(--ease-out) infinite}
 .h1-line+.h1-line{animation-delay:-5s}
 @keyframes h1-swap{0%,42%{opacity:1;transform:none}50%,92%{opacity:0;transform:translateY(-.12em)}100%{opacity:1;transform:none}}
+/* With script the lines are typed in and out instead (lib/home.ts): each
+   letter stays in place, hidden until typed, so nothing reflows. */
+.h1-type .h1-line{animation:none;visibility:hidden}
+.h1-type .h1-line.on{visibility:visible}
+.h1-type .h1-line .ch{visibility:hidden}
+.h1-type .h1-line.on .ch.on{visibility:visible}
+.h1-type .caret{display:inline-block;width:.06em;height:.8em;margin-right:-.06em;vertical-align:-.04em;background:currentColor;border-radius:2px;animation:caret 1s steps(1) infinite}
+.h1-type .h1-line:not(.on) .caret{display:none}
+@keyframes caret{50%{opacity:0}}
+html.js .h1-type .hl path{animation:none;stroke-dashoffset:1;transition:stroke-dashoffset .7s var(--ease-out)}
+html.js .h1-type .h1-line.typed .hl path{stroke-dashoffset:0}
 .hl{position:relative;display:inline-block;white-space:nowrap;z-index:0}
 .hl svg{position:absolute;left:-2%;width:104%;bottom:-.05em;height:.3em;z-index:-1;overflow:visible}
+/* On a phone the underlined phrase may wrap; kept on one line it ran past the hero and was cut off. */
+@media (max-width:560px){.h1 .hl{white-space:normal}}
 .hl path{fill:none;stroke:var(--yellow);stroke-width:13;stroke-linecap:round}
 html.js .hl path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s var(--ease-out) .45s forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -189,7 +202,7 @@ html.js .dots i{transform:scale(0);animation:pop .4s var(--ease-back) forwards;a
   .hfacts{display:grid;grid-template-columns:1fr;width:100%}
   .hfacts li{padding:10px 16px;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
   .hfacts li+li{border-left:0;border-top:1px solid var(--line-dark)}
-  .hfacts span{font-size:11px}
+  .hfacts span{font-size:11px;white-space:nowrap}
   .hfacts b{font-size:15.5px;margin:0;text-align:right}
   .hero-low{padding-top:32px}
   .arc{padding-bottom:44px}
@@ -450,6 +463,15 @@ li.today .st{background:var(--ink);color:var(--yellow);border-color:var(--ink)}
 .psum .btn--ghost{--bd:rgba(255,255,255,.5);--fg:#fff}
 .psum .btn--ghost:hover{--bg:#fff;--fg:var(--ink)}
 .pfoot{margin-top:26px;display:grid;gap:14px;grid-template-columns:minmax(0,260px) minmax(0,1fr);align-items:stretch}
+.pdemo{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:22px 0 0;padding:16px 20px;border:1px dashed var(--line);border-radius:var(--radius-lg);background:#fff}
+.pdemo p{margin:0}
+.pdemo-k{font-weight:700;color:var(--ink)}
+.pdemo-t{font-size:14.5px;color:var(--ink-3)}
+@media (max-width:640px){.pdemo .btn{width:100%;justify-content:center}}
+.pdemo+.pfoot{margin-top:14px}
+/* Picked out for a moment when someone arrives from a Try demo button. */
+.pdemo{transition:border-color .3s,box-shadow .3s,background-color .3s}
+.pdemo.picked{border-style:solid;border-color:var(--yellow);background:var(--yellow-50);box-shadow:0 0 0 4px rgba(255,197,0,.25)}
 .pjoinbox{border-radius:var(--radius-lg);background:var(--yellow-50);border:1px solid rgba(255,197,0,.55);padding:18px 20px;display:flex;flex-direction:column;justify-content:center}
 .pjoinbox p{margin:0}
 .pj-k{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
@@ -572,6 +594,7 @@ html.js .faq.open .faq-a>.clip{visibility:visible;transition-delay:0s}
   .st-book{display:inline-flex!important}
   .sticky .btn--ghost{--bd:rgba(255,255,255,.4);--fg:#fff}
 }
+.sticky .st-demo{--bd:rgba(255,255,255,.4);--fg:#fff}
 @media (min-width:1200px){
   .sticky .st-t{padding-left:20px;border-left:1px solid var(--line-dark)}
   .sticky .st-t b{display:none}
@@ -612,6 +635,8 @@ html.js .faq.open .faq-a>.clip{visibility:visible;transition-delay:0s}
 .sdots a[aria-current="true"]::before{height:20px;background:var(--blue)}
 .sdots span{position:absolute;right:calc(100% + 12px);top:50%;padding:6px 11px;border-radius:999px;background:var(--ink);color:#fff;font-size:13px;font-weight:600;white-space:nowrap;pointer-events:none;opacity:0;transform:translate(6px,-50%);transition:opacity .2s,transform .25s var(--ease-out)}
 .sdots a:hover span,.sdots a:focus-visible span{opacity:1;transform:translate(0,-50%)}
+/* On a phone the dots sat over the edge of every card, and the menu already jumps between sections. */
+@media (max-width:759px){.sdots{display:none}}
 @media (max-width:759px){.sdots{right:3px}.sdots ol{padding:0;gap:3px;background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}.sdots a{width:12px;height:12px}.sdots a::before{width:5px;height:5px;box-shadow:0 0 0 1.5px rgba(255,255,255,.85)}.sdots a[aria-current="true"]::before{height:12px}.sdots span{display:none}}
 @media print{.sdots{display:none}}
 

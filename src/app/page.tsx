@@ -39,7 +39,7 @@ export default function HomePage() {
             </div>
             <div className="hero-ctas">
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try demo class</a>
+              <a className="btn btn--ghost" href="#plans" data-demo="">Try demo class</a>
             </div>
             <div className="d75" aria-hidden="true">
               <div className="d75-h">
@@ -298,6 +298,15 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Where the hero's Try demo class lands: the plans, with the free way in beside them. */}
+          <div className="pdemo" id="demo">
+            <div>
+              <p className="pdemo-k">Not sure yet?</p>
+              <p className="pdemo-t">Try a free demo class first. Sign in with your phone number; no payment.</p>
+            </div>
+            <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try a free demo class <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+          </div>
+
           <div className="pfoot">
             <div className="pjoinbox">
               <p className="pj-k">Join with</p>
@@ -394,6 +403,7 @@ export default function HomePage() {
         <span className="st-t"><b>75-Day Crash Course</b><span data-from="">from ₹5,999</span></span>
         <div className="st-acts">
           <a className="btn btn--ghost btn--sm st-book" href="#book" tabIndex={-1}>Free call</a>
+          <a className="btn btn--ghost btn--sm st-demo" href="#plans" data-demo="" tabIndex={-1}>Try demo</a>
           <a className="btn btn--sm" href="#plans" tabIndex={-1}>Enrol</a>
         </div>
       </div>

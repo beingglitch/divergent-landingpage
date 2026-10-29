@@ -32,6 +32,75 @@ export function initHome(): () => void {
   $$("[data-until]").forEach((el) => { if (NOW() > ist(el.getAttribute("data-until") || "")) el.hidden = true; });
   $$("[data-after]").forEach((el) => { if (NOW() < ist(el.getAttribute("data-after") || "")) el.hidden = true; });
 
+  /* ---------- hero heading: typed in, held, typed out, next line ---------- */
+  // Each letter is its own span, hidden until typed, so the heading keeps its
+  // size and never reflows. Screen readers get the whole heading from aria-label.
+  (() => {
+    const h1 = $(".h1-swap");
+    if (!h1 || reduce) return;
+    const lines = $$(".h1-line", h1);
+    if (!h1.hasAttribute("aria-label")) h1.setAttribute("aria-label", lines.map((l) => (l.textContent || "").trim()).join(" "));
+    const letters = lines.map((line) => {
+      line.setAttribute("aria-hidden", "true");
+      const done = $$(".ch", line);
+      if (done.length) return done; // set up already (a second run in development)
+      const texts: Text[] = [];
+      const walker = doc.createTreeWalker(line, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) if (!walker.currentNode.parentElement?.closest("svg")) texts.push(walker.currentNode as Text);
+      const out: HTMLElement[] = [];
+      for (const text of texts) {
+        const frag = doc.createDocumentFragment();
+        for (const ch of text.data) {
+          const span = doc.createElement("span");
+          span.className = "ch";
+          span.textContent = ch;
+          frag.append(span);
+          out.push(span);
+        }
+        text.replaceWith(frag);
+      }
+      return out;
+    });
+    h1.classList.add("h1-type");
+    const caret = $(".caret", h1) || doc.createElement("span");
+    caret.className = "caret";
+    let line = 0, shown = 0, typing = true, timer = 0;
+    const place = () => {
+      const list = letters[line];
+      if (shown) list[shown - 1].after(caret); else list[0]?.before(caret);
+    };
+    const step = () => {
+      const list = letters[line];
+      if (typing && shown < list.length) {
+        list[shown++].classList.add("on");
+        place();
+        timer = window.setTimeout(step, 45 + Math.random() * 45);
+      } else if (typing) {
+        lines[line].classList.add("typed");
+        typing = false;
+        timer = window.setTimeout(step, 2600);
+      } else if (shown > 0) {
+        lines[line].classList.remove("typed");
+        list[--shown].classList.remove("on");
+        place();
+        timer = window.setTimeout(step, 22);
+      } else {
+        lines[line].classList.remove("on");
+        line = (line + 1) % lines.length;
+        lines[line].classList.add("on");
+        typing = true;
+        place();
+        timer = window.setTimeout(step, 350);
+      }
+    };
+    lines.forEach((l) => l.classList.remove("on", "typed"));
+    letters.flat().forEach((ch) => ch.classList.remove("on"));
+    lines[0].classList.add("on");
+    place();
+    timer = window.setTimeout(step, 500);
+    cleanups.push(() => window.clearTimeout(timer));
+  })();
+
   /* ---------- copy that changes with the date ---------- */
   (() => {
     const t = NOW();
@@ -288,25 +357,35 @@ export function initHome(): () => void {
     cleanups.push(() => { g.textContent = ""; });
   })();
 
-  /* ---------- sticky CTA: after the hero, hidden near the plans, the call form and the footer ---------- */
+  /* ---------- sticky CTA: always on once the hero is scrolled past ---------- */
   (() => {
     const st = $("#sticky"), hero = $(".hero");
     if (!st || !hero) return;
-    const avoid = [$("#book"), $(".foot")];
-    let past = false;
-    const blocked: Record<number, boolean> = {};
-    const upd = () => {
-      const show = past && !Object.values(blocked).some(Boolean);
+    const upd = (show: boolean) => {
       st.classList.toggle("show", show);
       st.setAttribute("aria-hidden", String(!show));
       doc.documentElement.classList.toggle("sticky-on", show);
       $$("a", st).forEach((a) => { a.tabIndex = show ? 0 : -1; });
     };
-    const ho = new IntersectionObserver((es) => { past = !es[0].isIntersecting && es[0].boundingClientRect.top < 0; upd(); });
+    const ho = new IntersectionObserver((es) => upd(!es[0].isIntersecting && es[0].boundingClientRect.top < 0));
     ho.observe(hero);
-    const ao = new IntersectionObserver((es) => { es.forEach((e) => { blocked[avoid.indexOf(e.target as HTMLElement)] = e.isIntersecting; }); upd(); });
-    avoid.forEach((el) => { if (el) ao.observe(el); });
-    cleanups.push(() => { ho.disconnect(); ao.disconnect(); doc.documentElement.classList.remove("sticky-on"); });
+    cleanups.push(() => { ho.disconnect(); doc.documentElement.classList.remove("sticky-on"); });
+  })();
+
+  /* ---------- Try demo: go to the plans with the free demo picked out ---------- */
+  (() => {
+    const demo = $("#demo");
+    if (!demo) return;
+    let timer = 0;
+    doc.addEventListener("click", (e) => {
+      if (!(e.target as Element).closest?.("[data-demo]")) return;
+      demo.classList.remove("picked");
+      void demo.offsetWidth; // restart the highlight on a second click
+      demo.classList.add("picked");
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => demo.classList.remove("picked"), 3200);
+    }, { signal });
+    cleanups.push(() => window.clearTimeout(timer));
   })();
 
   return () => cleanups.forEach((fn) => fn());
