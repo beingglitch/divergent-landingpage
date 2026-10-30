@@ -35,6 +35,7 @@ const sections: DocSection[] = [
           <li><b>Account and course data:</b> your login, the courses you buy, your progress, test attempts, scores and the work you upload for review.</li>
           <li><b>Payment details:</b> payments are handled by Razorpay. Your card, UPI or bank details go straight to Razorpay and are never stored by us. We keep a record of what you paid for, the amount, the date and the payment status.</li>
           <li><b>Usage analytics:</b> pages visited, buttons used, device and browser type, and approximate location from your IP address. We use this in aggregate to see what works and fix what does not.</li>
+          <li><b>Advertising measurement:</b> we use the Meta Pixel and Conversions API to see which ads lead to call requests, sign-ups and purchases. This sends Meta the pages you visit, the plan you look at and, in hashed form, your phone number or email.</li>
         </ul>
       </>
     ),
@@ -109,7 +110,7 @@ const sections: DocSection[] = [
     id: "cookies",
     title: "Cookies",
     body: (
-      <p>The app uses cookies to keep you signed in. The website and app may use analytics cookies to count visits. You can block cookies in your browser, but parts of the app may stop working.</p>
+      <p>The app uses cookies to keep you signed in. The website and app may use analytics cookies to count visits, and the website uses Meta Pixel cookies to measure our ads. You can block cookies in your browser, but parts of the app may stop working.</p>
     ),
   },
   {

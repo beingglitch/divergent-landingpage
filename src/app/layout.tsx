@@ -4,6 +4,8 @@ import { Footer } from "@/components/Footer";
 import { Sprite } from "@/components/Sprite";
 import { SiteBehaviour } from "@/components/SiteBehaviour";
 import { SITE_URL } from "@/lib/meta";
+import { PIXEL_ID } from "@/lib/config";
+import { PIXEL_LOADER } from "@/lib/pixel";
 import "./styles.css";
 
 export const metadata: Metadata = {
@@ -33,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');" }} />
+        {PIXEL_ID ? <script dangerouslySetInnerHTML={{ __html: PIXEL_LOADER }} /> : null}
       </head>
       <body>
         <a className="skip" href="#main">Skip to content</a>

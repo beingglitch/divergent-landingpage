@@ -17,6 +17,10 @@ export type TierKey = "recorded" | "recordedPack" | "live" | "mentor";
 /* The main app. Leads and checkout both go here. */
 export const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "https://app.divergentclasses.com").replace(/\/+$/, "");
 
+/* The Meta pixel, the "Divergent Classes Meta pixel" dataset. Off while
+   developing, so local testing never reaches the ad account. */
+export const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || (process.env.NODE_ENV === "production" ? "3424263194547439" : "");
+
 export const CONFIG = {
   /* true shows the item on the page, false hides it. */
   approvals: {

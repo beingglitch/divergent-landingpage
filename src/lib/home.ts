@@ -4,6 +4,7 @@
 import { APP_URL, CONFIG, COURSE_SLUG, bundleSlug, checkoutUrl, ist, planLabel, pricePeriod, tierKey, type Batch, type Exam, type Plan } from "./config";
 
 import { PLAN_EVENT, type PlanPick } from "./plan-event";
+import { track } from "./pixel";
 
 const $ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document) => c.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document) => Array.from(c.querySelectorAll<T>(s));
@@ -263,9 +264,18 @@ export function initHome(): () => void {
   const announce = () => {
     const pack = state.plan === "recorded" && state.pack;
     const pick: PlanPick = { ...state, pack, slug: bundleSlug(state.plan, state.batch, state.exam, pack), label: planLabel(state.plan, state.batch, state.exam, pack) };
+    /* The default plan on page load is not a pick, so only changes count. */
+    if (window.__dcPlan && window.__dcPlan.slug !== pick.slug) track("ViewContent", { content_type: "product", content_ids: [pick.slug], content_name: pick.label });
     window.__dcPlan = pick;
     window.dispatchEvent(new CustomEvent<PlanPick>(PLAN_EVENT, { detail: pick }));
   };
+  /* Enrol now: the plan is in the link, and pricing keeps the link current. */
+  $$<HTMLAnchorElement>("[data-join]").forEach((a) => a.addEventListener("click", () => {
+    const url = new URL(a.href);
+    const addOns = url.searchParams.get("addons");
+    const plan = url.pathname.split("/").filter(Boolean).pop() ?? "";
+    track("InitiateCheckout", { content_type: "product", content_ids: [addOns ? `${plan}+${addOns}` : plan] });
+  }, { signal }));
   const radioKeys = (group: HTMLElement | null, attr: string, cb: (v: string) => void) => {
     if (!group) return;
     group.addEventListener("keydown", (e) => {

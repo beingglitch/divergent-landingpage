@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { APP_URL, CONTACT, PLAN_LIST } from "@/lib/config";
 import { PLAN_EVENT, type PlanPick } from "@/lib/plan-event";
+import { pixelCookie, track } from "@/lib/pixel";
 
 type Status = "CLASS_11" | "CLASS_12" | "DROPPER";
 type LeadExam = "UCEED" | "NID" | "NIFT";
@@ -83,6 +84,8 @@ export function LeadForm() {
       return;
     }
     const digits = normalisePhone(phone)!;
+    /* The pixel and the app both report this lead. One id makes Meta count it once. */
+    const eventId = crypto.randomUUID();
     setState("sending");
     setErrorText("");
     const ctrl = new AbortController();
@@ -99,6 +102,9 @@ export function LeadForm() {
           plan: plan || undefined,
           source: "landing",
           page: window.location.pathname,
+          eventId,
+          fbp: pixelCookie("_fbp"),
+          fbc: pixelCookie("_fbc"),
         }),
         signal: ctrl.signal,
       });
@@ -111,6 +117,7 @@ export function LeadForm() {
         if (!msg) msg = res.status === 429 ? "Too many tries. Please wait a minute and try again." : "We could not save your request.";
         throw new Error(msg);
       }
+      track("Lead", plan ? { content_type: "product", content_ids: [plan] } : {}, eventId);
       setSentTo(shownPhone(digits));
       setState("done");
     } catch (err) {
