@@ -208,7 +208,7 @@ export default function HomePage() {
               <a className="btn btn--ghost" href="/about/#mentors">Meet all mentors <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
             </div>
             <ul className="pmentors rv">
-              <li className="pm"><img src="/assets/img/mentors/ruturaj.webp" alt="Ruturaj" width="480" height="640" loading="lazy" /><b>Ruturaj</b><span>IIT Bombay</span></li>
+              <li className="pm"><img src="/assets/img/mentors/vihang.webp" alt="Vihang" width="480" height="600" loading="lazy" /><b>Vihang</b><span>IIT Bombay</span></li>
               <li className="pm"><img src="/assets/img/mentors/kaushik.webp" alt="Kaushik" width="480" height="600" loading="lazy" /><b>Kaushik</b><span>IIT Delhi</span></li>
               <li className="pm n"><img src="/assets/img/mentors/atharva.webp" alt="Atharva" width="480" height="595" loading="lazy" /><b>Atharva</b><span>NID Ahmedabad</span></li>
               <li className="pm n"><img src="/assets/img/mentors/anshika.webp" alt="Anshika" width="343" height="449" loading="lazy" /><b>Anshika</b><span>NID Ahmedabad</span></li>

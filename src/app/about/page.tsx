@@ -71,7 +71,6 @@ export default function AboutPage() {
             </div>
             <h3 className="men-k">UCEED · from IIT</h3>
             <ul className="pmentors">
-              <li className="pm rv"><img src="/assets/img/mentors/ruturaj.webp" alt="Ruturaj" width="480" height="640" loading="lazy" /><b>Ruturaj</b><span>IIT Bombay</span></li>
               <li className="pm rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/vihang.webp" alt="Vihang" width="480" height="600" loading="lazy" /><b>Vihang</b><span>IIT Bombay</span></li>
               <li className="pm rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/sparsh.webp" alt="Sparsh" width="480" height="638" loading="lazy" /><b>Sparsh</b><span>IIT Bombay</span></li>
               <li className="pm rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/kaushik.webp" alt="Kaushik" width="480" height="600" loading="lazy" /><b>Kaushik</b><span>IIT Delhi</span></li>
