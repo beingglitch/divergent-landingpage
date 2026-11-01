@@ -130,7 +130,7 @@ const sections: DocSection[] = [
         <p>If you have any questions about these Terms, contact us:</p>
         <ul>
           <li>Email: <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
-          <li>Phone: <a href="tel:+918383056332">+91 83830 56332</a> or <a href="tel:+918368033468">+91 83680 33468</a></li>
+          <li>Phone: <a href="tel:+919429693048">+91 94296 93048</a></li>
           <li>Address: New Delhi, India</li>
         </ul>
       </>

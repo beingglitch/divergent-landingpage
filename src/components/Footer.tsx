@@ -9,7 +9,7 @@ export function Footer() {
               <p className="foot-about">Online coaching for UCEED, NID and NIFT, by mentors from IIT, NID and NIFT.</p>
               <ul className="foot-contact">
                 <li><svg width="18" height="18" aria-hidden="true"><use href="#i-mail" /></svg><a href="mailto:support@divergentclasses.com">support@divergentclasses.com</a></li>
-                <li><svg width="18" height="18" aria-hidden="true"><use href="#i-phone" /></svg><span><a href="tel:+918383056332">+91 83830 56332</a> · <a href="tel:+918368033468">+91 83680 33468</a></span></li>
+                <li><svg width="18" height="18" aria-hidden="true"><use href="#i-phone" /></svg><span><a href="tel:+919429693048">+91 94296 93048</a></span></li>
               </ul>
             </div>
             <div>

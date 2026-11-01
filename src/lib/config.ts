@@ -176,7 +176,7 @@ export const PLAN_LIST: PlanEntry[] = (() => {
 
 export const CONTACT = {
   whatsapp: "918383056332",
-  phone: "+918383056332",
-  phoneShown: "+91 83830 56332",
+  phone: "+919429693048",
+  phoneShown: "+91 94296 93048",
   email: "support@divergentclasses.com",
 };

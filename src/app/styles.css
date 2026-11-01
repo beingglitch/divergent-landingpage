@@ -953,3 +953,28 @@ html.has-promo{--promo-h:36px}
 @keyframes promo-run{to{transform:translateX(-50%)}}
 @media (max-width:640px){html.has-promo{--promo-h:32px}.promo{font-size:13px}.promo-track{animation-duration:30s}}
 @media (prefers-reduced-motion:reduce){.promo-track,.h1-line{animation:none!important}.h1-line+.h1-line{display:none}}
+
+/* ========================= CONTACT POPUP ========================= */
+.cpop{position:fixed;right:clamp(12px,1.6vw,24px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:120;width:min(380px,calc(100vw - 24px));background:#fff;border:1px solid var(--blue-200);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:22px;display:grid;gap:10px;outline:none;animation:cpop-in .45s var(--ease-out) both}
+.cpop-head{padding-right:128px;min-height:112px}
+.cpop-head h2,.cpop-form h2{font-size:21px;line-height:1.25;margin:0}
+.cpop-head p{margin:6px 0 0;color:var(--ink-3);font-size:14.5px}
+.cpop-x{position:absolute;top:-12px;right:-6px;z-index:3;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;border:0;cursor:pointer}
+.cpop-bunny{position:absolute;right:30px;top:-58px;width:112px;height:179px;pointer-events:none;z-index:2;transform-origin:50% 100%;animation:cpop-bunny-in .7s var(--ease-back) .15s both}
+.cpop-bunny img{position:absolute;inset:0;width:100%;height:100%;max-width:none}
+/* The shoulder, in the artwork's own proportions. */
+.cpop-arm{transform-origin:41% 39%;animation:cpop-wave 2.4s ease-in-out .8s 1 both}
+.cpop-say{position:absolute;right:112px;top:2px;white-space:nowrap;background:var(--yellow);color:var(--ink);font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:12px 12px 2px 12px;box-shadow:var(--shadow-sm);transform-origin:100% 100%;animation:cpop-say-in .4s var(--ease-back) 1s both}
+.cpop-form{display:grid;gap:6px}
+.cpop-form h2{padding-right:128px;min-height:60px;margin-bottom:6px}
+.cpop-form label{font-weight:650;font-size:14px}
+.cpop-form input{width:100%;height:44px;border:1px solid var(--blue-200);border-radius:var(--radius);padding:0 12px;font:inherit;background:#fff;color:var(--ink);margin-bottom:6px}
+.cpop-err{margin:0;color:#B3261E;font-size:13.5px}
+.cpop-fine{margin:4px 0 0;color:var(--ink-3);font-size:12px}
+@keyframes cpop-in{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes cpop-bunny-in{from{opacity:0;transform:translateY(46px) scale(.7)}to{opacity:1;transform:none}}
+@keyframes cpop-say-in{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+/* Lowers the flag arm toward the card, waves twice, and leaves it pointing there. */
+@keyframes cpop-wave{0%{transform:rotate(0)}30%{transform:rotate(-34deg)}45%{transform:rotate(-24deg)}60%{transform:rotate(-36deg)}75%{transform:rotate(-26deg)}100%{transform:rotate(-30deg)}}
+@media (prefers-reduced-motion:reduce){.cpop,.cpop-bunny,.cpop-say{animation:none}.cpop-arm{animation:none;transform:rotate(-30deg)}}
+@media print{.cpop{display:none}}

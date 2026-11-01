@@ -124,7 +124,7 @@ const sections: DocSection[] = [
     id: "contact",
     title: "Contact",
     body: (
-      <p>Questions about your data? Email {mail} or call <a href="tel:+918383056332">+91 83830 56332</a>.</p>
+      <p>Questions about your data? Email {mail} or call <a href="tel:+919429693048">+91 94296 93048</a>.</p>
     ),
   },
 ];

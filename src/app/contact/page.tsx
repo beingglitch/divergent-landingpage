@@ -24,7 +24,7 @@ export default function ContactPage() {
             <ul className="reach reach--4">
               <li><a className="reach-c" href="/#book"><span className="reach-i"><svg width="24" height="24" aria-hidden="true"><use href="#i-cal" /></svg></span><b>Book a free call</b><span>10 minutes with a counsellor</span></a></li>
               <li><a className="reach-c" href="https://wa.me/918383056332?text=Hi%2C%20I%20would%20like%20to%20talk%20to%20a%20counsellor" target="_blank" rel="noopener"><span className="reach-i"><svg width="24" height="24" aria-hidden="true"><use href="#i-chat" /></svg></span><b>WhatsApp</b><span>+91 83830 56332</span></a></li>
-              <li><a className="reach-c" href="tel:+918368033468"><span className="reach-i"><svg width="24" height="24" aria-hidden="true"><use href="#i-phone" /></svg></span><b>Call</b><span>+91 83680 33468</span></a></li>
+              <li><a className="reach-c" href="tel:+919429693048"><span className="reach-i"><svg width="24" height="24" aria-hidden="true"><use href="#i-phone" /></svg></span><b>Call</b><span>+91 94296 93048</span></a></li>
               <li><a className="reach-c" href="mailto:support@divergentclasses.com"><span className="reach-i"><svg width="24" height="24" aria-hidden="true"><use href="#i-mail" /></svg></span><b>Email</b><span>support@divergentclasses.com</span></a></li>
             </ul>
           </div>
