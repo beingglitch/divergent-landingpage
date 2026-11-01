@@ -166,7 +166,7 @@ export function initHome(): () => void {
   const state: { batch: Batch; plan: Plan; exam: Exam; pack: boolean } = { batch: "combo", plan: "live", exam: "UCEED", pack: false };
   const period = () => pricePeriod(NOW());
   type Quote = { slug: string; now: number; list: number; two: number; three: number };
-  /* What a plan costs today. two and three are part-payment totals, 0 when not offered. */
+  /* What a plan costs today. two and three are installment totals, 0 when not offered. */
   const quote = (plan: Plan, batch: Batch, pack: boolean): Quote => {
     const slug = bundleSlug(plan, batch, state.exam, pack), lp = live[slug];
     if (lp) {

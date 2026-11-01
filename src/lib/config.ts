@@ -5,7 +5,7 @@ export type Plan = "recorded" | "live" | "mentor";
 export type Batch = "single" | "combo";
 export type Exam = "UCEED" | "NID";
 export type Period = "launch" | "diwali" | "list";
-/* What checkout opens with: join with ₹1,000, pay in full now, or pay in parts. */
+/* What checkout opens with when a link names it. With none, the app shows the choices, installments first. */
 export type PayCode = "join" | "full" | "2-parts" | "3-parts";
 type ByPeriod = Record<Period, number>;
 /* price is the pay-in-full price. twoParts and threeParts are the total paid

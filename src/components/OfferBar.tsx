@@ -18,7 +18,7 @@ function lines(now: Date): string[] | null {
     "A free extra sketch review on every plan",
     "Live and Mentor plans also get a 5-mock pack",
     !live && A.launchPrice && now <= ist(D.launchEnds) ? "Early price on now, till 2 November" : "",
-    `Join with ₹${CONFIG.joinAmount.toLocaleString("en-IN")}`,
+    `Pay in installments, ₹${CONFIG.joinAmount.toLocaleString("en-IN")} today`,
   ].filter(Boolean);
 }
 
