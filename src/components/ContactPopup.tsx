@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { APP_URL, CONTACT } from "@/lib/config";
+import { savedUtm } from "@/lib/utm";
 import { pixelCookie, track } from "@/lib/pixel";
 
 /* Accepts 98765 43210, +91 98765 43210, 098765 43210 and so on. */
@@ -72,7 +73,7 @@ export function ContactPopup() {
       const res = await fetch(`${APP_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), phone: digits, source: "contact-popup", page: window.location.pathname, eventId, fbp: pixelCookie("_fbp"), fbc: pixelCookie("_fbc") }),
+        body: JSON.stringify({ name: name.trim(), phone: digits, source: "contact-popup", page: window.location.pathname, eventId, fbp: pixelCookie("_fbp"), fbc: pixelCookie("_fbc"), utm: savedUtm() }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);

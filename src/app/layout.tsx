@@ -7,6 +7,7 @@ import { SiteBehaviour } from "@/components/SiteBehaviour";
 import { SITE_URL } from "@/lib/meta";
 import { PIXEL_ID } from "@/lib/config";
 import { PIXEL_LOADER } from "@/lib/pixel";
+import { UTM_CAPTURE } from "@/lib/utm";
 import "./styles.css";
 
 export const metadata: Metadata = {
@@ -36,6 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');" }} />
+        {/* Which ad or link brought them: see lib/utm. */}
+        <script dangerouslySetInnerHTML={{ __html: UTM_CAPTURE }} />
         {PIXEL_ID ? <script dangerouslySetInnerHTML={{ __html: PIXEL_LOADER }} /> : null}
       </head>
       <body>

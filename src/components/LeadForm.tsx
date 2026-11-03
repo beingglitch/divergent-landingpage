@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { APP_URL, CONTACT, PLAN_LIST } from "@/lib/config";
 import { PLAN_EVENT, type PlanPick } from "@/lib/plan-event";
+import { savedUtm } from "@/lib/utm";
 import { pixelCookie, track } from "@/lib/pixel";
 
 type Status = "CLASS_11" | "CLASS_12" | "DROPPER";
@@ -105,6 +106,7 @@ export function LeadForm() {
           eventId,
           fbp: pixelCookie("_fbp"),
           fbc: pixelCookie("_fbc"),
+          utm: savedUtm(),
         }),
         signal: ctrl.signal,
       });
