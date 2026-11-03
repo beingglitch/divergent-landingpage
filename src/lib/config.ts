@@ -5,8 +5,8 @@ export type Plan = "recorded" | "live" | "mentor";
 export type Batch = "single" | "combo";
 export type Exam = "UCEED" | "NID";
 export type Period = "launch" | "diwali" | "list";
-/* What checkout opens with when a link names it. With none, the app shows the choices, installments first. */
-export type PayCode = "join" | "full" | "2-parts" | "3-parts";
+/* What checkout opens with when a link names it. With none, the app shows the choices, full payment first. */
+export type PayCode = "join" | "full" | "2-parts" | "3-parts" | "2-installments" | "3-installments";
 type ByPeriod = Record<Period, number>;
 /* price is the pay-in-full price. twoParts and threeParts are the total paid
    over all payments; a plan without them is pay-in-full only. */
@@ -147,6 +147,11 @@ export function bundleSlug(plan: Plan, batch: Batch, exam: Exam, pack = false): 
 
 /* Checkout for a plan in the app. pay picks the payment option; without it
    the app asks. */
+/* "Try demo class": the course page in the app, open without signing in.
+   It shows what the course holds; its own Try a free demo class button asks
+   for the WhatsApp number there. */
+export const COURSE_APP_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}`;
+
 /* "Try a free class": the app opens the course's first free class. */
 export const FREE_CLASS_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}/free`;
 
@@ -180,3 +185,25 @@ export const CONTACT = {
   phoneShown: "+91 94296 93048",
   email: "support@divergentclasses.com",
 };
+
+/* AIDMT, the All India Design Mock Test. Dates are IST. Edit here and the
+   /aidmt/ page, the home page strip and the menu all follow. enrolUrl is
+   where "Register" goes: WhatsApp until the test is set up in the app. */
+export const AIDMT = {
+  fee: 199,
+  feeWas: 499,
+  registrationEnds: "2026-11-16T23:59:59",
+  sectional: { opens: "2026-11-07T09:00:00", closes: "2026-11-07T23:59:59" },
+  mock: { opens: "2026-11-17T09:00:00", closes: "2026-11-18T23:59:59" },
+  results: "2026-11-19T23:59:59",
+  enrolUrl: `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent("Hi, I would like to register for AIDMT, the All India Design Mock Test.")}`,
+};
+
+/* "17–18 Nov": the AIDMT mock window, in IST. long spells the month out. */
+export function aidmtWindow(long = false): string {
+  const f = (d: string) => new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: long ? "long" : "short" }).formatToParts(ist(d));
+  const a = f(AIDMT.mock.opens), b = f(AIDMT.mock.closes);
+  const dayOf = (p: Intl.DateTimeFormatPart[]) => p.find((x) => x.type === "day")!.value;
+  const monthOf = (p: Intl.DateTimeFormatPart[]) => p.find((x) => x.type === "month")!.value;
+  return monthOf(a) === monthOf(b) ? `${dayOf(a)}–${dayOf(b)} ${monthOf(b)}` : `${dayOf(a)} ${monthOf(a)}–${dayOf(b)} ${monthOf(b)}`;
+}

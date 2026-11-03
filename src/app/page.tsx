@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { CONFIG, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
+import { AIDMT, CONFIG, COURSE_APP_URL, FREE_CLASS_URL, aidmtWindow, bundleSlug, checkoutUrl, ist } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
 
@@ -39,7 +39,7 @@ export default function HomePage() {
             </div>
             <div className="hero-ctas">
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href="#plans" data-demo="">Try demo class</a>
+              <a className="btn btn--ghost" href={COURSE_APP_URL}>Try demo class</a>
             </div>
             <div className="d75" aria-hidden="true">
               <div className="d75-h">
@@ -135,6 +135,14 @@ export default function HomePage() {
             </div>
           </div>
           <p className="dates-note">Times in IST. Confirm on <a href="https://uceed.iitb.ac.in/" rel="noopener" target="_blank">uceed.iitb.ac.in</a> and <a href="https://admissions.nid.edu/" rel="noopener" target="_blank">admissions.nid.edu</a>.</p>
+          {/* Points to /aidmt/ until its results are out. */}
+          {new Date() <= ist(AIDMT.results) ? (
+            <a className="aidmt-strip rv" href="/aidmt/">
+              <span className="badge">New · ₹{AIDMT.fee}</span>
+              <span><b>Test yourself first: AIDMT, {aidmtWindow(true)}.</b><span className="s">The All India Design Mock. Part A + B, your All India Rank in 24 hours.</span></span>
+              <span className="btn btn--sm">See AIDMT <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></span>
+            </a>
+          ) : null}
         </div>
       </section>
 
@@ -309,9 +317,9 @@ export default function HomePage() {
 
           <div className="pfoot">
             <div className="pjoinbox">
-              <p className="pj-k">Pay in installments</p>
+              <p className="pj-k">Not sure yet?</p>
               <p className="pj-v">₹{CONFIG.joinAmount.toLocaleString("en-IN")} today</p>
-              <p className="pj-t">Counts toward your fee and locks today&apos;s price. Pay the rest later.</p>
+              <p className="pj-t">Join today. It counts toward your fee and locks today&apos;s price.</p>
             </div>
             <ul className="terms" aria-label="Payment terms">
               <li data-req="gst"><svg aria-hidden="true"><use href="#tick" /></svg><span><b>GST included</b><small>Nothing extra at checkout</small></span></li>
@@ -333,7 +341,7 @@ export default function HomePage() {
                 <tr><th scope="row">Sketch reviews</th><td data-label="Recorded">3</td><td data-label="Live">Weekly</td><td data-label="Mentor">Weekly + log</td></tr>
                 <tr><th scope="row">Personal mentor, 1:1</th><td data-label="Recorded" className="no">No</td><td data-label="Live" className="no">No</td><td data-label="Mentor">Yes</td></tr>
                 <tr><th scope="row">Exam-week call</th><td data-label="Recorded" className="no">No</td><td data-label="Live" className="no">No</td><td data-label="Mentor">Yes</td></tr>
-                <tr><th scope="row">Payment options</th><td data-label="Recorded">Pay in full, or join with ₹1,000. Combo with the pack: 2 installments too.</td><td data-label="Live">2 installments or in full. Combo: 3 installments too. Or join with ₹1,000.</td><td data-label="Mentor">2 or 3 installments, or in full. Or join with ₹1,000.</td></tr>
+                <tr><th scope="row">Payment options</th><td data-label="Recorded">In full, or 2 or 3 installments. Or start with ₹1,000.</td><td data-label="Live">In full, or 2 or 3 installments. Or start with ₹1,000.</td><td data-label="Mentor">In full, or 2 or 3 installments. Or start with ₹1,000.</td></tr>
               </tbody>
             </table>
           </details>
@@ -403,7 +411,7 @@ export default function HomePage() {
         <span className="st-t"><b>75-Day Crash Course</b><span data-from="">from ₹5,999</span></span>
         <div className="st-acts">
           <a className="btn btn--ghost btn--sm st-book" href="#book" tabIndex={-1}>Free call</a>
-          <a className="btn btn--ghost btn--sm st-demo" href="#plans" data-demo="" tabIndex={-1}>Try demo</a>
+          <a className="btn btn--ghost btn--sm st-demo" href={COURSE_APP_URL} tabIndex={-1}>Try demo</a>
           <a className="btn btn--sm" href="#plans" tabIndex={-1}>Enrol</a>
         </div>
       </div>

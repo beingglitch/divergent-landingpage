@@ -978,3 +978,20 @@ html.has-promo{--promo-h:36px}
 @keyframes cpop-wave{0%{transform:rotate(0)}30%{transform:rotate(-34deg)}45%{transform:rotate(-24deg)}60%{transform:rotate(-36deg)}75%{transform:rotate(-26deg)}100%{transform:rotate(-30deg)}}
 @media (prefers-reduced-motion:reduce){.cpop,.cpop-bunny,.cpop-say{animation:none}.cpop-arm{animation:none;transform:rotate(-30deg)}}
 @media print{.cpop{display:none}}
+
+/* ---------- AIDMT ---------- */
+.kfacts--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1000px){.kfacts--4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.kfacts--4{grid-template-columns:1fr}}
+.aidmt-was{font-weight:500;font-size:14px;color:var(--on-dark-2);margin-left:4px}
+.aidmt-close{display:inline-flex;align-items:center;gap:8px;margin:18px 0 0;font-size:14.5px;font-weight:600;color:var(--on-dark-2)}
+.aidmt-total{margin:0;font-size:16px;color:var(--ink-2)}
+.aidmt-note{margin:18px 0 0;font-size:14.5px;color:var(--ink-2)}
+/* The home page pointer to /aidmt/, under the exam countdowns. */
+.aidmt-strip{margin-top:18px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px 22px;padding:18px clamp(18px,2.4vw,28px);border-radius:var(--radius-xl);background:var(--ink);color:#fff;text-decoration:none;transition:transform .3s var(--ease-out)}
+.aidmt-strip:hover{transform:translateY(-2px)}
+.aidmt-strip .badge{align-self:center}
+.aidmt-strip b{display:block;font-family:var(--f-display);font-weight:750;font-size:clamp(19px,1.8vw,23px);letter-spacing:-.02em;line-height:1.15}
+.aidmt-strip span.s{display:block;margin-top:3px;font-size:15px;color:var(--on-dark-2)}
+.aidmt-strip .btn{pointer-events:none}
+@media (max-width:700px){.aidmt-strip{grid-template-columns:1fr}.aidmt-strip .badge{justify-self:start}.aidmt-strip .btn{justify-self:start}}

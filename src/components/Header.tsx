@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { OfferBar } from "@/components/OfferBar";
 
-const EXAMS = ["uceed", "nid", "nift"];
+const EXAMS = ["uceed", "nid", "nift", "aidmt"];
 
 export function Header() {
   const pathname = usePathname() || "/";
@@ -27,11 +27,13 @@ export function Header() {
                   <li><a href="/uceed/" data-nav="uceed" aria-current={cur("uceed")}>UCEED</a></li>
                   <li><a href="/nid/" data-nav="nid" aria-current={cur("nid")}>NID DAT</a></li>
                   <li><a href="/nift/" data-nav="nift" aria-current={cur("nift")}>NIFT</a></li>
+                  <li><a href="/aidmt/" data-nav="aidmt" aria-current={cur("aidmt")}>AIDMT mock test</a></li>
                 </ul>
               </li>
               <li><a href="/results/" data-nav="results" aria-current={cur("results")}>Results</a></li>
               <li><a href="/about/" data-nav="about" aria-current={cur("about")}>About us</a></li>
               <li><a href="/community/" data-nav="community" aria-current={cur("community")}>Community</a></li>
+              <li><a href="/blog/" data-nav="blog" aria-current={cur("blog")}>Blog</a></li>
             </ul>
           </nav>
           <div className="nav-cta">
@@ -49,10 +51,12 @@ export function Header() {
           <a href="/uceed/">UCEED</a>
           <a href="/nid/">NID</a>
           <a href="/nift/">NIFT</a>
+          <a href="/aidmt/">AIDMT</a>
         </div>
         <a className="ml" href="/results/">Results <svg width="20" height="20" aria-hidden="true"><use href="#arrow" /></svg></a>
         <a className="ml" href="/about/">About us <svg width="20" height="20" aria-hidden="true"><use href="#arrow" /></svg></a>
         <a className="ml" href="/community/">Community <svg width="20" height="20" aria-hidden="true"><use href="#arrow" /></svg></a>
+        <a className="ml" href="/blog/">Blog <svg width="20" height="20" aria-hidden="true"><use href="#arrow" /></svg></a>
         <a className="ml" href="/contact/">Contact us <svg width="20" height="20" aria-hidden="true"><use href="#arrow" /></svg></a>
         <div className="mcta">
           <a className="btn btn--block" href="/#plans">Enrol now</a>
