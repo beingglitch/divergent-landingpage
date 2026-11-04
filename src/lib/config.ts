@@ -188,15 +188,18 @@ export const CONTACT = {
 
 /* AIDMT, the All India Design Mock Test. Dates are IST. Edit here and the
    /aidmt/ page, the home page strip and the menu all follow. enrolUrl is
-   where "Register" goes: WhatsApp until the test is set up in the app. */
+   where "Register" goes: the AIDMT tab in the app, which takes payment. */
 export const AIDMT = {
-  fee: 199,
+  fee: 99,
   feeWas: 499,
+  /* One person pays groupFee for a group of groupSize, themselves included. */
+  groupFee: 199,
+  groupSize: 3,
   registrationEnds: "2026-11-16T23:59:59",
   sectional: { opens: "2026-11-07T09:00:00", closes: "2026-11-07T23:59:59" },
   mock: { opens: "2026-11-17T09:00:00", closes: "2026-11-18T23:59:59" },
   results: "2026-11-19T23:59:59",
-  enrolUrl: `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent("Hi, I would like to register for AIDMT, the All India Design Mock Test.")}`,
+  enrolUrl: `${APP_URL}/dashboard/tests?view=aidmt`,
 };
 
 /* "17–18 Nov": the AIDMT mock window, in IST. long spells the month out. */

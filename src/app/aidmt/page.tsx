@@ -5,7 +5,7 @@ import { AIDMT, CONTACT, aidmtWindow, ist } from "@/lib/config";
 
 export const metadata: Metadata = pageMeta({
   title: "AIDMT 2026: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
-  description: "A national design mock in the UCEED pattern. Part A and Part B, a 48-hour window on 17 and 18 November, and your All India Rank within 24 hours. ₹199.",
+  description: "A national design mock in the UCEED pattern. Part A and Part B, a 48-hour window on 17 and 18 November, and your All India Rank within 24 hours. ₹99, or ₹199 for a group of three.",
   path: "/aidmt/",
 });
 
@@ -63,10 +63,10 @@ const FAQS = [
   ["What is AIDMT?", "The All India Design Mock Test, run by Divergent Classes. It follows the UCEED pattern and suits UCEED, CEED, NID and NIFT students, with a national rank at the end."],
   ["Who can take it?", "Anyone preparing for a design entrance: Class 11, Class 12, droppers, and graduates aiming for M.Des."],
   ["What is the pattern?", "Part A on computer: 180 marks across 7 topics, with MCQ, MSQ and numerical questions. Part B: 60 marks of drawing and design problems. About 150 minutes in all."],
-  ["How do I register?", `Tap Register, share your name, phone and target year, and pay ${rupees(AIDMT.fee)}. Your admit ID comes straight away.`],
+  ["How do I register?", `Tap Register, sign in with your mobile number and pay ${rupees(AIDMT.fee)}, or ${rupees(AIDMT.groupFee)} for you and two friends. You are registered straight away.`],
   ["When can I sit it?", `Any time between ${day(AIDMT.mock.opens)}, ${time(AIDMT.mock.opens)} and ${day(AIDMT.mock.closes)}, ${time(AIDMT.mock.closes)} (IST). There is also a free Part A sectional on ${day(AIDMT.sectional.opens)}.`],
   ["Can I take it again?", "No. One attempt per student, so the ranks stay fair and the questions stay private."],
-  ["What does it cost?", `${rupees(AIDMT.fee)}, down from ${rupees(AIDMT.feeWas)}. That covers the test, Part A and Part B marking, your rank, percentile and topic report. The sectional on ${day(AIDMT.sectional.opens)} is free.`],
+  ["What does it cost?", `${rupees(AIDMT.fee)} for one student, down from ${rupees(AIDMT.feeWas)}, or ${rupees(AIDMT.groupFee)} for a group of ${AIDMT.groupSize}. That covers the test, Part A and Part B marking, your rank, percentile and topic report. The sectional on ${day(AIDMT.sectional.opens)} is free.`],
   ["When do results come?", `Within 24 hours of the window closing, by ${day(AIDMT.results)}.`],
   ["What is in the report?", "Your total and section scores, All India Rank and percentile, accuracy in each Part A topic, and what to practise next."],
   ["Is it linked to IIT Bombay or UCEED?", "No. AIDMT is an independent mock by Divergent Classes. It is practice, not an admission test."],
@@ -89,9 +89,10 @@ export default function AidmtPage() {
               <li><span>Mock window</span><b>{mockDays}</b></li>
               <li><span>Pattern</span><b>Part A + Part B</b></li>
               <li><span>Fee</span><b>{rupees(AIDMT.fee)} <s className="aidmt-was">{rupees(AIDMT.feeWas)}</s></b></li>
+              <li><span>Group of {AIDMT.groupSize}</span><b>{rupees(AIDMT.groupFee)}</b></li>
             </ul>
             <div className="hero-ctas">
-              <a className="btn" href={AIDMT.enrolUrl} target="_blank" rel="noopener">Register for {rupees(AIDMT.fee)} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href={AIDMT.enrolUrl}>Register for {rupees(AIDMT.fee)} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="#dates">Free sectional, {day(AIDMT.sectional.opens)}</a>
             </div>
             <p className="aidmt-close"><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Registration closes {day(AIDMT.registrationEnds)} · {off}% off</p>
@@ -239,9 +240,9 @@ export default function AidmtPage() {
           <div className="arc">
             <div className="wrap">
               <h2 className="h2" id="start-h">AIDMT is on {mockDays}. Register now.</h2>
-              <p className="lede">{rupees(AIDMT.fee)} for the full mock, your rank and topic report. Registration closes {day(AIDMT.registrationEnds)}.</p>
+              <p className="lede">{rupees(AIDMT.fee)} for the full mock, your rank and topic report, or {rupees(AIDMT.groupFee)} for {AIDMT.groupSize} friends together. Registration closes {day(AIDMT.registrationEnds)}.</p>
               <div className="acts">
-                <a className="btn btn--dark" href={AIDMT.enrolUrl} target="_blank" rel="noopener">Register for {rupees(AIDMT.fee)} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+                <a className="btn btn--dark" href={AIDMT.enrolUrl}>Register for {rupees(AIDMT.fee)} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
                 <a className="btn btn--light" href="/#plans">See the 75-day course</a>
               </div>
             </div>
