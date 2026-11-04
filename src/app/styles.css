@@ -946,7 +946,9 @@ html.sticky-on .wa-float{bottom:calc(92px + env(safe-area-inset-bottom))}
 html.has-promo{--promo-h:36px}
 .promo{display:flex;align-items:center;height:var(--promo-h);overflow:hidden;background:var(--yellow);color:var(--ink);text-decoration:none;font-weight:650;font-size:14px;letter-spacing:.01em}
 .promo-track{display:flex;flex:none;animation:promo-run 38s linear infinite}
-.promo:hover .promo-track,.promo:focus-visible .promo-track{animation-play-state:paused}
+.promo:hover .promo-track,.promo:focus-within .promo-track,.promo:active .promo-track{animation-play-state:paused}
+.promo-link{color:inherit;font-weight:800;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:2px}
+.promo-link:hover{text-decoration-thickness:3px}
 .promo-run{display:flex;flex:none}
 .promo-item{display:inline-flex;align-items:center;gap:12px;padding-right:44px;white-space:nowrap}
 .promo-item svg{fill:var(--ink)}
