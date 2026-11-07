@@ -196,7 +196,7 @@ export const AIDMT = {
   groupFee: 199,
   groupSize: 3,
   registrationEnds: "2026-11-16T23:59:59",
-  sectional: { opens: "2026-11-07T09:00:00", closes: "2026-11-07T23:59:59" },
+  sectional: { opens: "2026-11-09T09:00:00", closes: "2026-11-09T23:59:59" },
   mock: { opens: "2026-11-17T09:00:00", closes: "2026-11-18T23:59:59" },
   results: "2026-11-19T23:59:59",
   enrolUrl: `${APP_URL}/dashboard/tests?view=aidmt`,
