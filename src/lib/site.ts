@@ -1,7 +1,7 @@
 /* Runs on every page: top nav, side dots, reveals, FAQs, testimonial
    videos, the work gallery and the "Book a free call" links.
    Returns a cleanup that undoes everything it set up. */
-import { fromPrice } from "./config";
+import { CONFIG, fromPrice } from "./config";
 
 const $ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document) => c.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document) => Array.from(c.querySelectorAll<T>(s));
@@ -175,7 +175,14 @@ export function initSite(): () => void {
   });
 
   /* ---------- the 75-day course card: "From" price for today ---------- */
-  $$("[data-crash-from]").forEach((el) => { el.textContent = "From ₹" + fromPrice(new Date()).toLocaleString("en-IN"); });
+  /* While an offer runs, the real list price is struck through beside it. */
+  $$("[data-crash-from]").forEach((el) => {
+    const from = fromPrice(new Date()), list = CONFIG.prices.recorded.single.price.list;
+    el.textContent = "From ₹" + from.toLocaleString("en-IN");
+    const was = el.nextElementSibling?.classList.contains("crash-was") ? el.nextElementSibling : null;
+    if (list > from && !was) el.insertAdjacentHTML("afterend", '<s class="crash-was">₹' + list.toLocaleString("en-IN") + "</s>");
+    else if (list <= from) was?.remove();
+  });
 
   /* ---------- testimonial videos: play one at a time ---------- */
   (() => {

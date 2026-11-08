@@ -183,14 +183,20 @@ export function initHome(): () => void {
       const q = quote(plan, state.batch, pack), card = $(".pcard", col);
       if (!card) return;
       const prEl = $("[data-pr]", card);
-      if (prEl) prEl.innerHTML = '<span class="cur">₹</span>' + q.now.toLocaleString("en-IN");
-      const save = q.list - q.now, sw = $("[data-save-wrap]", card);
+      const save = q.list - q.now;
+      /* While an offer runs, today's real list price (it comes back when the
+         offer ends) is struck through beside the offer price. Never an MRP. */
+      if (prEl) prEl.innerHTML = (save > 0 ? '<s class="pwas" aria-label="Was ' + inr(q.list) + '">' + inr(q.list) + "</s>" : "") + '<span class="cur">₹</span>' + q.now.toLocaleString("en-IN");
+      const sw = $("[data-save-wrap]", card);
       const till = per === "launch" ? " till 2 November" : per === "diwali" ? " till 11 November" : "";
-      if (sw) sw.innerHTML = save > 0 ? '<span class="save">Save ' + inr(save) + till + "</span>" : "";
+      if (sw) sw.innerHTML = save > 0 ? '<span class="save">' + inr(save) + " off" + till + "</span>" : "";
       const g = $("[data-gift]", card);
       if (g) {
-        if (per === "diwali" && A.diwaliGift) { g.textContent = "Diwali gift: an extra sketch review" + (plan === "recorded" ? "." : " and a 5-mock pack."); g.hidden = false; }
-        else g.hidden = true;
+        /* The brief's Diwali gifts: Live and Mentor only, the hoodie on Mentor paid in full. */
+        if (per === "diwali" && A.diwaliGift && plan !== "recorded") {
+          g.textContent = "Diwali gift: AI sketch review and free access to every AIDMT" + (plan === "mentor" ? ", plus a Divergent hoodie when paid in full." : ".");
+          g.hidden = false;
+        } else g.hidden = true;
       }
       const join = $<HTMLAnchorElement>("[data-join]", col);
       if (join) join.href = checkoutUrl(q.slug);
@@ -216,10 +222,12 @@ export function initHome(): () => void {
     const pack = state.plan === "recorded" && state.pack, cur = quote(state.plan, state.batch, pack);
     // Every Enrol now on the page goes straight to checkout for the plan picked.
     $$<HTMLAnchorElement>("[data-enrol]").forEach((a) => { a.href = checkoutUrl(cur.slug); });
-    const from = quote("recorded", "single", false).now;
-    $$("[data-from]").forEach((f) => { f.textContent = "from " + inr(from); });
+    const fromQ = quote("recorded", "single", false), from = fromQ.now;
+    const fromWas = fromQ.list > from ? '<s class="st-was">' + inr(fromQ.list) + "</s> " : "";
+    $$("[data-from]").forEach((f) => { f.innerHTML = "from " + fromWas + inr(from); });
     $$("[data-from-p]").forEach((f) => { f.textContent = inr(from); });
-    const was = +(CONFIG.heroWasPrice || 0);
+    // A fixed price from CONFIG, else the real list price while an offer runs.
+    const was = +(CONFIG.heroWasPrice || 0) || fromQ.list;
     $$("[data-was]").forEach((w) => {
       const on = was > from;
       w.hidden = !on;
@@ -395,6 +403,30 @@ export function initHome(): () => void {
       window.clearTimeout(timer);
       timer = window.setTimeout(() => demo.classList.remove("picked"), 3200);
     }, { signal });
+    cleanups.push(() => window.clearTimeout(timer));
+  })();
+
+  /* ---------- a few seconds in: fit the facts, price, buttons and trailer in view, once ---------- */
+  (() => {
+    const first = $(".hero-low .hfacts"), last = $("#trailer") || $(".hero-low .hero-ctas");
+    if (!first || !last) return;
+    const timer = window.setTimeout(() => {
+      // Not over a dialog, a tour or the open phone menu.
+      if (doc.querySelector('[aria-modal="true"], .dw-tour, .menu-btn[aria-expanded="true"]')) return;
+      const hero = $(".hero");
+      // Someone already deep into the page is not pulled back to the top.
+      if (hero && hero.getBoundingClientRect().bottom < 0) return;
+      const navBottom = Math.max(0, $("#nav")?.getBoundingClientRect().bottom ?? 0);
+      const room = window.innerHeight - navBottom;
+      const top = first.getBoundingClientRect().top + window.scrollY;
+      const bottom = last.getBoundingClientRect().bottom + window.scrollY;
+      const height = bottom - top;
+      // Centred in the space under the menu when it fits, else its top just under the menu.
+      const gap = height < room ? (room - height) / 2 : 12;
+      const target = Math.max(0, Math.round(top - navBottom - gap));
+      if (Math.abs(target - window.scrollY) < 4) return;
+      window.scrollTo({ top: target, behavior: reduce ? "auto" : "smooth" });
+    }, 3000);
     cleanups.push(() => window.clearTimeout(timer));
   })();
 

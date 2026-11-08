@@ -50,7 +50,15 @@ export function Footer() {
         </div>
       </footer>
 
-      <a className="wa-float" href="https://wa.me/918383056332?text=Hi%2C%20I%20would%20like%20to%20talk%20to%20a%20counsellor" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg width="24" height="24" aria-hidden="true"><use href="#i-chat" /></svg></a>
+      {/* The bunny opens the contact card (ContactPopup catches links to /contact/).
+          While the Diwali offer runs, Diwali.tsx makes it open the offers instead. */}
+      <a className="bunny-fab" href="/contact/" data-bunny="" aria-label="Contact us">
+        <span className="bunny-fab-c" aria-hidden="true">
+          <img src="/assets/mascot/bunny-body.webp" alt="" width="401" height="640" />
+          <img className="bunny-fab-arm" src="/assets/mascot/bunny-arm.webp" alt="" width="401" height="640" />
+        </span>
+        <span className="bunny-fab-tag" aria-hidden="true">Diwali offers</span>
+      </a>
     </>
   );
 }

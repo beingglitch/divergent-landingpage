@@ -36,18 +36,19 @@ export const CONFIG = {
   } as Record<string, boolean>,
 
   /* Prices in rupees, GST included. launch is the early price (until
-     2 Nov), diwali is 6 to 11 Nov, list is every other day. The app sends
+     2 Nov), diwali is 6 to 11 Nov (Diwali Offer 2026 brief: ₹1,000 off
+     single-exam plans, ₹2,000 off Combos), list is every other day. The app sends
      the live prices on load; these are the fallback and must match it. */
   prices: {
     recorded: {
       single: { price: { list: 5999, launch: 4999, diwali: 4999 } },
-      combo: { price: { list: 8999, launch: 7999, diwali: 7999 } },
+      combo: { price: { list: 8999, launch: 7999, diwali: 6999 } },
     },
     recordedPack: {
       single: { price: { list: 7999, launch: 6999, diwali: 6999 } },
       combo: {
-        price: { list: 10999, launch: 9999, diwali: 9999 },
-        twoParts: { list: 11999, launch: 10999, diwali: 10999 },
+        price: { list: 10999, launch: 9999, diwali: 8999 },
+        twoParts: { list: 11999, launch: 10999, diwali: 9999 },
       },
     },
     live: {
@@ -56,9 +57,9 @@ export const CONFIG = {
         twoParts: { list: 12999, launch: 11999, diwali: 11999 },
       },
       combo: {
-        price: { list: 18999, launch: 17999, diwali: 17999 },
-        twoParts: { list: 19999, launch: 18999, diwali: 18999 },
-        threeParts: { list: 20999, launch: 19999, diwali: 19999 },
+        price: { list: 18999, launch: 17999, diwali: 16999 },
+        twoParts: { list: 19999, launch: 18999, diwali: 17999 },
+        threeParts: { list: 20999, launch: 19999, diwali: 18999 },
       },
     },
     mentor: {
@@ -68,9 +69,9 @@ export const CONFIG = {
         threeParts: { list: 21999, launch: 20999, diwali: 20999 },
       },
       combo: {
-        price: { list: 24999, launch: 23999, diwali: 23999 },
-        twoParts: { list: 25999, launch: 24999, diwali: 24999 },
-        threeParts: { list: 26999, launch: 25999, diwali: 25999 },
+        price: { list: 24999, launch: 23999, diwali: 22999 },
+        twoParts: { list: 25999, launch: 24999, diwali: 23999 },
+        threeParts: { list: 26999, launch: 25999, diwali: 24999 },
       },
     },
   } as Record<TierKey, Record<Batch, Tier>>,
@@ -78,7 +79,8 @@ export const CONFIG = {
   mockPack: 2000,
   /* Paid to join any plan. Counts toward the fee. */
   joinAmount: 1000,
-  /* Struck-through price beside "Plans from". Keep 0: the page never shows one. */
+  /* A fixed struck-through price beside "Plans from". Keep 0: while an
+     offer runs the page strikes through the real list price instead. */
   heroWasPrice: 0,
 
   dates: {
@@ -187,26 +189,110 @@ export const CONTACT = {
 };
 
 /* AIDMT, the All India Design Mock Test. Dates are IST. Edit here and the
-   /aidmt/ page, the home page strip and the menu all follow. enrolUrl is
-   where "Register" goes: the AIDMT tab in the app, which takes payment. */
+   /aidmt/ page and the home page strip follow. The app says the same things
+   (divergent-lms src/lib/aidmt-event.ts AIDMT_SERIES); change both together.
+
+   AIDMT 2026 is a series: a free sectional, then four ranked mocks, each set
+   like the exam it is named for, listed in date order. A mock takes
+   registrations until its own window closes. When a mock's solutions or
+   results dates are fixed, add them here and the pages pick them up. */
+export type AidmtExam = "NID" | "UCEED" | "NIFT";
+export type AidmtSitting = {
+  key: string;
+  /* "AIDMT 1", or "Free sectional". */
+  name: string;
+  /* The exam the paper is set like. None for the sectional. */
+  exam: AidmtExam | null;
+  /* One line under the name. */
+  detail: string;
+  opens: string;
+  closes: string;
+  free: boolean;
+  /* Solutions walked through after the window: when, and how. */
+  solutions?: { from: string; to: string; how: string };
+  /* Scorecards and ranks are out by the end of this day. */
+  results?: string;
+  /* Anything else worth a line on its card. */
+  perk?: string;
+};
+
+export const AIDMT_SERIES: AidmtSitting[] = [
+  { key: "sectional", name: "Free sectional", exam: null, detail: "Part B only (drawing and design), free for everyone", opens: "2026-11-09T09:00:00", closes: "2026-11-09T23:59:59", free: true },
+  {
+    key: "aidmt-1", name: "AIDMT 1", exam: "NID", detail: "NID full-length mock, ranked across India",
+    opens: "2026-11-15T09:00:00", closes: "2026-11-17T23:59:59", free: false,
+    solutions: { from: "2026-11-18T00:00:00", to: "2026-11-19T23:59:59", how: "on a live meet" },
+    results: "2026-11-20T23:59:59",
+    perk: "Top rankers get a special scholarship discount.",
+  },
+  {
+    key: "aidmt-2", name: "AIDMT 2", exam: "UCEED", detail: "UCEED mock, ranked across India",
+    opens: "2026-11-22T09:00:00", closes: "2026-11-25T23:59:59", free: false,
+    solutions: { from: "2026-11-27T00:00:00", to: "2026-11-28T23:59:59", how: "with a review session" },
+  },
+  { key: "aidmt-3", name: "AIDMT 3", exam: "NIFT", detail: "NIFT mock, ranked across India", opens: "2026-11-29T09:00:00", closes: "2026-11-29T23:59:59", free: false },
+  { key: "aidmt-4", name: "AIDMT 4", exam: "NID", detail: "NID mock, ranked across India", opens: "2026-11-30T09:00:00", closes: "2026-11-30T23:59:59", free: false },
+];
+
+const aidmtFirst = AIDMT_SERIES.find((s) => s.key === "aidmt-1")!;
+const aidmtSectional = AIDMT_SERIES.find((s) => s.free)!;
+
+/* The last date a sitting has anything to show: its close, solutions or results. */
+export const aidmtSittingEnds = (s: AidmtSitting) => [s.closes, s.solutions?.to, s.results].filter((d): d is string => !!d).sort().at(-1)!;
+
 export const AIDMT = {
   fee: 99,
   feeWas: 499,
   /* One person pays groupFee for a group of groupSize, themselves included. */
   groupFee: 199,
   groupSize: 3,
-  registrationEnds: "2026-11-16T23:59:59",
-  sectional: { opens: "2026-11-09T09:00:00", closes: "2026-11-09T23:59:59" },
-  mock: { opens: "2026-11-17T09:00:00", closes: "2026-11-18T23:59:59" },
-  results: "2026-11-19T23:59:59",
+  /* AIDMT 1 registration stays open until its window closes. Later mocks
+     each take registrations until their own window closes. */
+  registrationEnds: aidmtFirst.closes,
+  sectional: { opens: aidmtSectional.opens, closes: aidmtSectional.closes },
+  /* AIDMT 1, the first ranked mock. */
+  mock: { opens: aidmtFirst.opens, closes: aidmtFirst.closes },
+  results: aidmtFirst.results!,
+  series: AIDMT_SERIES,
+  /* The home strip points to /aidmt/ until this: the last date anywhere in
+     the series (a close, solutions or results). */
+  ends: AIDMT_SERIES.map(aidmtSittingEnds).sort().at(-1)!,
   enrolUrl: `${APP_URL}/dashboard/tests?view=aidmt`,
 };
 
-/* "17–18 Nov": the AIDMT mock window, in IST. long spells the month out. */
-export function aidmtWindow(long = false): string {
-  const f = (d: string) => new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: long ? "long" : "short" }).formatToParts(ist(d));
-  const a = f(AIDMT.mock.opens), b = f(AIDMT.mock.closes);
-  const dayOf = (p: Intl.DateTimeFormatPart[]) => p.find((x) => x.type === "day")!.value;
-  const monthOf = (p: Intl.DateTimeFormatPart[]) => p.find((x) => x.type === "month")!.value;
-  return monthOf(a) === monthOf(b) ? `${dayOf(a)}–${dayOf(b)} ${monthOf(b)}` : `${dayOf(a)} ${monthOf(a)}–${dayOf(b)} ${monthOf(b)}`;
+/* The sitting still to close at t (the one running, or the next one), or
+   null once every window has closed. ranked skips the free sectional. */
+export function nextAidmt(t: Date, ranked = false): AidmtSitting | null {
+  return AIDMT_SERIES.find((s) => (!ranked || !s.free) && t <= ist(s.closes)) ?? null;
+}
+
+/* Where a sitting stands at t. "after" is between its close and its last
+   solutions or results date. */
+export type AidmtState = "done" | "after" | "live" | "next" | "later";
+export function aidmtState(s: AidmtSitting, t: Date): AidmtState {
+  if (t > ist(aidmtSittingEnds(s))) return "done";
+  if (t > ist(s.closes)) return "after";
+  if (t >= ist(s.opens)) return "live";
+  return AIDMT_SERIES.find((x) => t < ist(x.opens))?.key === s.key ? "next" : "later";
+}
+
+const aidmtFmt = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", ...o });
+
+/* "9 Nov", "15 to 17 Nov" or "30 Nov to 2 Dec", in IST. long spells the month out. */
+export function aidmtDays(from: string, to: string = from, long = false): string {
+  const dm = aidmtFmt({ day: "numeric", month: long ? "long" : "short" });
+  const a = dm.format(ist(from)), b = dm.format(ist(to));
+  if (a === b) return a;
+  const m = aidmtFmt({ month: "short" });
+  return m.format(ist(from)) === m.format(ist(to)) ? `${aidmtFmt({ day: "numeric" }).format(ist(from))} to ${b}` : `${a} to ${b}`;
+}
+
+/* "9 am" or "11:59 pm", in IST. Spaces are made plain: some browsers put a
+   narrow no-break space before am/pm, and the client components on /aidmt/
+   must render the same text as the static HTML. */
+export const aidmtTime = (s: string) => aidmtFmt({ hour: "numeric", minute: "2-digit", hour12: true }).format(ist(s)).toLowerCase().replace(/\s+/g, " ").replace(":00", "");
+
+/* "15 to 17 Nov": a sitting's window (AIDMT 1 by default), in IST. long spells the month out. */
+export function aidmtWindow(long = false, s: AidmtSitting = aidmtFirst): string {
+  return aidmtDays(s.opens, s.closes, long);
 }

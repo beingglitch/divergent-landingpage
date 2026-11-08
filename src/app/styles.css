@@ -869,11 +869,21 @@ html.js .faq.open .faq-a>.clip{visibility:visible;transition-delay:0s}
 .foot-contact a{overflow-wrap:anywhere}
 
 /* ---------- floating WhatsApp ---------- */
-.wa-float{position:fixed;right:clamp(12px,1.6vw,24px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:89;width:54px;height:54px;border-radius:50%;background:#1FAF57;color:#fff;display:grid;place-items:center;box-shadow:0 12px 28px -10px rgba(11,11,12,.55);transition:transform .3s var(--ease-out),bottom .35s var(--ease-out)}
-.wa-float:hover{color:#fff;transform:scale(1.06)}
-html.sticky-on .wa-float{bottom:calc(92px + env(safe-area-inset-bottom))}
-@media (min-width:1000px){html.sticky-on .wa-float{bottom:96px}}
-@media print{.wa-float{display:none}}
+/* The bunny button, bottom right: the mascot's head and flag in a circle. */
+.bunny-fab{position:fixed;right:clamp(12px,1.6vw,24px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:89;display:flex;align-items:center;flex-direction:row-reverse;gap:8px;text-decoration:none;color:var(--ink);transition:bottom .35s var(--ease-out);-webkit-tap-highlight-color:transparent}
+.bunny-fab-c{position:relative;display:block;width:62px;height:62px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 35%,#fff 0 30%,var(--blue-100) 70%);border:3px solid var(--yellow);box-shadow:0 12px 28px -10px rgba(11,11,12,.55);transition:transform .3s var(--ease-back)}
+/* The artwork is 401 x 640; this frames the head and flag (about x 90 to 380, y 20 to 310). */
+.bunny-fab-c img{position:absolute;left:-19px;top:-4px;width:86px;height:auto;max-width:none}
+.bunny-fab-arm{transform-origin:41% 39%}
+.bunny-fab:hover .bunny-fab-c,.bunny-fab:focus-visible .bunny-fab-c{transform:scale(1.08) rotate(-4deg)}
+.bunny-fab:hover .bunny-fab-arm{animation:cpop-wave 1.6s ease-in-out 1 both}
+.bunny-fab:focus-visible{outline:none}
+.bunny-fab:focus-visible .bunny-fab-c{outline:3px solid var(--blue);outline-offset:3px}
+.bunny-fab-tag{display:none}
+html.sticky-on .bunny-fab{bottom:calc(92px + env(safe-area-inset-bottom))}
+@media (min-width:1000px){html.sticky-on .bunny-fab{bottom:96px}}
+@media print{.bunny-fab{display:none}}
+@media (prefers-reduced-motion:reduce){.bunny-fab:hover .bunny-fab-arm{animation:none}}
 
 /* ========================= FREE CALL FORM (home #book) ========================= */
 .book-wrap{position:relative}
@@ -997,3 +1007,64 @@ html.has-promo{--promo-h:36px}
 .aidmt-strip span.s{display:block;margin-top:3px;font-size:15px;color:var(--on-dark-2)}
 .aidmt-strip .btn{pointer-events:none}
 @media (max-width:700px){.aidmt-strip{grid-template-columns:1fr}.aidmt-strip .badge{justify-self:start}.aidmt-strip .btn{justify-self:start}}
+
+/* ========================= AIDMT SERIES + COURSE TRAILER (landing-aidmt-video) ========================= */
+/* The AIDMT 2026 schedule on /aidmt/ (components/Aidmt.tsx): one row per sitting, status from today's date. */
+.aidmt-tl{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.aidmt-tl-i{display:grid;grid-template-columns:minmax(120px,170px) 1fr;gap:8px 28px;padding:clamp(18px,2.4vw,26px) clamp(18px,2.4vw,28px);border:1px solid var(--line);border-radius:var(--radius-lg);background:#fff;transition:border-color .3s,box-shadow .3s}
+.aidmt-tl-i p{margin:0}
+.aidmt-tl-d{font-family:var(--f-display);font-weight:800;font-size:clamp(22px,2.2vw,28px);letter-spacing:-.03em;line-height:1.1}
+.aidmt-tl-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.aidmt-tl-h b{font-family:var(--f-display);font-weight:750;font-size:clamp(19px,1.8vw,22px);letter-spacing:-.02em;line-height:1.2}
+.aidmt-tl-x,.aidmt-tl-st{font-size:11px;font-weight:750;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 10px;white-space:nowrap;line-height:1.3}
+.aidmt-tl-x{background:var(--blue-100);color:var(--blue-ink)}
+.aidmt-tl-i.is-free .aidmt-tl-x{background:var(--yellow-50);color:var(--ink);box-shadow:inset 0 0 0 1px #F3D67A}
+.aidmt-tl-st{margin-left:auto;border:1px solid var(--line-2);color:var(--ink-2)}
+.aidmt-tl-i .aidmt-tl-t{margin-top:4px;color:var(--ink-2);font-size:16px}
+.aidmt-tl-l{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px}
+.aidmt-tl-l li{display:grid;grid-template-columns:96px 1fr;gap:12px;font-size:15px;color:var(--ink-2)}
+.aidmt-tl-l b{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+.aidmt-tl-perk span{color:var(--ink);font-weight:600}
+.aidmt-tl-i.is-live{border-color:var(--ink);box-shadow:var(--shadow-md)}
+.aidmt-tl-i.is-live .aidmt-tl-st{background:var(--ink);color:var(--yellow);border-color:var(--ink)}
+.aidmt-tl-i.is-next{border-color:#F3D67A;background:var(--yellow-50)}
+.aidmt-tl-i.is-next .aidmt-tl-st{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}
+.aidmt-tl-i.is-after .aidmt-tl-st{background:var(--blue-100);border-color:var(--blue-200);color:var(--ink)}
+.aidmt-tl-i.is-done{background:var(--blue-50)}
+.aidmt-tl-i.is-done .aidmt-tl-d,.aidmt-tl-i.is-done .aidmt-tl-h b{color:var(--ink-3)}
+@media (max-width:640px){
+  .aidmt-tl-i{grid-template-columns:1fr}
+  .aidmt-tl-l li{grid-template-columns:1fr;gap:0}
+}
+
+/* The course trailer (components/Trailer.tsx): a thumbnail and a play
+   button until tapped, then the YouTube player in the same 16:9 box. */
+.trailer{margin:clamp(28px,4vw,40px) auto 0;width:100%;max-width:640px}
+.trailer-frame{position:relative;aspect-ratio:16/9;border-radius:var(--radius-lg);overflow:hidden;background:#000;box-shadow:0 0 0 1px var(--line-dark),0 24px 60px -24px rgba(0,0,0,.8)}
+.trailer-btn{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;border-radius:inherit;background:#000;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.trailer-btn img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
+.trailer-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(11,11,12,.45));pointer-events:none}
+.trailer-play{position:absolute;left:50%;top:50%;z-index:1;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;display:grid;place-items:center;background:var(--yellow);color:var(--ink);box-shadow:0 0 0 8px rgba(255,197,0,.28),0 14px 32px -10px rgba(0,0,0,.7);transition:transform .3s var(--ease-back)}
+.trailer-play svg{margin-left:4px}
+.trailer-btn:hover img{transform:scale(1.03)}
+.trailer-btn:hover .trailer-play,.trailer-btn:focus-visible .trailer-play{transform:scale(1.08)}
+.trailer-btn:focus-visible{outline:4px solid var(--yellow);outline-offset:-4px}
+.trailer-ifr{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+.trailer-cap{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:15px;font-weight:600;color:var(--on-dark)}
+.trailer-cap svg{flex:none;color:var(--yellow)}
+@media (max-width:560px){.trailer-play{width:64px;height:64px;margin:-32px 0 0 -32px}}
+@media (prefers-reduced-motion:reduce){.trailer-btn img,.trailer-play{transition:none}.trailer-btn:hover img{transform:none}}
+/* "Not sure yet?" (#demo): the trailer button beside the free demo class. */
+.pdemo-acts{display:flex;flex-wrap:wrap;gap:10px}
+.pdemo-acts .btn svg{flex:none}
+@media (max-width:640px){.pdemo-acts{width:100%;flex-direction:column}}
+/* The trailer opened from a button, in a dialog. */
+.trailer-dlg{width:min(960px,calc(100vw - 32px));max-width:none;max-height:calc(100dvh - 32px);margin:auto;padding:0;border:0;border-radius:var(--radius-lg);background:var(--ink);color:#fff;box-shadow:0 30px 80px -20px rgba(0,0,0,.7)}
+.trailer-dlg::backdrop{background:rgba(11,11,12,.78)}
+.trailer-dlg-in{padding:10px}
+.trailer-dlg-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:2px 2px 10px 8px}
+.trailer-dlg-h{margin:0;font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:-.01em}
+.trailer-x{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-dark);background:transparent;color:#fff;font-size:26px;line-height:1;cursor:pointer;transition:background-color .2s,color .2s}
+.trailer-x:hover{background:#fff;color:var(--ink)}
+.trailer-dlg .trailer-frame{border-radius:var(--radius);box-shadow:none}
+html:has(.trailer-dlg[open]){overflow:hidden}

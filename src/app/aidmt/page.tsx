@@ -1,22 +1,36 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { AIDMT, CONTACT, aidmtWindow, ist } from "@/lib/config";
+import { AIDMT, AIDMT_SERIES, CONTACT, aidmtDays, aidmtTime } from "@/lib/config";
+import { AidmtCtaHead, AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
 
 export const metadata: Metadata = pageMeta({
   title: "AIDMT 2026: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
-  description: "A national design mock in the UCEED pattern. Part A and Part B, a 48-hour window on 17 and 18 November, and your All India Rank within 24 hours. ₹99, or ₹199 for a group of three.",
+  description: "AIDMT 2026: a free sectional on 9 November, then four national design mocks set like NID, UCEED and NIFT, 15 to 30 November, each with an All India Rank. ₹99, or ₹199 for a group of three.",
   path: "/aidmt/",
 });
 
-/* Dates in AIDMT are IST; show them the same way wherever the page is built. */
-const fmt = (s: string, o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", ...o }).format(ist(s));
-const day = (s: string) => fmt(s, { day: "numeric", month: "short" });
-const time = (s: string) => fmt(s, { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase().replace(":00", "");
+/* Dates in AIDMT are IST and shown in IST wherever the page is built. The
+   parts that depend on today (what is next, what is done) are client
+   components in components/Aidmt.tsx. */
 const rupees = (n: number) => `₹${n.toLocaleString("en-IN")}`;
-
-const mockDays = aidmtWindow();
 const off = Math.round(100 - (AIDMT.fee * 100) / AIDMT.feeWas);
+
+const RANKED = AIDMT_SERIES.filter((s) => !s.free);
+const SECTIONAL = AIDMT_SERIES.find((s) => s.free)!;
+const FIRST = RANKED[0];
+const UCEED = RANKED.find((s) => s.exam === "UCEED")!;
+const LAST = AIDMT_SERIES[AIDMT_SERIES.length - 1];
+const span = (s: { opens: string; closes: string }) => aidmtDays(s.opens, s.closes);
+/* "9 to 30 Nov": the whole series. */
+const seriesDays = aidmtDays(AIDMT_SERIES[0].opens, LAST.closes);
+/* "AIDMT 1 solutions 18 to 19 Nov on a live meet, results on 20 Nov. AIDMT 2 ..." for each mock that has them. */
+const afterLines = RANKED.filter((s) => s.solutions || s.results)
+  .map((s) => [
+    s.solutions ? `${s.name} solutions ${aidmtDays(s.solutions.from, s.solutions.to)} ${s.solutions.how}` : null,
+    s.results ? `results on ${aidmtDays(s.results)}` : null,
+  ].filter(Boolean).join(", "))
+  .join(". ") + ".";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -44,32 +58,35 @@ const PART_A = [
 ];
 
 const STEPS = [
-  ["Step 1 · Register", `Name, phone and target year. You get your admit ID straight away. Registration closes ${day(AIDMT.registrationEnds)}.`],
-  ["Step 2 · Sit the mock", `Online, on a laptop or desktop, any time in the ${mockDays} window. One attempt.`],
-  ["Step 3 · Get your rank", `Scorecard, All India Rank, percentile and topic report by ${day(AIDMT.results)}.`],
-  ["Step 4 · Fix weak spots", "Practise the topics your report flags before the real exam."],
+  ["Step 1 · Register", `Name, phone and target year. You get your admit ID straight away. Each mock takes registrations until its window closes: ${FIRST.name} till ${aidmtDays(AIDMT.registrationEnds)}, ${aidmtTime(AIDMT.registrationEnds)}.`],
+  ["Step 2 · Sit the mock", `Online, on a laptop or desktop, any time inside the mock's window. ${FIRST.name} runs ${span(FIRST)}. One attempt per mock.`],
+  ["Step 3 · Solutions and rank", `Scorecard, All India Rank, percentile and topic report. ${FIRST.name} solutions come ${aidmtDays(FIRST.solutions!.from, FIRST.solutions!.to)} ${FIRST.solutions!.how}, results on ${aidmtDays(AIDMT.results)}.`],
+  ["Step 4 · Fix weak spots", "Practise the topics your report flags, then sit the next mock in the series."],
 ];
 
 const RULES = [
-  ["48-hour window", `Opens ${day(AIDMT.mock.opens)}, ${time(AIDMT.mock.opens)}. Closes ${day(AIDMT.mock.closes)}, ${time(AIDMT.mock.closes)}. Start whenever suits you.`],
-  ["One attempt", "Each student sits it once, so the ranks stay fair."],
+  ["Pick your time", `Start any time inside a mock's window. ${FIRST.name} runs ${span(FIRST)}, ${UCEED.name} ${span(UCEED)}.`],
+  ["One attempt", "Each student sits each mock once, so the ranks stay fair."],
   ["Rank needs the window", "Only papers submitted inside the window get an All India Rank."],
   ["Laptop or desktop", "A recent browser and a steady connection. Phones are not supported."],
-  ["Results in 24 hours", "Scorecards open in your student login a day after the window closes."],
+  ["Solutions and results", afterLines],
   ["Fair test", "Full screen, and switching windows is logged."],
 ];
 
 const FAQS = [
-  ["What is AIDMT?", "The All India Design Mock Test, run by Divergent Classes. It follows the UCEED pattern and suits UCEED, CEED, NID and NIFT students, with a national rank at the end."],
+  ["What is AIDMT?", "The All India Design Mock Test, run by Divergent Classes. AIDMT 2026 is a series of four national mocks, set like NID, UCEED and NIFT, each with a national rank, plus a free sectional."],
   ["Who can take it?", "Anyone preparing for a design entrance: Class 11, Class 12, droppers, and graduates aiming for M.Des."],
-  ["What is the pattern?", "Part A on computer: 180 marks across 7 topics, with MCQ, MSQ and numerical questions. Part B: 60 marks of drawing and design problems. About 150 minutes in all."],
-  ["How do I register?", `Tap Register, sign in with your mobile number and pay ${rupees(AIDMT.fee)}, or ${rupees(AIDMT.groupFee)} for you and two friends. You are registered straight away.`],
-  ["When can I sit it?", `Any time between ${day(AIDMT.mock.opens)}, ${time(AIDMT.mock.opens)} and ${day(AIDMT.mock.closes)}, ${time(AIDMT.mock.closes)} (IST). There is also a free Part A sectional on ${day(AIDMT.sectional.opens)}.`],
-  ["Can I take it again?", "No. One attempt per student, so the ranks stay fair and the questions stay private."],
-  ["What does it cost?", `${rupees(AIDMT.fee)} for one student, down from ${rupees(AIDMT.feeWas)}, or ${rupees(AIDMT.groupFee)} for a group of ${AIDMT.groupSize}. That covers the test, Part A and Part B marking, your rank, percentile and topic report. The sectional on ${day(AIDMT.sectional.opens)} is free.`],
-  ["When do results come?", `Within 24 hours of the window closing, by ${day(AIDMT.results)}.`],
+  ["When are the mocks?", `${AIDMT_SERIES.map((s) => `${s.name}${s.exam ? ` (${s.exam})` : ""}: ${span(s)}`).join(". ")}. All times are IST.`],
+  ["What is the pattern?", `Each mock follows its exam. ${UCEED.name} is set like UCEED: Part A on computer, 180 marks across 7 topics, with MCQ, MSQ and numerical questions, and Part B, 60 marks of drawing and design problems. The free sectional on ${aidmtDays(SECTIONAL.opens)} is Part B only.`],
+  ["How do I register?", `Tap Register, sign in with your mobile number and pay ${rupees(AIDMT.fee)}, or ${rupees(AIDMT.groupFee)} for you and two friends. You are registered straight away. ${FIRST.name} takes registrations till ${aidmtDays(AIDMT.registrationEnds)}, ${aidmtTime(AIDMT.registrationEnds)}.`],
+  ["When do solutions and results come?", afterLines],
+  ["Is there a scholarship?", `Yes. Top rankers in ${FIRST.name} get a special scholarship discount.`],
+  ["Can I take a mock again?", "No. One attempt per student per mock, so the ranks stay fair and the questions stay private."],
+  ["What does it cost?", `${rupees(AIDMT.fee)} for one student, down from ${rupees(AIDMT.feeWas)}, or ${rupees(AIDMT.groupFee)} for a group of ${AIDMT.groupSize}. That covers marking, your rank, percentile and topic report. The sectional on ${aidmtDays(SECTIONAL.opens)} is free.`],
+  ["Is it free for Divergent students?", "Live and Mentor plans of the 75-Day Crash Course taken in the Diwali offer include free access to every AIDMT."],
+  ["How does the group of three work?", `One of you pays ${rupees(AIDMT.groupFee)} and adds the two friends' mobile numbers. Each friend is registered as soon as they sign in to Divergent with that number.`],
   ["What is in the report?", "Your total and section scores, All India Rank and percentile, accuracy in each Part A topic, and what to practise next."],
-  ["Is it linked to IIT Bombay or UCEED?", "No. AIDMT is an independent mock by Divergent Classes. It is practice, not an admission test."],
+  ["Is it linked to IIT Bombay, NID or NIFT?", "No. AIDMT is an independent mock by Divergent Classes. It is practice, not an admission test."],
 ];
 
 export default function AidmtPage() {
@@ -81,21 +98,21 @@ export default function AidmtPage() {
             <div className="wrap">
               <p className="pills"><span className="pill">UCEED · CEED · NID · NIFT</span><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>AIDMT 2026</span></p>
               <h1 className="h1" id="hero-h">All India <span className="hl">Design Mock.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></h1>
-              <p className="hero-sub">One national mock in the UCEED pattern. Sit it from home and get your All India Rank in 24 hours.</p>
+              <p className="hero-sub">Four national mocks, set like NID, UCEED and NIFT, plus a free sectional. Sit each one from home and see your All India Rank.</p>
             </div>
           </div>
           <div className="wrap hero-low">
             <ul className="hfacts">
-              <li><span>Mock window</span><b>{mockDays}</b></li>
-              <li><span>Pattern</span><b>Part A + Part B</b></li>
+              <li><span>Series</span><b>{seriesDays}</b></li>
+              <li><span>Mocks</span><b>{RANKED.length} ranked + 1 free</b></li>
               <li><span>Fee</span><b>{rupees(AIDMT.fee)} <s className="aidmt-was">{rupees(AIDMT.feeWas)}</s></b></li>
               <li><span>Group of {AIDMT.groupSize}</span><b>{rupees(AIDMT.groupFee)}</b></li>
             </ul>
             <div className="hero-ctas">
               <a className="btn" href={AIDMT.enrolUrl}>Register for {rupees(AIDMT.fee)} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href="#dates">Free sectional, {day(AIDMT.sectional.opens)}</a>
+              <a className="btn btn--ghost" href="#dates">See the schedule</a>
             </div>
-            <p className="aidmt-close"><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Registration closes {day(AIDMT.registrationEnds)} · {off}% off</p>
+            <AidmtRegLine builtAt={Date.now()} off={off} />
           </div>
         </div>
       </section>
@@ -117,9 +134,9 @@ export default function AidmtPage() {
           <div className="head head--row">
             <div>
               <Eyebrow>The paper</Eyebrow>
-              <h2 className="h2 rv" id="pat-h">Two parts. 240 marks.</h2>
+              <h2 className="h2 rv" id="pat-h">Set like the real exam.</h2>
             </div>
-            <p className="aidmt-total rv">About 150 minutes, in one sitting.</p>
+            <p className="aidmt-total rv">Each mock follows its exam. Here is {UCEED.name}, the UCEED paper: two parts, 240 marks, about 150 minutes in one sitting.</p>
           </div>
           <div className="parts">
             <div className="part rv">
@@ -144,29 +161,10 @@ export default function AidmtPage() {
         <div className="wrap">
           <div className="head">
             <Eyebrow>Dates</Eyebrow>
-            <h2 className="h2 rv" id="dates-h">Two dates to mark.</h2>
+            <h2 className="h2 rv" id="dates-h">Five dates, one series.</h2>
           </div>
-          <div className="cds">
-            <div className="cd y rv">
-              <div className="cd-name"><span className="cd-x">Free sectional</span><span className="cd-when">Part A only · Free</span></div>
-              <div className="cd-row"><span className="cd-num">{fmt(AIDMT.sectional.opens, { day: "numeric" })}</span><span className="cd-unit">{fmt(AIDMT.sectional.opens, { month: "long" })}</span></div>
-              <ul className="cd-dates">
-                <li><span className="d">{time(AIDMT.sectional.opens)}</span><span className="w">Window opens</span><span className="st"></span></li>
-                <li><span className="d">{time(AIDMT.sectional.closes)}</span><span className="w">Closes, report opens straight after</span><span className="st"></span></li>
-              </ul>
-            </div>
-            <div className="cd b rv" style={i(1)}>
-              <div className="cd-name"><span className="cd-x">Full mock</span><span className="cd-when">Part A + B · {rupees(AIDMT.fee)}</span></div>
-              <div className="cd-row"><span className="cd-num">{mockDays.split(" ")[0]}</span><span className="cd-unit">{fmt(AIDMT.mock.closes, { month: "long" })}</span></div>
-              <ul className="cd-dates">
-                <li><span className="d">{day(AIDMT.registrationEnds)}</span><span className="w">Registration closes</span><span className="st"></span></li>
-                <li><span className="d">{day(AIDMT.mock.opens)}</span><span className="w">Window opens, {time(AIDMT.mock.opens)}</span><span className="st"></span></li>
-                <li><span className="d">{day(AIDMT.mock.closes)}</span><span className="w">Window closes, {time(AIDMT.mock.closes)}</span><span className="st"></span></li>
-                <li><span className="d">{day(AIDMT.results)}</span><span className="w">Ranks and reports out</span><span className="st"></span></li>
-              </ul>
-            </div>
-          </div>
-          <p className="dates-note">Times in IST.</p>
+          <AidmtSchedule builtAt={Date.now()} />
+          <p className="dates-note">Times in IST. {rupees(AIDMT.fee)} per student, or {rupees(AIDMT.groupFee)} for a group of {AIDMT.groupSize}. The sectional is free.</p>
         </div>
       </section>
 
@@ -239,8 +237,8 @@ export default function AidmtPage() {
         <div className="stage-e">
           <div className="arc">
             <div className="wrap">
-              <h2 className="h2" id="start-h">AIDMT is on {mockDays}. Register now.</h2>
-              <p className="lede">{rupees(AIDMT.fee)} for the full mock, your rank and topic report, or {rupees(AIDMT.groupFee)} for {AIDMT.groupSize} friends together. Registration closes {day(AIDMT.registrationEnds)}.</p>
+              <h2 className="h2" id="start-h"><AidmtCtaHead builtAt={Date.now()} /></h2>
+              <p className="lede">{rupees(AIDMT.fee)} per student, with your rank, percentile and topic report, or {rupees(AIDMT.groupFee)} for {AIDMT.groupSize} friends together. Each mock takes registrations until its window closes.</p>
               <div className="acts">
                 <a className="btn btn--dark" href={AIDMT.enrolUrl}>Register for {rupees(AIDMT.fee)} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
                 <a className="btn btn--light" href="/#plans">See the 75-day course</a>

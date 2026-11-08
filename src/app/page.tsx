@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { AIDMT, CONFIG, COURSE_APP_URL, FREE_CLASS_URL, aidmtWindow, bundleSlug, checkoutUrl, ist } from "@/lib/config";
+import { CONFIG, COURSE_APP_URL, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
+import { AidmtStrip } from "@/components/Aidmt";
+import { TrailerButton, TrailerFacade } from "@/components/Trailer";
 
 export const metadata: Metadata = pageMeta({
   title: "Divergent Classes | 75-Day Crash Course for UCEED and NID",
@@ -41,6 +43,8 @@ export default function HomePage() {
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href={COURSE_APP_URL}>Try demo class</a>
             </div>
+            {/* The course trailer: a thumbnail until tapped, so nothing from YouTube loads with the page. */}
+            <TrailerFacade caption="Watch: how the 75 days run" />
             <div className="d75" aria-hidden="true">
               <div className="d75-h">
                 <p className="d75-t"><span className="d75-n">75</span><span className="d75-w"><b>days,</b><span>every one planned.</span></span></p>
@@ -135,14 +139,8 @@ export default function HomePage() {
             </div>
           </div>
           <p className="dates-note">Times in IST. Confirm on <a href="https://uceed.iitb.ac.in/" rel="noopener" target="_blank">uceed.iitb.ac.in</a> and <a href="https://admissions.nid.edu/" rel="noopener" target="_blank">admissions.nid.edu</a>.</p>
-          {/* Points to /aidmt/ until its results are out. */}
-          {new Date() <= ist(AIDMT.results) ? (
-            <a className="aidmt-strip rv" href="/aidmt/">
-              <span className="badge">New · ₹{AIDMT.fee}</span>
-              <span><b>Test yourself first: AIDMT, {aidmtWindow(true)}.</b><span className="s">The All India Design Mock. Part A + B, your All India Rank in 24 hours.</span></span>
-              <span className="btn btn--sm">See AIDMT <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></span>
-            </a>
-          ) : null}
+          {/* Points to /aidmt/, naming the next AIDMT, until the last AIDMT date has passed. */}
+          <AidmtStrip builtAt={Date.now()} />
         </div>
       </section>
 
@@ -310,9 +308,12 @@ export default function HomePage() {
           <div className="pdemo" id="demo">
             <div>
               <p className="pdemo-k">Not sure yet?</p>
-              <p className="pdemo-t">Try a free demo class first. Sign in with your phone number; no payment.</p>
+              <p className="pdemo-t">Watch how the 75 days run, then try a free demo class. Sign in with your phone number; no payment.</p>
             </div>
-            <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try a free demo class <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+            <div className="pdemo-acts">
+              <TrailerButton label="Watch the trailer" />
+              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try a free demo class <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+            </div>
           </div>
 
           <div className="pfoot">

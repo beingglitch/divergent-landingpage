@@ -4,11 +4,14 @@ import { Footer } from "@/components/Footer";
 import { ContactPopup } from "@/components/ContactPopup";
 import { Sprite } from "@/components/Sprite";
 import { SiteBehaviour } from "@/components/SiteBehaviour";
+/* Diwali 2026: switches itself off after 18 Nov. See src/lib/diwali.ts to remove. */
+import { Diwali } from "@/components/Diwali";
 import { SITE_URL } from "@/lib/meta";
 import { PIXEL_ID } from "@/lib/config";
 import { PIXEL_LOADER } from "@/lib/pixel";
 import { UTM_CAPTURE } from "@/lib/utm";
 import "./styles.css";
+import "./diwali.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -49,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <ContactPopup />
         <SiteBehaviour />
+        <Diwali />
       </body>
     </html>
   );

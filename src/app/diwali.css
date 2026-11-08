@@ -1,0 +1,141 @@
+/* Diwali 2026. Every rule is under html.diwali (6 to 18 Nov) or
+   html.diwali-offer (6 to 11 Nov), which src/components/Diwali.tsx sets
+   from the dates in src/lib/diwali.ts. Outside them none of this applies.
+   Delete this file with the component after the festival. */
+
+/* Course cards: the Diwali price shows only while the offer runs. */
+.dw-only{display:none}
+html.diwali-offer .dw-only{display:flex}
+html.diwali-offer .dw-hide{display:none}
+.dw-slot{display:contents}
+
+html.diwali{
+  --dw-gold:#FFC500;
+  --dw-saffron:#FF8A00;
+  --dw-flame:#FF6A1A;
+  --dw-rose:#E0306E;
+  --dw-glow:0 0 0 1px rgba(255,197,0,.55),0 0 26px -2px rgba(255,170,0,.75);
+}
+
+/* toran: marigolds hanging from the menu */
+html.diwali .dw-toran{position:absolute;left:0;right:0;top:100%;height:30px;pointer-events:none;z-index:2;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='48' viewBox='0 0 120 48'%3E%3Cpath d='M0 5Q60 30 120 5' fill='none' stroke='%23B5651D' stroke-width='1.4'/%3E%3Cpath d='M30 15c-4 5-4 12 0 18 4-6 4-13 0-18z' fill='%233DB360'/%3E%3Cpath d='M90 15c-4 5-4 12 0 18 4-6 4-13 0-18z' fill='%233DB360'/%3E%3Cpath d='M60 19c-6 7-6 17 0 25 6-8 6-18 0-25z' fill='%232E9B4E'/%3E%3Cpath d='M60 22v20' stroke='%231E7A3A' stroke-width='1'/%3E%3Ccircle cx='0.0' cy='5.0' r='5.2' fill='%23FF8A00'/%3E%3Ccircle cx='0.0' cy='5.0' r='2' fill='%23E25A00'/%3E%3Ccircle cx='12.0' cy='9.5' r='5.2' fill='%23FFC500'/%3E%3Ccircle cx='12.0' cy='9.5' r='2' fill='%23F29A00'/%3E%3Ccircle cx='24.0' cy='13.0' r='5.2' fill='%23FF8A00'/%3E%3Ccircle cx='24.0' cy='13.0' r='2' fill='%23E25A00'/%3E%3Ccircle cx='36.0' cy='15.5' r='5.2' fill='%23FFC500'/%3E%3Ccircle cx='36.0' cy='15.5' r='2' fill='%23F29A00'/%3E%3Ccircle cx='48.0' cy='17.0' r='5.2' fill='%23FF8A00'/%3E%3Ccircle cx='48.0' cy='17.0' r='2' fill='%23E25A00'/%3E%3Ccircle cx='60.0' cy='17.5' r='5.2' fill='%23FFC500'/%3E%3Ccircle cx='60.0' cy='17.5' r='2' fill='%23F29A00'/%3E%3Ccircle cx='72.0' cy='17.0' r='5.2' fill='%23FF8A00'/%3E%3Ccircle cx='72.0' cy='17.0' r='2' fill='%23E25A00'/%3E%3Ccircle cx='84.0' cy='15.5' r='5.2' fill='%23FFC500'/%3E%3Ccircle cx='84.0' cy='15.5' r='2' fill='%23F29A00'/%3E%3Ccircle cx='96.0' cy='13.0' r='5.2' fill='%23FF8A00'/%3E%3Ccircle cx='96.0' cy='13.0' r='2' fill='%23E25A00'/%3E%3Ccircle cx='108.0' cy='9.5' r='5.2' fill='%23FFC500'/%3E%3Ccircle cx='108.0' cy='9.5' r='2' fill='%23F29A00'/%3E%3C/svg%3E") repeat-x left top/75px 30px;
+  filter:drop-shadow(0 3px 3px rgba(150,70,0,.18));
+  transform-origin:50% 0;animation:dw-sway 6s ease-in-out infinite;transition:opacity .3s}
+html.diwali .nav.scrolled .dw-toran{opacity:.85;height:24px;background-size:60px 24px}
+@keyframes dw-sway{0%,100%{transform:rotate(0)}50%{transform:translateY(1px) skewX(.6deg)}}
+
+/* diya */
+.dw-diya{width:22px;height:22px;flex:none;overflow:visible}
+.dw-flame{fill:var(--dw-flame,#FF6A1A);transform-origin:20px 24px;animation:dw-flicker 1.9s ease-in-out infinite;filter:drop-shadow(0 0 4px rgba(255,170,0,.9))}
+.dw-flame-in{fill:#FFE38A;transform-origin:20px 24px;animation:dw-flicker 1.4s ease-in-out infinite reverse}
+@keyframes dw-flicker{0%,100%{transform:scale(1,1) rotate(0)}30%{transform:scale(.9,1.08) rotate(-4deg)}60%{transform:scale(1.05,.94) rotate(3deg)}80%{transform:scale(.96,1.04) rotate(-1deg)}}
+
+/* hero */
+html.diwali .hero .stage{background:radial-gradient(60% 50% at 80% 100%,rgba(255,138,0,.22),transparent 70%),radial-gradient(50% 50% at 10% 90%,rgba(255,197,0,.14),transparent 70%),var(--ink)}
+.dw-fw{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;mix-blend-mode:screen}
+html.diwali .dw-pill{background:linear-gradient(135deg,#FFE27A,var(--dw-gold) 55%,var(--dw-saffron));color:var(--ink);box-shadow:0 0 0 1px rgba(255,255,255,.6) inset,0 6px 18px -6px rgba(255,138,0,.85)}
+html.diwali .dw-pill .dw-diya{width:18px;height:18px;margin:-4px -2px -2px -4px}
+html.diwali .dw-lamps{position:absolute!important;left:0;right:0;bottom:clamp(10px,2vw,22px);display:flex;justify-content:center;gap:clamp(10px,3.4vw,46px);pointer-events:none}
+html.diwali .dw-lamps .dw-diya{width:clamp(22px,2.6vw,34px);height:clamp(22px,2.6vw,34px);animation:dw-bob 3.2s ease-in-out infinite}
+html.diwali .dw-lamps .l1,html.diwali .dw-lamps .l5{animation-delay:-.8s}
+html.diwali .dw-lamps .l2,html.diwali .dw-lamps .l6{animation-delay:-1.6s}
+html.diwali .dw-lamps .l3,html.diwali .dw-lamps .l7{animation-delay:-2.4s}
+@media (max-width:639px){html.diwali .dw-lamps .l7,html.diwali .dw-lamps .l8,html.diwali .dw-lamps .l6{display:none}}
+html.diwali .dw-lamps--sm{bottom:10px}
+@keyframes dw-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+html.diwali .arc{padding-bottom:calc(clamp(56px,7vw,92px) + 22px)}
+
+/* hero prices: today's price struck, the offer price in gold */
+html.diwali-offer .offer-p b{color:var(--dw-gold);text-shadow:0 0 22px rgba(255,170,0,.45)}
+html.diwali-offer .offer .deadline{border-color:rgba(255,197,0,.8);background:rgba(255,197,0,.14);box-shadow:var(--dw-glow)}
+
+/* plan cards */
+.pwas{display:block;font-size:.4em;font-weight:650;letter-spacing:-.01em;color:var(--ink-3);text-decoration-thickness:2px;text-decoration-color:rgba(224,48,110,.85);margin-bottom:4px}
+.pcol.on .pwas{color:rgba(11,11,12,.6);text-decoration-color:var(--ink)}
+.st-was{opacity:.6;font-weight:600}
+.crash-was{margin-left:8px;color:var(--ink-3);font-weight:600}
+html.diwali-offer .pcol{border-color:rgba(255,170,0,.45)}
+html.diwali-offer .pcol::after{content:"Diwali price";position:absolute;top:-12px;right:22px;z-index:2;padding:6px 12px;font:750 11.5px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:linear-gradient(135deg,#FFE27A,var(--dw-gold) 50%,var(--dw-saffron));border-radius:999px;box-shadow:0 6px 14px -6px rgba(255,138,0,.9);pointer-events:none}
+html.diwali-offer .save{background:linear-gradient(135deg,#FFE27A,var(--dw-gold) 55%,var(--dw-saffron));box-shadow:0 4px 12px -5px rgba(255,138,0,.85)}
+html.diwali-offer .pcol.on .save{background:#fff}
+html.diwali-offer .gift{display:block;margin-top:12px;padding:8px 10px 8px 34px;border-radius:10px;background:var(--yellow-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7c-2-4-6-4-6-1 0 1 1 1 6 1zm0 0c2-4 6-4 6-1 0 1-1 1-6 1z' fill='none' stroke='%23E25A00' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat 10px 9px/16px 16px;color:var(--ink-2);font-weight:600;font-size:13.5px}
+html.diwali-offer .pcol.on .gift{background-color:rgba(255,255,255,.9)}
+
+/* rangoli beside the plans */
+html.diwali #plans{overflow-x:clip}
+html.diwali .dw-rangoli{position:absolute;width:clamp(120px,16vw,220px);height:auto;pointer-events:none;opacity:.22;z-index:0;animation:dw-turn 60s linear infinite}
+html.diwali .dw-rangoli.r1{left:clamp(-110px,-6vw,-50px);top:clamp(30px,5vw,70px)}
+html.diwali .dw-rangoli.r2{right:clamp(-110px,-6vw,-50px);bottom:clamp(40px,6vw,90px);animation-direction:reverse}
+html.diwali #plans>.wrap{position:relative;z-index:1}
+@keyframes dw-turn{to{transform:rotate(360deg)}}
+
+/* course cards */
+.ccard-p.dw-only{flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.ccard-p.dw-only .off{background:linear-gradient(135deg,#FFE27A,#FFC500 55%,#FF8A00)}
+.dw-code{flex-basis:100%;font-size:12.5px;font-weight:650;color:var(--ink-3)}
+.dw-code code{font:750 12.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:var(--ink);background:var(--yellow-50);border:1px dashed #E2A100;border-radius:5px;padding:2px 6px}
+
+/* footer greeting */
+html.diwali .dw-greet{display:flex;justify-content:center;align-items:center;gap:10px;margin:0 auto clamp(28px,4vw,44px);font:700 clamp(18px,2vw,24px)/1.2 var(--f-display);color:var(--yellow);letter-spacing:-.01em}
+html.diwali .dw-greet .dw-diya{width:30px;height:30px}
+
+/* the offer popup */
+html.dw-locked{overflow:hidden}
+.dw-pop-back{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(6,10,24,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:dw-fade .3s ease-out}
+.dw-pop{position:relative;width:min(520px,100%);max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain;background:#fff;color:var(--ink);border-radius:26px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6),0 0 0 1px rgba(255,197,0,.5);animation:dw-rise .45s var(--ease-back)}
+.dw-pop-head{position:relative;overflow:hidden;padding:30px 24px 22px;text-align:center;color:#fff;border-radius:26px 26px 0 0;background:radial-gradient(70% 90% at 50% 120%,rgba(255,138,0,.55),transparent 70%),radial-gradient(40% 50% at 10% 0%,rgba(32,155,210,.45),transparent 70%),var(--ink)}
+.dw-pop-head::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 30%,rgba(255,214,90,.6) 0 2px,transparent 4px),radial-gradient(circle at 86% 22%,rgba(255,214,90,.5) 0 2px,transparent 4px),radial-gradient(circle at 70% 70%,rgba(255,255,255,.4) 0 1.5px,transparent 3px),radial-gradient(circle at 26% 76%,rgba(255,170,60,.5) 0 2px,transparent 4px);pointer-events:none}
+.dw-pop-lamps{display:flex;justify-content:center;gap:16px;margin-bottom:10px}
+.dw-pop-lamps .dw-diya{width:34px;height:34px}
+.dw-pop-lamps .dw-diya:nth-child(2){transform:translateY(-6px) scale(1.15)}
+.dw-pop-k{margin:0;font:750 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--yellow)}
+.dw-pop h2{margin:10px 0 0;font:800 clamp(25px,4.4vw,31px)/1.08 var(--f-display);letter-spacing:-.03em;text-wrap:balance}
+.dw-pop h2 span{display:block;color:var(--yellow)}
+.dw-pop-d{margin:10px auto 0;max-width:38ch;font-size:15px;line-height:1.45;color:var(--on-dark)}
+.dw-x{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;display:grid;place-items:center;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;transition:background-color .2s,transform .2s}
+.dw-x:hover{background:rgba(255,255,255,.26);transform:rotate(90deg)}
+.dw-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.dw-x:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.dw-deals{list-style:none;margin:0;padding:14px 14px 4px;display:grid;gap:8px}
+.dw-deals a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-radius:14px;border:1px solid var(--line);text-decoration:none;color:inherit;transition:border-color .2s,background-color .2s,transform .2s}
+.dw-deals a:hover{border-color:#E2A100;background:var(--yellow-50);transform:translateY(-1px)}
+.dw-deals .hot a{border:1.5px solid #E2A100;background:linear-gradient(135deg,#FFF9E6,#FFF1C2)}
+.dw-deal-t{display:grid;gap:2px;min-width:0}
+.dw-deal-t b{font-size:15px;font-weight:700;line-height:1.25}
+.dw-deal-t em{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;font:750 10.5px/1.3 var(--f-body);font-style:normal;letter-spacing:.06em;text-transform:uppercase;background:var(--dw-rose,#E0306E);color:#fff;vertical-align:2px}
+.dw-deal-t small{font-size:12.5px;color:var(--ink-3);line-height:1.35}
+.dw-deal-p{display:grid;justify-items:end;gap:1px;flex:none;text-align:right}
+.dw-deal-p s{font-size:12.5px;font-weight:600;color:var(--ink-3);text-decoration-color:rgba(224,48,110,.8);text-decoration-thickness:1.5px}
+.dw-deal-p b{font:800 19px/1.05 var(--f-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dw-off{font-size:11.5px;font-weight:750;color:#1F7A3A;white-space:nowrap}
+.dw-off code{font:750 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;color:var(--ink)}
+.dw-pop-foot{padding:12px 14px 18px;text-align:center}
+.dw-pop-foot p{margin:10px 0 0;font-size:13px;color:var(--ink-3)}
+@media (max-width:479px){.dw-deal-t small{display:none}.dw-pop-head{padding:26px 18px 18px}}
+@keyframes dw-fade{from{opacity:0}}
+@keyframes dw-rise{from{opacity:0;transform:translateY(24px) scale(.96)}}
+
+/* the tour: one part of the page lit, a note beside it */
+.dw-tour{position:fixed;inset:0;z-index:290;pointer-events:none}
+.dw-tour-hit{position:absolute;inset:0;pointer-events:auto}
+.dw-spot{position:fixed;border-radius:22px;box-shadow:0 0 0 9999px rgba(6,10,24,.6),0 0 0 3px var(--yellow),0 0 34px 6px rgba(255,170,0,.7);pointer-events:none;transition:top .25s,left .25s,width .25s,height .25s;animation:dw-ring 1.6s ease-in-out infinite}
+@keyframes dw-ring{50%{box-shadow:0 0 0 9999px rgba(6,10,24,.6),0 0 0 5px var(--yellow),0 0 46px 12px rgba(255,170,0,.8)}}
+.dw-tip{position:fixed;pointer-events:auto;background:#fff;color:var(--ink);border-radius:18px;padding:18px 18px 16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.55),0 0 0 1px rgba(255,197,0,.6);animation:dw-rise .3s var(--ease-out)}
+.dw-tip-k{display:flex;align-items:center;gap:6px;margin:0 32px 0 0;font:750 11.5px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:#B26B00}
+.dw-tip h3{margin:8px 0 0;font:800 19px/1.2 var(--f-display);letter-spacing:-.02em}
+.dw-tip p#dw-tip-p{margin:6px 0 0;font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.dw-tip-acts{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.dw-x--sm{top:10px;right:10px;width:32px;height:32px;background:var(--blue-50);color:var(--ink)}
+.dw-x--sm:hover{background:var(--blue-100)}
+
+@media (prefers-reduced-motion:reduce){
+  html.diwali .dw-toran,.dw-flame,.dw-flame-in,html.diwali .dw-lamps .dw-diya,html.diwali .dw-rangoli,.dw-spot,.dw-pop,.dw-pop-back,.dw-tip{animation:none!important}
+}
+
+/* The bunny button while the offer runs: a glowing ring and a tag. */
+html.diwali-offer .bunny-fab--diwali .bunny-fab-c{border-color:var(--dw-saffron);animation:dw-bunny-glow 2.4s ease-in-out infinite}
+html.diwali-offer .bunny-fab--diwali .bunny-fab-tag{display:block;padding:7px 12px;border-radius:999px 999px 4px 999px;font:750 12.5px/1 var(--f-body);letter-spacing:.02em;white-space:nowrap;color:var(--ink);background:linear-gradient(135deg,#FFE27A,var(--dw-gold) 55%,var(--dw-saffron));box-shadow:0 8px 18px -8px rgba(255,138,0,.9);animation:dw-rise .5s var(--ease-back) 1.2s both}
+@keyframes dw-bunny-glow{0%,100%{box-shadow:0 12px 28px -10px rgba(11,11,12,.55),0 0 0 0 rgba(255,170,0,.55)}50%{box-shadow:0 12px 28px -10px rgba(11,11,12,.55),0 0 0 8px rgba(255,170,0,0)}}
+@media (max-width:479px){html.diwali-offer .bunny-fab--diwali .bunny-fab-tag{display:none}}
+@media (prefers-reduced-motion:reduce){html.diwali-offer .bunny-fab--diwali .bunny-fab-c,html.diwali-offer .bunny-fab--diwali .bunny-fab-tag{animation:none}}

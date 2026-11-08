@@ -13,6 +13,9 @@ type Course = {
   cta?: string;
   href: string;
   featured?: boolean;
+  /* Diwali 2026 price (src/lib/diwali.ts dates), and the code it needs at checkout. */
+  diwali?: number;
+  diwaliCode?: string;
 };
 
 const EXAM_NAMES: Record<string, string> = { uceed: "UCEED", nid: "NID", nift: "NIFT" };
@@ -50,7 +53,17 @@ function CourseCard({ c }: { c: Course }) {
         {c.sub ? <p className="ccard-s">{c.sub}</p> : null}
         <p className="ccard-m">{c.meta}</p>
         <div className="ccard-f">
-          <p className="ccard-p">
+          {c.diwali ? (
+            /* Shown only while the Diwali offer runs (html.diwali-offer): today's
+               real price struck through, never the MRP, and the flat ₹ off. */
+            <p className="ccard-p dw-only">
+              <b>₹{c.diwali.toLocaleString("en-IN")}</b>
+              <s>{c.price}</s>
+              <span className="off">₹{(rupees(c.price) - c.diwali).toLocaleString("en-IN")} off</span>
+              {c.diwaliCode ? <span className="dw-code">Code <code>{c.diwaliCode}</code></span> : null}
+            </p>
+          ) : null}
+          <p className={"ccard-p" + (c.diwali ? " dw-hide" : "")}>
             {/* The 75-day price follows the date; site.ts fills it in. */}
             <b data-crash-from={c.slug === "crash-75" ? "" : undefined}>{c.price}</b>
             {c.mrp ? (
