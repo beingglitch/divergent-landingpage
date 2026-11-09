@@ -3,6 +3,7 @@
    Returns a cleanup that undoes everything it set up. */
 import { APP_URL, CONFIG, COURSE_SLUG, bundleSlug, checkoutUrl, ist, planLabel, pricePeriod, tierKey, type Batch, type Exam, type Plan } from "./config";
 
+import { festivalStage, istDay, loadFestivalOffer, type FestivalOffer } from "./diwali";
 import { PLAN_EVENT, type PlanPick } from "./plan-event";
 import { track } from "./pixel";
 
@@ -161,23 +162,28 @@ export function initHome(): () => void {
   /* Prices come from the app so the page and checkout always agree. Until
      they arrive, or if the app can't be reached, CONFIG is used. */
   type LiveOption = { code: string; total: number };
-  type LivePlan = { price: number; listPrice: number; options: LiveOption[] };
+  /* period names the offer today's price comes from (a dated price or a Hot coupon), null for none. */
+  type LivePlan = { price: number; listPrice: number; period: string | null; options: LiveOption[] };
   const live: Record<string, LivePlan> = {};
   const state: { batch: Batch; plan: Plan; exam: Exam; pack: boolean } = { batch: "combo", plan: "live", exam: "UCEED", pack: false };
   const period = () => pricePeriod(NOW());
-  type Quote = { slug: string; now: number; list: number; two: number; three: number };
+  /* The app's festival offer, once loaded, when it is on this course and in its offer dates. */
+  let fest: FestivalOffer | null = null;
+  const festOn = () => (fest && fest.courseSlug === COURSE_SLUG && festivalStage(fest, NOW()) === "offer" ? fest : null);
+  const esc = (t: string) => t.replace(/[&<>"']/g, (c) => "&#" + c.charCodeAt(0) + ";");
+  type Quote = { slug: string; now: number; list: number; period: string | null; two: number; three: number };
   /* What a plan costs today. two and three are installment totals, 0 when not offered. */
   const quote = (plan: Plan, batch: Batch, pack: boolean): Quote => {
     const slug = bundleSlug(plan, batch, state.exam, pack), lp = live[slug];
     if (lp) {
       const tot = (c: string) => lp.options.find((o) => o.code === c)?.total || 0;
-      return { slug, now: lp.price, list: lp.listPrice, two: tot("2-parts"), three: tot("3-parts") };
+      return { slug, now: lp.price, list: lp.listPrice, period: lp.period, two: tot("2-parts"), three: tot("3-parts") };
     }
     const t = CONFIG.prices[tierKey(plan, pack)][batch], per = period();
-    return { slug, now: t.price[per], list: t.price.list, two: t.twoParts?.[per] || 0, three: t.threeParts?.[per] || 0 };
+    return { slug, now: t.price[per], list: t.price.list, period: per === "list" ? null : per, two: t.twoParts?.[per] || 0, three: t.threeParts?.[per] || 0 };
   };
   const renderPricing = () => {
-    const per = period();
+    const fo = festOn();
     $$("#planPick .pcol").forEach((col) => {
       const plan = col.getAttribute("data-col") as Plan, pack = plan === "recorded" && state.pack;
       const q = quote(plan, state.batch, pack), card = $(".pcard", col);
@@ -188,15 +194,18 @@ export function initHome(): () => void {
          offer ends) is struck through beside the offer price. Never an MRP. */
       if (prEl) prEl.innerHTML = (save > 0 ? '<s class="pwas" aria-label="Was ' + inr(q.list) + '">' + inr(q.list) + "</s>" : "") + '<span class="cur">₹</span>' + q.now.toLocaleString("en-IN");
       const sw = $("[data-save-wrap]", card);
-      const till = per === "launch" ? " till 2 November" : per === "diwali" ? " till 11 November" : "";
-      /* How to get it: the student applies the Diwali offer at checkout. */
-      const how = per === "diwali" ? '<span class="save-how">Apply the Diwali offer at checkout</span>' : "";
+      /* While the festival offer runs and the price comes from an offer, the
+         saving says when it ends and how to get it: the student applies the
+         offer at checkout. */
+      const onOffer = !!fo && !!q.period;
+      const till = fo && onOffer ? " till " + istDay(fo.offerEnds, true) : "";
+      const how = fo && onOffer ? '<span class="save-how">Apply the ' + esc(fo.name) + " offer at checkout</span>" : "";
       if (sw) sw.innerHTML = save > 0 ? '<span class="save">' + inr(save) + " off" + till + "</span>" + how : "";
       const g = $("[data-gift]", card);
       if (g) {
-        /* The brief's Diwali gifts: Live and Mentor only, the hoodie on Mentor paid in full. */
-        if (per === "diwali" && A.diwaliGift && plan !== "recorded") {
-          g.textContent = "Diwali gift: AI sketch review and free access to every AIDMT" + (plan === "mentor" ? ", plus a Divergent hoodie when paid in full." : ".");
+        /* The festival gift, on Live and Mentor only. */
+        if (fo?.giftLine && plan !== "recorded") {
+          g.textContent = fo.name + " gift: " + fo.giftLine + (/[.!?]$/.test(fo.giftLine) ? "" : ".");
           g.hidden = false;
         } else g.hidden = true;
       }
@@ -210,6 +219,8 @@ export function initHome(): () => void {
         const add = base && withPack ? withPack.price - base.price : CONFIG.mockPack;
         packAdd.textContent = "+" + inr(add);
       }
+      // The tag on the card while the offer runs, e.g. "Diwali price" (diwali.css).
+      if (fo) col.setAttribute("data-offer-tag", fo.name + " price"); else col.removeAttribute("data-offer-tag");
       const pop = $("[data-popular]", card);
       if (pop) pop.hidden = !(plan === "live" && state.batch === "combo");
       const sel = plan === state.plan;
@@ -255,14 +266,15 @@ export function initHome(): () => void {
           ? p.options.filter((o: LiveOption) => o && typeof o.code === "string" && typeof o.total === "number").map((o: LiveOption) => ({ code: o.code, total: o.total }))
           : [];
         const listPrice = typeof p.listPrice === "number" ? p.listPrice : p.price;
-        live[p.slug] = { price: p.price, listPrice, options };
+        const per = typeof p.period === "string" && p.period ? p.period : null;
+        live[p.slug] = { price: p.price, listPrice, period: per, options };
         /* Each add-on, keyed "plan+addon", priced and scheduled with it ticked. */
         for (const a of Array.isArray(p.addOns) ? p.addOns : []) {
           if (!a || typeof a.slug !== "string" || typeof a.price !== "number") continue;
           const addOnOptions: LiveOption[] = Array.isArray(a.options)
             ? a.options.filter((o: LiveOption) => o && typeof o.code === "string" && typeof o.total === "number").map((o: LiveOption) => ({ code: o.code, total: o.total }))
             : [];
-          live[p.slug + "+" + a.slug] = { price: p.price + a.price, listPrice: listPrice + a.price, options: addOnOptions };
+          live[p.slug + "+" + a.slug] = { price: p.price + a.price, listPrice: listPrice + a.price, period: per, options: addOnOptions };
         }
       }
       renderPricing();
@@ -270,6 +282,21 @@ export function initHome(): () => void {
       /* Offline or blocked: CONFIG prices stay. */
     }
   })();
+  /* The festival offer from the app: the hero deadline and the plan cards. */
+  const renderFestival = () => {
+    const fo = festOn();
+    $$("[data-fest-deadline]").forEach((el) => {
+      el.hidden = !fo;
+      const t = $("[data-fest-deadline-t]", el);
+      if (t) t.textContent = fo ? fo.name + " offer ends " + istDay(fo.offerEnds, true) : "";
+    });
+  };
+  loadFestivalOffer().then((o) => {
+    if (signal.aborted) return;
+    fest = o;
+    renderFestival();
+    renderPricing();
+  });
   /* Tell the call form which plan the student picked. */
   const announce = () => {
     const pack = state.plan === "recorded" && state.pack;

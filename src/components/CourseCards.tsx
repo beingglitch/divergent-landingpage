@@ -13,7 +13,8 @@ type Course = {
   cta?: string;
   href: string;
   featured?: boolean;
-  /* Diwali 2026 price (src/lib/diwali.ts dates), and the code it needs at checkout. */
+  /* The festival offer price, and the code it needs at checkout. Shown only
+     while the app's festival offer runs (src/lib/diwali.ts). */
   diwali?: number;
   diwaliCode?: string;
 };
@@ -54,7 +55,7 @@ function CourseCard({ c }: { c: Course }) {
         <p className="ccard-m">{c.meta}</p>
         <div className="ccard-f">
           {c.diwali ? (
-            /* Shown only while the Diwali offer runs (html.diwali-offer): today's
+            /* Shown only while the festival offer runs (html.diwali-offer): today's
                real price struck through, never the MRP, and the flat ₹ off. */
             <p className="ccard-p dw-only">
               <b>₹{c.diwali.toLocaleString("en-IN")}</b>

@@ -51,13 +51,14 @@ export function Footer() {
       </footer>
 
       {/* The bunny opens the contact card (ContactPopup catches links to /contact/).
-          While the Diwali offer runs, Diwali.tsx makes it open the offers instead. */}
+          While a festival offer runs, Diwali.tsx makes it open the offers instead
+          and names them in the tag. */}
       <a className="bunny-fab" href="/contact/" data-bunny="" aria-label="Contact us">
         <span className="bunny-fab-c" aria-hidden="true">
           <img src="/assets/mascot/bunny-body.webp" alt="" width="401" height="640" />
           <img className="bunny-fab-arm" src="/assets/mascot/bunny-arm.webp" alt="" width="401" height="640" />
         </span>
-        <span className="bunny-fab-tag" aria-hidden="true">Diwali offers</span>
+        <span className="bunny-fab-tag" aria-hidden="true">Offers</span>
       </a>
     </>
   );

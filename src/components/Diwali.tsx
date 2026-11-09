@@ -3,13 +3,15 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
-import { DIWALI, DIWALI_DEALS, diwaliStage, type DiwaliStage } from "@/lib/diwali";
+import { CONFIG } from "@/lib/config";
+import { dealHref, festivalStage, istDay, istDayTime, loadFestivalOffer, type FestivalOffer, type FestivalStage } from "@/lib/diwali";
 
-/* Diwali 2026: lamps, a marigold toran, fireworks over the hero, a rangoli
-   by the plans, and (while the offer runs) a popup a few seconds after
-   landing that leads into a short tour of the offer on the page. Every
-   piece reads its dates from src/lib/diwali.ts and renders nothing outside
-   them. Styles are in src/app/diwali.css, all under html.diwali. */
+/* The festival offer (set by admins in the app, loaded by src/lib/diwali.ts):
+   lamps, a marigold toran, fireworks over the hero, a rangoli by the plans,
+   and (while the offer runs) a popup a few seconds after landing that leads
+   into a short tour of the offer on the page. Nothing renders while the
+   offer loads, when none is on, or outside its dates. Styles are in
+   src/app/diwali.css, all under html.diwali. */
 
 
 /* A clay diya with a flickering flame. */
@@ -96,15 +98,33 @@ function Fireworks({ host }: { host: HTMLElement }) {
 /* The tour after the popup: each step lights up one part of the page with a
    note beside it. Steps whose part is missing are skipped. */
 type Step = { sel: string; title: string; text: string };
-const STEPS: Step[] = [
-  { sel: "#planPick .pcol.on .pcard", title: "The Diwali offer is on every plan", text: "₹1,000 off single-exam plans and ₹2,000 off Combos, till 11 Nov. To get it, open Apply discount at checkout and apply the Diwali offer." },
-  { sel: "#planPick .pcol.on .gift:not([hidden])", title: "Diwali gifts on Live and Mentor", text: "AI sketch review and free access to every AIDMT. Mentor plans paid in full also get a Divergent hoodie." },
-  { sel: ".pjoinbox", title: "Not ready to pay it all?", text: "Join for ₹1,000. It locks the Diwali price, counts toward your fee, and is fully refundable till 10 Nov." },
-  { sel: "#demo", title: "Try before you pay", text: "Take a free demo class first. Sign in with your phone number, no payment." },
-];
 
-function Tour({ onDone }: { onDone: () => void }) {
-  const steps = useRef(STEPS.filter((s) => { const el = document.querySelector<HTMLElement>(s.sel); return !!el && el.offsetParent !== null; })).current;
+const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
+const sentence = (s: string) => (/[.!?]$/.test(s) ? s : s + ".");
+/* "a", "a and b", "a, b and c". */
+const listOf = (xs: string[]) => (xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1]);
+
+/* The Join for ₹1,000 line: refundable till a date, or else it counts toward the fee. */
+function joinLine(o: FestivalOffer): string {
+  return o.joinRefundEnds ? "Fully refundable till " + istDay(o.joinRefundEnds) + "." : "It counts toward your fee.";
+}
+
+function tourSteps(o: FestivalOffer): Step[] {
+  const n = o.name, till = istDay(o.offerEnds);
+  const onCourse = o.deals.filter((d) => d.link === "course").map((d) => d.offer);
+  const what = onCourse.length ? listOf(onCourse) + ", till " + till + "." : "Till " + till + ".";
+  const join = "Join for " + inr(CONFIG.joinAmount) + ". It locks the " + n + " price" +
+    (o.joinRefundEnds ? ", counts toward your fee, and is fully refundable till " + istDay(o.joinRefundEnds) + "." : " and counts toward your fee.");
+  return [
+    { sel: "#planPick .pcol.on .pcard", title: "The " + n + " offer is on every plan", text: what + " To get it, open Apply discount at checkout and apply the " + n + " offer." },
+    ...(o.giftLine ? [{ sel: "#planPick .pcol.on .gift:not([hidden])", title: n + " gifts on Live and Mentor", text: sentence(o.giftLine) }] : []),
+    { sel: ".pjoinbox", title: "Not ready to pay it all?", text: join },
+    { sel: "#demo", title: "Try before you pay", text: "Take a free demo class first. Sign in with your phone number, no payment." },
+  ];
+}
+
+function Tour({ offer, onDone }: { offer: FestivalOffer; onDone: () => void }) {
+  const steps = useRef(tourSteps(offer).filter((s) => { const el = document.querySelector<HTMLElement>(s.sel); return !!el && el.offsetParent !== null; })).current;
   const [i, setI] = useState(0);
   const [box, setBox] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const tipRef = useRef<HTMLDivElement>(null);
@@ -153,7 +173,7 @@ function Tour({ onDone }: { onDone: () => void }) {
         <button type="button" className="dw-x dw-x--sm" onClick={onDone} aria-label="Close the tour">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
         </button>
-        <p className="dw-tip-k"><Diya />Diwali offer · {i + 1} of {steps.length}</p>
+        <p className="dw-tip-k"><Diya />{offer.name} offer · {i + 1} of {steps.length}</p>
         <h3 id="dw-tip-h">{step.title}</h3>
         <p id="dw-tip-p">{step.text}</p>
         <div className="dw-tip-acts">
@@ -167,7 +187,7 @@ function Tour({ onDone }: { onDone: () => void }) {
 
 /* The offer popup, a few seconds after every page load (and from the bunny
    button). Closes with the X, Escape or a click outside. */
-function OfferPopup({ onClose, onTour }: { onClose: () => void; onTour: () => void }) {
+function OfferPopup({ offer, onClose, onTour }: { offer: FestivalOffer; onClose: () => void; onTour: () => void }) {
   const card = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const back = document.activeElement as HTMLElement | null;
@@ -188,40 +208,46 @@ function OfferPopup({ onClose, onTour }: { onClose: () => void; onTour: () => vo
   const home = location.pathname === "/";
   return (
     <div className="dw-pop-back" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="dw-pop" ref={card} role="dialog" aria-modal="true" aria-labelledby="dw-pop-h" aria-describedby="dw-pop-d">
-        <button type="button" className="dw-x" onClick={onClose} aria-label="Close the Diwali offer">
+      <div className="dw-pop" ref={card} role="dialog" aria-modal="true" aria-labelledby="dw-pop-h" aria-describedby={offer.description ? "dw-pop-d" : undefined}>
+        <button type="button" className="dw-x" onClick={onClose} aria-label={"Close the " + offer.name + " offer"}>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
         </button>
         <div className="dw-pop-head">
           <div className="dw-pop-lamps" aria-hidden="true"><Diya /><Diya /><Diya /></div>
-          <p className="dw-pop-k">Diwali offer · ends 11 Nov, 11:59 pm</p>
-          <h2 id="dw-pop-h">Diwali pe ₹2,000 off. <span>Mentor ka feedback included.</span></h2>
-          <p id="dw-pop-d" className="dw-pop-d">Start your design entrance prep with a mentor checking your work every week, for up to ₹2,000 less.</p>
+          <p className="dw-pop-k">{offer.name} offer · ends {istDayTime(offer.offerEnds)}</p>
+          <h2 id="dw-pop-h">{offer.headline}{offer.headlineAccent ? <> <span>{offer.headlineAccent}</span></> : null}</h2>
+          {offer.description ? <p id="dw-pop-d" className="dw-pop-d">{offer.description}</p> : null}
         </div>
-        <ul className="dw-deals">
-          {DIWALI_DEALS.map((d) => (
-            <li key={d.name} className={d.hot ? "hot" : undefined}>
-              <a
-                href={d.href}
-                onClick={(e) => { if (home && d.href === "/#plans") { e.preventDefault(); onTour(); } }}
-              >
-                {/* What the offer is and how to get it; never a price shown as already applied. */}
-                <span className="dw-deal-t">
-                  <b>{d.name}{d.hot ? <em>Best value</em> : null}</b>
-                  <span className="dw-off">{d.offer}</span>
-                  <small>{d.how}</small>
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        {offer.deals.length ? (
+          <ul className="dw-deals">
+            {offer.deals.map((d, i) => {
+              const href = dealHref(d.link);
+              const how = d.code ? "Use code " + d.code + " at checkout" : d.how;
+              return (
+                <li key={i + d.name} className={d.hot ? "hot" : undefined}>
+                  <a
+                    href={href}
+                    onClick={(e) => { if (home && href === "/#plans") { e.preventDefault(); onTour(); } }}
+                  >
+                    {/* What the offer is and how to get it; never a price shown as already applied. */}
+                    <span className="dw-deal-t">
+                      <b>{d.name}{d.hot ? <em>Best value</em> : null}</b>
+                      <span className="dw-off">{d.offer}</span>
+                      {how ? <small>{how}</small> : null}
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
         <div className="dw-pop-foot">
           {home ? (
             <button type="button" className="btn btn--block" onClick={onTour}>Show me how to apply it</button>
           ) : (
             <a className="btn btn--block" href="/?diwali-tour=1#plans">Show me how to apply it</a>
           )}
-          <p>Join for ₹1,000 to lock the price. Fully refundable till 10 Nov.</p>
+          <p>Join for {inr(CONFIG.joinAmount)} to lock the price. {joinLine(offer)}</p>
         </div>
       </div>
     </div>
@@ -245,28 +271,35 @@ function Into({ sel, children, where = "append" }: { sel: string; children: Reac
 
 export function Diwali() {
   const pathname = usePathname() || "/";
-  const [stage, setStage] = useState<DiwaliStage>("off");
+  const [offer, setOffer] = useState<FestivalOffer | null>(null);
+  const [stage, setStage] = useState<FestivalStage>("off");
   const [hero, setHero] = useState<HTMLElement | null>(null);
   const [pop, setPop] = useState(false);
   const [tour, setTour] = useState(false);
   // Opened by itself once per page load; moving between pages does not reopen it.
   const autoShown = useRef(false);
 
-  // The stage depends on the visitor's clock, so it is read after hydration.
+  // The offer comes from the app and the stage from the visitor's clock, so
+  // both are read after hydration. Until then nothing festive shows.
   useEffect(() => {
-    const s = diwaliStage();
-    setStage(s);
+    let live = true;
     const root = document.documentElement;
-    root.classList.toggle("diwali", s !== "off");
-    root.classList.toggle("diwali-offer", s === "offer");
-    return () => root.classList.remove("diwali", "diwali-offer");
+    loadFestivalOffer().then((o) => {
+      if (!live) return;
+      const s = festivalStage(o);
+      setOffer(o);
+      setStage(s);
+      root.classList.toggle("diwali", s !== "off");
+      root.classList.toggle("diwali-offer", s === "offer");
+    });
+    return () => { live = false; root.classList.remove("diwali", "diwali-offer"); };
   }, []);
 
   useEffect(() => { setHero(document.querySelector<HTMLElement>(".hero .stage")); }, [pathname, stage]);
 
   // The popup: a few seconds after every page load, never over another dialog.
   useEffect(() => {
-    if (stage !== "offer" || /^\/(privacy|terms)/.test(pathname)) return;
+    if (!offer || stage !== "offer" || /^\/(privacy|terms)/.test(pathname)) return;
     if (pathname === "/" && /[?&]diwali-tour=1/.test(location.search)) {
       const t = window.setTimeout(() => setTour(true), 900);
       return () => clearTimeout(t);
@@ -276,17 +309,19 @@ export function Diwali() {
       const busy = document.querySelector('[aria-modal="true"], .menu-btn[aria-expanded="true"], .dw-tour');
       autoShown.current = true;
       if (!busy) setPop(true);
-    }, DIWALI.popupDelayMs);
+    }, offer.popupDelaySeconds * 1000);
     return () => clearTimeout(t);
-  }, [stage, pathname]);
+  }, [offer, stage, pathname]);
 
   // The bunny button (Footer) opens the contact card. While the offer runs it
-  // opens the Diwali offers instead, except on the contact page.
+  // opens the festival offers instead, except on the contact page.
   useEffect(() => {
     const bunny = document.querySelector<HTMLAnchorElement>("[data-bunny]");
-    if (!bunny || stage !== "offer" || /^\/contact\/?$/.test(pathname)) return;
+    if (!bunny || !offer || stage !== "offer" || /^\/contact\/?$/.test(pathname)) return;
     const label = bunny.getAttribute("aria-label");
-    bunny.setAttribute("aria-label", "See the Diwali offers");
+    const tag = bunny.querySelector<HTMLElement>(".bunny-fab-tag"), tagText = tag?.textContent ?? "";
+    if (tag) tag.textContent = offer.name + " offers";
+    bunny.setAttribute("aria-label", "See the " + offer.name + " offers");
     bunny.setAttribute("aria-haspopup", "dialog");
     bunny.classList.add("bunny-fab--diwali");
     // On window, capturing, so it runs before the contact card's own listener.
@@ -304,14 +339,15 @@ export function Diwali() {
       if (label) bunny.setAttribute("aria-label", label);
       bunny.removeAttribute("aria-haspopup");
       bunny.classList.remove("bunny-fab--diwali");
+      if (tag) tag.textContent = tagText;
     };
-  }, [stage, pathname]);
+  }, [offer, stage, pathname]);
 
   const closePop = useCallback(() => setPop(false), []);
   const startTour = useCallback(() => { setPop(false); setTour(true); }, []);
   const endTour = useCallback(() => setTour(false), []);
 
-  if (stage === "off") return null;
+  if (!offer || stage === "off") return null;
   const isHome = pathname === "/";
   return (
     <>
@@ -321,7 +357,7 @@ export function Diwali() {
         <>
           {hero ? createPortal(<Fireworks host={hero} />, hero) : null}
           <Into sel=".hero .pills">
-            <span className="pill dw-pill"><Diya />{stage === "offer" ? "Diwali offer till 11 Nov" : "Happy Diwali"}</span>
+            <span className="pill dw-pill"><Diya />{stage === "offer" ? offer.name + " offer till " + istDay(offer.offerEnds) : "Happy " + offer.name}</span>
           </Into>
           <Into sel=".hero .arc">
             <span className="dw-lamps" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <Diya key={i} className={"l" + i} />)}</span>
@@ -330,9 +366,9 @@ export function Diwali() {
           <Into sel="#book .arc"><span className="dw-lamps dw-lamps--sm" aria-hidden="true">{Array.from({ length: 5 }, (_, i) => <Diya key={i} className={"l" + i} />)}</span></Into>
         </>
       ) : null}
-      <Into sel="footer.foot" where="prepend"><span className="dw-greet" aria-hidden="true"><Diya />Happy Diwali from Divergent<Diya /></span></Into>
-      {pop ? <OfferPopup onClose={closePop} onTour={isHome ? startTour : closePop} /> : null}
-      {tour ? <Tour onDone={endTour} /> : null}
+      <Into sel="footer.foot" where="prepend"><span className="dw-greet" aria-hidden="true"><Diya />Happy {offer.name} from Divergent<Diya /></span></Into>
+      {pop && stage === "offer" ? <OfferPopup offer={offer} onClose={closePop} onTour={isHome ? startTour : closePop} /> : null}
+      {tour && stage === "offer" ? <Tour offer={offer} onDone={endTour} /> : null}
     </>
   );
 }

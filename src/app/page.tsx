@@ -37,7 +37,8 @@ export default function HomePage() {
             <div className="offer">
               <p className="offer-p"><span className="offer-k">Plans from</span><s className="offer-was" data-was="" hidden></s><b data-from-p="">₹5,999</b></p>
               <p className="deadline" data-req="launchPrice" data-until={CONFIG.dates.launchEnds}><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Launch price ends 2 November</p>
-              <p className="deadline" data-req="diwaliPrice" data-after={CONFIG.dates.diwaliStart} data-until={CONFIG.dates.diwaliEnds}><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Diwali offer ends 11 November</p>
+              {/* The festival offer's end, filled in by home.ts while it runs. */}
+              <p className="deadline" data-fest-deadline="" hidden><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg><span data-fest-deadline-t=""></span></p>
             </div>
             <div className="hero-ctas">
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>

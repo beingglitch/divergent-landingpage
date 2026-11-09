@@ -1,9 +1,9 @@
-/* Diwali 2026. Every rule is under html.diwali (6 to 18 Nov) or
-   html.diwali-offer (6 to 11 Nov), which src/components/Diwali.tsx sets
-   from the dates in src/lib/diwali.ts. Outside them none of this applies.
-   Delete this file with the component after the festival. */
+/* The festival offer. Every rule is under html.diwali (offer and
+   decorations) or html.diwali-offer (the offer itself), which
+   src/components/Diwali.tsx sets from the dates the app sends (see
+   src/lib/diwali.ts). Outside them none of this applies. */
 
-/* Course cards: the Diwali price shows only while the offer runs. */
+/* Course cards: the offer price shows only while the offer runs. */
 .dw-only{display:none}
 html.diwali-offer .dw-only{display:flex}
 html.diwali-offer .dw-hide{display:none}
@@ -56,7 +56,7 @@ html.diwali-offer .offer .deadline{border-color:rgba(255,197,0,.8);background:rg
 .st-was{opacity:.6;font-weight:600}
 .crash-was{margin-left:8px;color:var(--ink-3);font-weight:600}
 html.diwali-offer .pcol{border-color:rgba(255,170,0,.45)}
-html.diwali-offer .pcol::after{content:"Diwali price";position:absolute;top:-12px;right:22px;z-index:2;padding:6px 12px;font:750 11.5px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:linear-gradient(135deg,#FFE27A,var(--dw-gold) 50%,var(--dw-saffron));border-radius:999px;box-shadow:0 6px 14px -6px rgba(255,138,0,.9);pointer-events:none}
+html.diwali-offer .pcol[data-offer-tag]::after{content:attr(data-offer-tag);position:absolute;top:-12px;right:22px;z-index:2;padding:6px 12px;font:750 11.5px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:linear-gradient(135deg,#FFE27A,var(--dw-gold) 50%,var(--dw-saffron));border-radius:999px;box-shadow:0 6px 14px -6px rgba(255,138,0,.9);pointer-events:none}
 html.diwali-offer .save{background:linear-gradient(135deg,#FFE27A,var(--dw-gold) 55%,var(--dw-saffron));box-shadow:0 4px 12px -5px rgba(255,138,0,.85)}
 html.diwali-offer .pcol.on .save{background:#fff}
 html.diwali-offer .gift{display:block;margin-top:12px;padding:8px 10px 8px 34px;border-radius:10px;background:var(--yellow-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7c-2-4-6-4-6-1 0 1 1 1 6 1zm0 0c2-4 6-4 6-1 0 1-1 1-6 1z' fill='none' stroke='%23E25A00' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat 10px 9px/16px 16px;color:var(--ink-2);font-weight:600;font-size:13.5px}

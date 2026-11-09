@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { ContactPopup } from "@/components/ContactPopup";
 import { Sprite } from "@/components/Sprite";
 import { SiteBehaviour } from "@/components/SiteBehaviour";
-/* Diwali 2026: switches itself off after 18 Nov. See src/lib/diwali.ts to remove. */
+/* The festival offer, set in the app's admin. Renders nothing when none is on. See src/lib/diwali.ts. */
 import { Diwali } from "@/components/Diwali";
 import { SITE_URL } from "@/lib/meta";
 import { PIXEL_ID } from "@/lib/config";

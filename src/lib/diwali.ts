@@ -1,52 +1,140 @@
-/* Diwali 2026. Everything festive on the site reads its dates from here, so
-   it switches itself on and off: no deploy needed on either day.
+/* The festival offer (Diwali and the like). Its dates, copy and deals are set
+   by admins in the app and read from {APP_URL}/api/public/festival-offer, so
+   it switches itself on and off and changes without a deploy.
 
-   - The offer (struck prices, the popup, "ends 11 Nov") runs offerStart to
-     offerEnds, the dates in the Diwali Offer 2026 brief.
-   - The decorations (lamps, toran, fireworks, rangoli) run offerStart to
-     decorEnds, ten days of festival look in all.
+   - offer stage, offerStart to offerEnds: struck prices, the popup, the tour
+     and the decorations.
+   - decor stage, offerEnds to decorEnds: the decorations only.
+   - off: everything else, and while the offer is loading, when none is
+     switched on, or when the app can't be reached.
 
-   To remove it for good after the festival: delete this file,
-   src/components/Diwali.tsx and src/app/diwali.css, and the <Diwali />
-   line and import in src/app/layout.tsx. Times are IST. */
+   Rendering is in src/components/Diwali.tsx (styles in src/app/diwali.css)
+   and the plan cards in src/lib/home.ts. Times shown are IST. */
 
-import { ist } from "./config";
+import { APP_URL, ist } from "./config";
 
-export const DIWALI = {
-  offerStart: "2026-11-06T00:00:00",
-  offerEnds: "2026-11-11T23:59:59",
-  decorEnds: "2026-11-18T23:59:59",
-  /* How long a visitor is on the site before the offer popup opens. */
-  popupDelayMs: 7000,
+export type FestivalDeal = { name: string; offer: string; how: string; code: string | null; link: string; hot: boolean };
+
+export type FestivalOffer = {
+  name: string;
+  offerStart: Date;
+  offerEnds: Date;
+  decorEnds: Date | null;
+  joinRefundEnds: Date | null;
+  headline: string;
+  headlineAccent: string | null;
+  description: string;
+  courseSlug: string;
+  popupDelaySeconds: number;
+  giftLine: string | null;
+  deals: FestivalDeal[];
 };
 
-export type DiwaliStage = "offer" | "decor" | "off";
+export type FestivalStage = "offer" | "decor" | "off";
 
-/* Preview another day with ?preview-date=2026-11-07 (the same switch the home page uses). */
-export function diwaliNow(): Date {
+/* Preview another day with ?preview-date=2026-11-07 (or 2026-11-07T10:00),
+   the same switch the home page uses. */
+export function previewNow(): Date {
   if (typeof location === "undefined") return new Date();
   const m = /[?&]preview-date=(\d{4}-\d{2}-\d{2})(T\d{2}:\d{2})?/.exec(location.search);
   return m ? ist(m[1] + (m[2] ? m[2] + ":00" : "T12:00:00")) : new Date();
 }
 
-export function diwaliStage(t: Date = diwaliNow()): DiwaliStage {
-  if (t < ist(DIWALI.offerStart)) return "off";
-  if (t <= ist(DIWALI.offerEnds)) return "offer";
-  if (t <= ist(DIWALI.decorEnds)) return "decor";
+export function festivalStage(o: FestivalOffer | null, t: Date = previewNow()): FestivalStage {
+  if (!o || t < o.offerStart) return "off";
+  if (t <= o.offerEnds) return "offer";
+  if (o.decorEnds && t <= o.decorEnds) return "decor";
   return "off";
 }
 
-/* The offers in the popup, from the brief's price tables. now is today's
-   real price (it comes back on 12 Nov), never an inflated MRP. */
-/* `offer` is what the offer is and `how` is how to get it: the popup shows
-   these, never a price as if already applied. In the app the student applies
-   the Diwali offer themselves, from Apply discount on the plan. */
-export type DiwaliDeal = { name: string; note: string; offer: string; how: string; now: number; diwali: number; href: string; code?: string; hot?: boolean };
+/* IST formatting. */
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const inIst = (d: Date) => new Date(d.getTime() + 330 * 60_000);
 
-export const DIWALI_DEALS: DiwaliDeal[] = [
-  { name: "75-Day Crash Course · Combo", note: "Live + Mentor plans get AI sketch review and free AIDMT", offer: "₹2,000 off every Combo plan", how: "At checkout, open Apply discount and apply the Diwali offer", now: 18999, diwali: 16999, href: "/#plans", hot: true },
-  { name: "75-Day Crash Course · single exam", note: "₹1,000 off every plan", offer: "₹1,000 off every single-exam plan", how: "At checkout, open Apply discount and apply the Diwali offer", now: 11999, diwali: 10999, href: "/#plans" },
-  { name: "120-Day Crash Course · UCEED", note: "Live classes from today, recordings of everything so far", offer: "₹4,997 off UCEED, ₹6,998 off UCEED + NID", how: "Use code DIWALI120 at checkout", now: 20996, diwali: 15999, href: "/courses/?exam=all&type=crash", code: "DIWALI120" },
-  { name: "NOVA Class 11 · UCEED", note: "A calm 2-year start, for 2028", offer: "₹4,996 off UCEED, ₹6,998 off UCEED + NID", how: "Use code NOVADIWALI at checkout", now: 23995, diwali: 18999, href: "/courses/?exam=all&type=nova", code: "NOVADIWALI" },
-  { name: "UCEED 2027 Self-Learning Prep", note: "Counts in full toward a course by 15 Nov", offer: "₹5,998 off", how: "Counts in full toward a course by 15 Nov", now: 11997, diwali: 5999, href: "/courses/?exam=uceed&type=self" },
-];
+/* "11 Nov", or "11 November" with long. */
+export function istDay(d: Date, long = false): string {
+  const z = inIst(d), m = MONTHS[z.getUTCMonth()];
+  return z.getUTCDate() + " " + (long ? m : m.slice(0, 3));
+}
+
+/* "11 Nov, 11:59 pm". */
+export function istDayTime(d: Date): string {
+  const z = inIst(d), h = z.getUTCHours();
+  return istDay(d) + ", " + (h % 12 || 12) + ":" + String(z.getUTCMinutes()).padStart(2, "0") + (h < 12 ? " am" : " pm");
+}
+
+/* Where a deal links: "course" is this site's plans, a divergentclasses.com
+   link keeps its path so it stays on the site, anything else is as given. */
+export function dealHref(link: string): string {
+  if (link === "course") return "/#plans";
+  try {
+    const u = new URL(link);
+    if (/^(www\.)?divergentclasses\.com$/i.test(u.hostname)) return u.pathname + u.search + u.hash;
+  } catch {
+    /* Not a full URL: a path on this site. */
+  }
+  return link;
+}
+
+/* Loading. */
+const str = (v: unknown): string | null => (typeof v === "string" && v.trim() ? v.trim() : null);
+const when = (v: unknown): Date | null => {
+  const s = str(v);
+  if (!s) return null;
+  const d = new Date(s);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
+function parse(raw: unknown): FestivalOffer | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  const name = str(r.name), headline = str(r.headline), offerStart = when(r.offerStart), offerEnds = when(r.offerEnds);
+  if (!name || !headline || !offerStart || !offerEnds) return null;
+  const deals: FestivalDeal[] = (Array.isArray(r.deals) ? r.deals : []).flatMap((x): FestivalDeal[] => {
+    if (!x || typeof x !== "object") return [];
+    const d = x as Record<string, unknown>;
+    const dn = str(d.name), offer = str(d.offer);
+    if (!dn || !offer) return [];
+    return [{ name: dn, offer, how: str(d.how) || "", code: str(d.code), link: str(d.link) || "course", hot: d.hot === true }];
+  });
+  const delay = typeof r.popupDelaySeconds === "number" && Number.isFinite(r.popupDelaySeconds) ? Math.max(0, r.popupDelaySeconds) : 8;
+  return {
+    name,
+    offerStart,
+    offerEnds,
+    decorEnds: when(r.decorEnds),
+    joinRefundEnds: when(r.joinRefundEnds),
+    headline,
+    headlineAccent: str(r.headlineAccent),
+    description: str(r.description) || "",
+    courseSlug: str(r.courseSlug) || "",
+    popupDelaySeconds: delay,
+    giftLine: str(r.giftLine),
+    deals,
+  };
+}
+
+/* Fetched once per page load and shared by everything that asks. A failure
+   or a slow app (over 8 seconds) means no offer: nothing festive shows. */
+let pending: Promise<FestivalOffer | null> | null = null;
+
+export function loadFestivalOffer(): Promise<FestivalOffer | null> {
+  if (typeof window === "undefined") return Promise.resolve(null);
+  if (!pending) {
+    pending = (async () => {
+      const ctl = new AbortController();
+      const timer = window.setTimeout(() => ctl.abort(), 8000);
+      try {
+        const res = await fetch(APP_URL + "/api/public/festival-offer", { signal: ctl.signal });
+        if (!res.ok) return null;
+        const body = await res.json();
+        return body?.success ? parse(body.data) : null;
+      } catch {
+        return null;
+      } finally {
+        window.clearTimeout(timer);
+      }
+    })();
+  }
+  return pending;
+}
