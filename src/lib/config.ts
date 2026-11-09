@@ -217,7 +217,7 @@ export type AidmtSitting = {
 };
 
 export const AIDMT_SERIES: AidmtSitting[] = [
-  { key: "sectional", name: "Free sectional", exam: null, detail: "Part B only (drawing and design), free for everyone", opens: "2026-11-09T09:00:00", closes: "2026-11-09T23:59:59", free: true },
+  { key: "sectional", name: "Free sectional", exam: null, detail: "Part B only (drawing and design), free for everyone", opens: "2026-11-08T09:00:00", closes: "2026-11-11T23:59:59", free: true },
   {
     key: "aidmt-1", name: "AIDMT 1", exam: "NID", detail: "NID full-length mock, ranked across India",
     opens: "2026-11-15T09:00:00", closes: "2026-11-17T23:59:59", free: false,

@@ -41,7 +41,7 @@ export function AidmtStrip({ builtAt }: { builtAt: number }) {
     sub = "See every date on the AIDMT page.";
   } else if (s.free) {
     badge = "Free";
-    head = t >= ist(s.opens) ? "The free AIDMT sectional is on today." : `Test yourself first: free AIDMT sectional, ${aidmtDays(s.opens)}.`;
+    head = t >= ist(s.opens) ? `The free AIDMT sectional is open till ${aidmtDays(s.closes)}.` : `Test yourself first: free AIDMT sectional, ${aidmtDays(s.opens, s.closes)}.`;
     sub = `${s.detail}.` + (ranked ? ` Then ${label(ranked)}, ${days(ranked)}.` : "");
   } else {
     head = t >= ist(s.opens) ? `${label(s)} is on now, till ${aidmtDays(s.closes)}.` : `Test yourself first: ${label(s)}, ${days(s)}.`;

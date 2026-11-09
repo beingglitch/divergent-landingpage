@@ -6,7 +6,7 @@ import { AidmtCtaHead, AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
 
 export const metadata: Metadata = pageMeta({
   title: "AIDMT 2026: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
-  description: "AIDMT 2026: a free sectional on 9 November, then four national design mocks set like NID, UCEED and NIFT, 15 to 30 November, each with an All India Rank. ₹99, or ₹199 for a group of three.",
+  description: "AIDMT 2026: a free sectional from 8 to 11 November, then four national design mocks set like NID, UCEED and NIFT, 15 to 30 November, each with an All India Rank. ₹99, or ₹199 for a group of three.",
   path: "/aidmt/",
 });
 
@@ -77,12 +77,12 @@ const FAQS = [
   ["What is AIDMT?", "The All India Design Mock Test, run by Divergent Classes. AIDMT 2026 is a series of four national mocks, set like NID, UCEED and NIFT, each with a national rank, plus a free sectional."],
   ["Who can take it?", "Anyone preparing for a design entrance: Class 11, Class 12, droppers, and graduates aiming for M.Des."],
   ["When are the mocks?", `${AIDMT_SERIES.map((s) => `${s.name}${s.exam ? ` (${s.exam})` : ""}: ${span(s)}`).join(". ")}. All times are IST.`],
-  ["What is the pattern?", `Each mock follows its exam. ${UCEED.name} is set like UCEED: Part A on computer, 180 marks across 7 topics, with MCQ, MSQ and numerical questions, and Part B, 60 marks of drawing and design problems. The free sectional on ${aidmtDays(SECTIONAL.opens)} is Part B only.`],
+  ["What is the pattern?", `Each mock follows its exam. ${UCEED.name} is set like UCEED: Part A on computer, 180 marks across 7 topics, with MCQ, MSQ and numerical questions, and Part B, 60 marks of drawing and design problems. The free sectional, open ${aidmtDays(SECTIONAL.opens, SECTIONAL.closes)}, is Part B only.`],
   ["How do I register?", `Tap Register, sign in with your mobile number and pay ${rupees(AIDMT.fee)}, or ${rupees(AIDMT.groupFee)} for you and two friends. You are registered straight away. ${FIRST.name} takes registrations till ${aidmtDays(AIDMT.registrationEnds)}, ${aidmtTime(AIDMT.registrationEnds)}.`],
   ["When do solutions and results come?", afterLines],
   ["Is there a scholarship?", `Yes. Top rankers in ${FIRST.name} get a special scholarship discount.`],
   ["Can I take a mock again?", "No. One attempt per student per mock, so the ranks stay fair and the questions stay private."],
-  ["What does it cost?", `${rupees(AIDMT.fee)} for one student, down from ${rupees(AIDMT.feeWas)}, or ${rupees(AIDMT.groupFee)} for a group of ${AIDMT.groupSize}. That covers marking, your rank, percentile and topic report. The sectional on ${aidmtDays(SECTIONAL.opens)} is free.`],
+  ["What does it cost?", `${rupees(AIDMT.fee)} for one student, down from ${rupees(AIDMT.feeWas)}, or ${rupees(AIDMT.groupFee)} for a group of ${AIDMT.groupSize}. That covers marking, your rank, percentile and topic report. The sectional, open ${aidmtDays(SECTIONAL.opens, SECTIONAL.closes)}, is free.`],
   ["Is it free for Divergent students?", "Live and Mentor plans of the 75-Day Crash Course taken in the Diwali offer include free access to every AIDMT."],
   ["How does the group of three work?", `One of you pays ${rupees(AIDMT.groupFee)} and adds the two friends' mobile numbers. Each friend is registered as soon as they sign in to Divergent with that number.`],
   ["What is in the report?", "Your total and section scores, All India Rank and percentile, accuracy in each Part A topic, and what to practise next."],
