@@ -6,7 +6,8 @@
 .blog-cover-fallback{display:block;aspect-ratio:16/9;background:radial-gradient(120% 130% at 50% -10%,#6FCBF0 0%,#2FA7DB 34%,var(--blue) 60%,#1C90C4 100%)}
 .blog-lead,.blog-card{display:grid;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .25s var(--ease-out),box-shadow .25s var(--ease-out)}
 .blog-lead:hover,.blog-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);color:var(--ink)}
-.blog-lead img,.blog-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--blue-50)}
+/* Tall covers (4:5 infographics) are cropped from the top, where their headline sits. */
+.blog-lead img,.blog-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center top;background:var(--blue-50)}
 .blog-lead-body,.blog-card-body{display:grid;align-content:start;gap:12px;padding:clamp(20px,2.4vw,32px)}
 .blog-lead h2{font-size:clamp(26px,2.6vw,38px);line-height:1.1;letter-spacing:-.02em;margin:0;text-wrap:balance}
 .blog-card h3{font-size:21px;line-height:1.2;letter-spacing:-.01em;margin:0;text-wrap:balance}
@@ -29,7 +30,8 @@
 .blog-byline .blog-by{color:var(--ink);font-weight:650}
 .blog-titles{display:grid;gap:12px}
 .blog-subtitle{font-family:var(--f-body);font-size:clamp(19px,1.6vw,23px);line-height:1.4;letter-spacing:0;font-weight:500;color:var(--ink-2);margin:0;text-wrap:pretty}
-.blog-post-cover{display:block;width:100%;border-radius:var(--radius-lg);margin-bottom:clamp(28px,3.5vw,44px);background:var(--blue-50)}
+/* Never taller than most of the screen: a portrait cover is centred at a readable size, a wide one fills the column. */
+.blog-post-cover{display:block;width:auto;max-width:100%;height:auto;max-height:min(72vh,620px);margin:0 auto clamp(28px,3.5vw,44px);border-radius:var(--radius-lg);background:var(--blue-50)}
 .blog-prose{font-size:clamp(17px,.4vw + 15.5px,18.5px);line-height:1.75;color:var(--ink-2);overflow-wrap:anywhere}
 .blog-prose>*{margin:0 0 1.15em}
 .blog-prose h2,.blog-prose h3,.blog-prose h4{font-family:var(--f-display);color:var(--ink);line-height:1.2;letter-spacing:-.015em;margin:1.8em 0 .6em}
@@ -45,7 +47,7 @@
 .blog-prose blockquote>:last-child{margin-bottom:0}
 .blog-prose img{display:block;max-width:100%;height:auto;border-radius:var(--radius);background:var(--blue-50)}
 .blog-prose figure{margin:1.6em 0}
-.blog-prose figure img{width:100%}
+.blog-prose figure img{width:auto;max-width:100%;max-height:min(80vh,640px);margin-inline:auto}
 .blog-prose figcaption{margin-top:10px;font-size:14px;line-height:1.5;color:var(--ink-3);text-align:center}
 .blog-prose h2[id],.blog-prose h3[id]{scroll-margin-top:calc(var(--nav-h) + var(--promo-h) + 16px)}
 .blog-prose hr{border:0;border-top:1px solid var(--line);margin:2.2em 0}
