@@ -39,7 +39,7 @@ export default async function BlogPage() {
           ) : (
             <>
               <a className="blog-lead" href={`/blog/${lead.slug}/`}>
-                {lead.coverImage ? <img src={lead.coverImage} alt={lead.coverAlt ?? ""} loading="eager" /> : <span className="blog-cover-fallback" aria-hidden="true" />}
+                {lead.coverImage ? <img src={lead.coverImage} alt={lead.coverAlt ?? ""} width={lead.coverWidth ?? undefined} height={lead.coverHeight ?? undefined} loading="eager" fetchPriority="high" decoding="async" /> : <span className="blog-cover-fallback" aria-hidden="true" />}
                 <div className="blog-lead-body">
                   <PostMeta tags={lead.tags} publishedAt={lead.publishedAt} minutes={lead.readingMinutes} />
                   <h2>{lead.title}</h2>
@@ -52,7 +52,7 @@ export default async function BlogPage() {
                   {rest.map((post) => (
                     <li key={post.slug}>
                       <a className="blog-card" href={`/blog/${post.slug}/`}>
-                        {post.coverImage ? <img src={post.coverImage} alt={post.coverAlt ?? ""} loading="lazy" /> : <span className="blog-cover-fallback" aria-hidden="true" />}
+                        {post.coverImage ? <img src={post.coverImage} alt={post.coverAlt ?? ""} width={post.coverWidth ?? undefined} height={post.coverHeight ?? undefined} loading="lazy" decoding="async" /> : <span className="blog-cover-fallback" aria-hidden="true" />}
                         <div className="blog-card-body">
                           <PostMeta tags={post.tags} publishedAt={post.publishedAt} minutes={post.readingMinutes} />
                           <h3>{post.title}</h3>

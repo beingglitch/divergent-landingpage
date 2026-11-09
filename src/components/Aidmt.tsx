@@ -37,7 +37,7 @@ export function AidmtStrip({ builtAt }: { builtAt: number }) {
   const ranked = nextAidmt(t, true);
   let badge = `New · ${rupees(AIDMT.fee)}`, head: string, sub: string;
   if (!s) {
-    head = "AIDMT 2026: solutions and results are on the way.";
+    head = "AIDMT 2027: solutions and results are on the way.";
     sub = "See every date on the AIDMT page.";
   } else if (s.free) {
     badge = "Free";
@@ -72,7 +72,7 @@ export function AidmtRegLine({ builtAt, off }: { builtAt: number; off: number })
 export function AidmtCtaHead({ builtAt }: { builtAt: number }) {
   const t = useNow(builtAt);
   const s = nextAidmt(t, true);
-  if (!s) return <>AIDMT 2026 is over. Watch this space for the next one.</>;
+  if (!s) return <>AIDMT 2027 is over. Watch this space for the next one.</>;
   return t >= ist(s.opens)
     ? <>{label(s)} is on now, till {aidmtDays(s.closes)}. Register now.</>
     : <>{label(s)} runs {days(s)}. Register now.</>;
@@ -96,7 +96,7 @@ function windowText(s: AidmtSitting): string {
 export function AidmtSchedule({ builtAt }: { builtAt: number }) {
   const t = useNow(builtAt);
   return (
-    <ol className="aidmt-tl" aria-label="AIDMT 2026 schedule">
+    <ol className="aidmt-tl" aria-label="AIDMT 2027 schedule">
       {AIDMT_SERIES.map((s) => {
         const state = aidmtState(s, t);
         const st = status(s, state, t);

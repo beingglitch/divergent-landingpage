@@ -192,7 +192,7 @@ export const CONTACT = {
    /aidmt/ page and the home page strip follow. The app says the same things
    (divergent-lms src/lib/aidmt-event.ts AIDMT_SERIES); change both together.
 
-   AIDMT 2026 is a series: a free sectional, then four ranked mocks, each set
+   AIDMT 2027 is a series: a free sectional, then four ranked mocks, each set
    like the exam it is named for, listed in date order. A mock takes
    registrations until its own window closes. When a mock's solutions or
    results dates are fixed, add them here and the pages pick them up. */
@@ -223,7 +223,6 @@ export const AIDMT_SERIES: AidmtSitting[] = [
     opens: "2026-11-15T09:00:00", closes: "2026-11-17T23:59:59", free: false,
     solutions: { from: "2026-11-18T00:00:00", to: "2026-11-19T23:59:59", how: "on a live meet" },
     results: "2026-11-20T23:59:59",
-    perk: "Top rankers get a special scholarship discount.",
   },
   {
     key: "aidmt-2", name: "AIDMT 2", exam: "UCEED", detail: "UCEED mock, ranked across India",

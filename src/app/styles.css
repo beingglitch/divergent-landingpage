@@ -999,6 +999,10 @@ html.has-promo{--promo-h:36px}
 .aidmt-was{font-weight:500;font-size:14px;color:var(--on-dark-2);margin-left:4px}
 .aidmt-close{display:inline-flex;align-items:center;gap:8px;margin:18px 0 0;font-size:14.5px;font-weight:600;color:var(--on-dark-2)}
 .aidmt-total{margin:0;font-size:16px;color:var(--ink-2)}
+.aidmt-guide{margin:18px 0 0;font-size:15.5px;font-weight:650}
+.aidmt-guide a{display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+.aidmt-guide a:hover .arr{transform:translateX(3px)}
+.aidmt-guide .arr{transition:transform .25s var(--ease-out)}
 .aidmt-note{margin:18px 0 0;font-size:14.5px;color:var(--ink-2)}
 /* The home page pointer to /aidmt/, under the exam countdowns. */
 .aidmt-strip{margin-top:18px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px 22px;padding:18px clamp(18px,2.4vw,28px);border-radius:var(--radius-xl);background:var(--ink);color:#fff;text-decoration:none;transition:transform .3s var(--ease-out)}
@@ -1010,7 +1014,7 @@ html.has-promo{--promo-h:36px}
 @media (max-width:700px){.aidmt-strip{grid-template-columns:1fr}.aidmt-strip .badge{justify-self:start}.aidmt-strip .btn{justify-self:start}}
 
 /* ========================= AIDMT SERIES + COURSE TRAILER (landing-aidmt-video) ========================= */
-/* The AIDMT 2026 schedule on /aidmt/ (components/Aidmt.tsx): one row per sitting, status from today's date. */
+/* The AIDMT 2027 schedule on /aidmt/ (components/Aidmt.tsx): one row per sitting, status from today's date. */
 .aidmt-tl{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .aidmt-tl-i{display:grid;grid-template-columns:minmax(120px,170px) 1fr;gap:8px 28px;padding:clamp(18px,2.4vw,26px) clamp(18px,2.4vw,28px);border:1px solid var(--line);border-radius:var(--radius-lg);background:#fff;transition:border-color .3s,box-shadow .3s}
 .aidmt-tl-i p{margin:0}

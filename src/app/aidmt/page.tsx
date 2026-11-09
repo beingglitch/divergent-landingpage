@@ -5,8 +5,8 @@ import { AIDMT, AIDMT_SERIES, CONTACT, aidmtDays, aidmtTime } from "@/lib/config
 import { AidmtCtaHead, AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
 
 export const metadata: Metadata = pageMeta({
-  title: "AIDMT 2026: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
-  description: "AIDMT 2026: a free sectional from 8 to 11 November, then four national design mocks set like NID, UCEED and NIFT, 15 to 30 November, each with an All India Rank. ₹99, or ₹199 for a group of three.",
+  title: "AIDMT 2027: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
+  description: "AIDMT 2027: a free sectional from 8 to 11 November, then four national design mocks set like NID, UCEED and NIFT, 15 to 30 November, each with an All India Rank. ₹99, or ₹199 for a group of three.",
   path: "/aidmt/",
 });
 
@@ -74,13 +74,12 @@ const RULES = [
 ];
 
 const FAQS = [
-  ["What is AIDMT?", "The All India Design Mock Test, run by Divergent Classes. AIDMT 2026 is a series of four national mocks, set like NID, UCEED and NIFT, each with a national rank, plus a free sectional."],
-  ["Who can take it?", "Anyone preparing for a design entrance: Class 11, Class 12, droppers, and graduates aiming for M.Des."],
+  ["What is AIDMT?", "The All India Design Mock Test, run by Divergent Classes. AIDMT 2027 is a series of four national mocks, set like NID, UCEED and NIFT, each with a national rank, plus a free sectional."],
+  ["Who can take it?", "Anyone preparing for a design entrance: Class 11, Class 12 and droppers."],
   ["When are the mocks?", `${AIDMT_SERIES.map((s) => `${s.name}${s.exam ? ` (${s.exam})` : ""}: ${span(s)}`).join(". ")}. All times are IST.`],
-  ["What is the pattern?", `Each mock follows its exam. ${UCEED.name} is set like UCEED: Part A on computer, 180 marks across 7 topics, with MCQ, MSQ and numerical questions, and Part B, 60 marks of drawing and design problems. The free sectional, open ${aidmtDays(SECTIONAL.opens, SECTIONAL.closes)}, is Part B only.`],
+  ["What is the pattern?", `Each mock follows its exam. ${UCEED.name} is set like UCEED: Part A on computer, 200 marks across 7 topics, with MCQ, MSQ and numerical questions, and Part B, 100 marks of drawing and design problems. The free sectional, open ${aidmtDays(SECTIONAL.opens, SECTIONAL.closes)}, is Part B only.`],
   ["How do I register?", `Tap Register, sign in with your mobile number and pay ${rupees(AIDMT.fee)}, or ${rupees(AIDMT.groupFee)} for you and two friends. You are registered straight away. ${FIRST.name} takes registrations till ${aidmtDays(AIDMT.registrationEnds)}, ${aidmtTime(AIDMT.registrationEnds)}.`],
   ["When do solutions and results come?", afterLines],
-  ["Is there a scholarship?", `Yes. Top rankers in ${FIRST.name} get a special scholarship discount.`],
   ["Can I take a mock again?", "No. One attempt per student per mock, so the ranks stay fair and the questions stay private."],
   ["What does it cost?", `${rupees(AIDMT.fee)} for one student, down from ${rupees(AIDMT.feeWas)}, or ${rupees(AIDMT.groupFee)} for a group of ${AIDMT.groupSize}. That covers marking, your rank, percentile and topic report. The sectional, open ${aidmtDays(SECTIONAL.opens, SECTIONAL.closes)}, is free.`],
   ["Is it free for Divergent students?", "Live and Mentor plans of the 75-Day Crash Course taken in the Diwali offer include free access to every AIDMT."],
@@ -96,9 +95,10 @@ export default function AidmtPage() {
         <div className="stage">
           <div className="arc">
             <div className="wrap">
-              <p className="pills"><span className="pill">UCEED · CEED · NID · NIFT</span><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>AIDMT 2026</span></p>
+              <p className="pills"><span className="pill">UCEED · CEED · NID · NIFT</span><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>AIDMT 2027</span></p>
               <h1 className="h1" id="hero-h">All India <span className="hl">Design Mock.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></h1>
               <p className="hero-sub">Four national mocks, set like NID, UCEED and NIFT, plus a free sectional. Sit each one from home and see your All India Rank.</p>
+              <p className="aidmt-guide"><a href="/blog/aidmt-all-india-design-mock-test/">New to AIDMT? Read the full guide <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p>
             </div>
           </div>
           <div className="wrap hero-low">
@@ -136,18 +136,18 @@ export default function AidmtPage() {
               <Eyebrow>The paper</Eyebrow>
               <h2 className="h2 rv" id="pat-h">Set like the real exam.</h2>
             </div>
-            <p className="aidmt-total rv">Each mock follows its exam. Here is {UCEED.name}, the UCEED paper: two parts, 240 marks, about 150 minutes in one sitting.</p>
+            <p className="aidmt-total rv">Each mock follows its exam. Here is {UCEED.name}, the UCEED paper: two parts, 300 marks, 3 hours in one sitting.</p>
           </div>
           <div className="parts">
             <div className="part rv">
               <p className="part-k">Part A · on computer</p>
-              <h3>180 marks</h3>
+              <h3>200 marks</h3>
               <ul>{PART_A.map(([k, v]) => <li key={k}><b>{k}</b><span>{v}</span></li>)}</ul>
               <p className="aidmt-note">MCQ, MSQ and numerical questions, as in UCEED.</p>
             </div>
             <div className="part y rv" style={i(1)}>
               <p className="part-k">Part B · drawing</p>
-              <h3>60 marks</h3>
+              <h3>100 marks</h3>
               <ul>
                 <li><b>Drawing</b><span>Perspective, proportion, the human figure, light and shade.</span></li>
                 <li><b>Design aptitude</b><span>Solve a design problem and explain it in a sketch.</span></li>
