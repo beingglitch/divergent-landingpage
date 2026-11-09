@@ -38,12 +38,15 @@ export function diwaliStage(t: Date = diwaliNow()): DiwaliStage {
 
 /* The offers in the popup, from the brief's price tables. now is today's
    real price (it comes back on 12 Nov), never an inflated MRP. */
-export type DiwaliDeal = { name: string; note: string; now: number; diwali: number; href: string; code?: string; hot?: boolean };
+/* `offer` is what the offer is and `how` is how to get it: the popup shows
+   these, never a price as if already applied. In the app the student applies
+   the Diwali offer themselves, from Apply discount on the plan. */
+export type DiwaliDeal = { name: string; note: string; offer: string; how: string; now: number; diwali: number; href: string; code?: string; hot?: boolean };
 
 export const DIWALI_DEALS: DiwaliDeal[] = [
-  { name: "75-Day Crash Course · Combo", note: "Live + Mentor plans get AI sketch review and free AIDMT", now: 18999, diwali: 16999, href: "/#plans", hot: true },
-  { name: "75-Day Crash Course · single exam", note: "₹1,000 off every plan, no code needed", now: 11999, diwali: 10999, href: "/#plans" },
-  { name: "120-Day Crash Course · UCEED", note: "Live classes from today, recordings of everything so far", now: 20996, diwali: 15999, href: "/courses/?exam=all&type=crash", code: "DIWALI120" },
-  { name: "NOVA Class 11 · UCEED", note: "A calm 2-year start, for 2028", now: 23995, diwali: 18999, href: "/courses/?exam=all&type=nova", code: "NOVADIWALI" },
-  { name: "UCEED 2027 Self-Learning Prep", note: "Counts in full toward a course by 15 Nov", now: 11997, diwali: 5999, href: "/courses/?exam=uceed&type=self" },
+  { name: "75-Day Crash Course · Combo", note: "Live + Mentor plans get AI sketch review and free AIDMT", offer: "₹2,000 off every Combo plan", how: "At checkout, open Apply discount and apply the Diwali offer", now: 18999, diwali: 16999, href: "/#plans", hot: true },
+  { name: "75-Day Crash Course · single exam", note: "₹1,000 off every plan", offer: "₹1,000 off every single-exam plan", how: "At checkout, open Apply discount and apply the Diwali offer", now: 11999, diwali: 10999, href: "/#plans" },
+  { name: "120-Day Crash Course · UCEED", note: "Live classes from today, recordings of everything so far", offer: "₹4,997 off UCEED, ₹6,998 off UCEED + NID", how: "Use code DIWALI120 at checkout", now: 20996, diwali: 15999, href: "/courses/?exam=all&type=crash", code: "DIWALI120" },
+  { name: "NOVA Class 11 · UCEED", note: "A calm 2-year start, for 2028", offer: "₹4,996 off UCEED, ₹6,998 off UCEED + NID", how: "Use code NOVADIWALI at checkout", now: 23995, diwali: 18999, href: "/courses/?exam=all&type=nova", code: "NOVADIWALI" },
+  { name: "UCEED 2027 Self-Learning Prep", note: "Counts in full toward a course by 15 Nov", offer: "₹5,998 off", how: "Counts in full toward a course by 15 Nov", now: 11997, diwali: 5999, href: "/courses/?exam=uceed&type=self" },
 ];

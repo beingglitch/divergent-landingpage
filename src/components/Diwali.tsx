@@ -11,7 +11,6 @@ import { DIWALI, DIWALI_DEALS, diwaliStage, type DiwaliStage } from "@/lib/diwal
    piece reads its dates from src/lib/diwali.ts and renders nothing outside
    them. Styles are in src/app/diwali.css, all under html.diwali. */
 
-const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 
 /* A clay diya with a flickering flame. */
 export function Diya({ className = "" }: { className?: string }) {
@@ -98,7 +97,7 @@ function Fireworks({ host }: { host: HTMLElement }) {
    note beside it. Steps whose part is missing are skipped. */
 type Step = { sel: string; title: string; text: string };
 const STEPS: Step[] = [
-  { sel: "#planPick .pcol.on .pcard", title: "Diwali prices are on every plan", text: "₹1,000 off single-exam plans and ₹2,000 off Combos. The struck price is today's price, and it comes back after 11 Nov." },
+  { sel: "#planPick .pcol.on .pcard", title: "The Diwali offer is on every plan", text: "₹1,000 off single-exam plans and ₹2,000 off Combos, till 11 Nov. To get it, open Apply discount at checkout and apply the Diwali offer." },
   { sel: "#planPick .pcol.on .gift:not([hidden])", title: "Diwali gifts on Live and Mentor", text: "AI sketch review and free access to every AIDMT. Mentor plans paid in full also get a Divergent hoodie." },
   { sel: ".pjoinbox", title: "Not ready to pay it all?", text: "Join for ₹1,000. It locks the Diwali price, counts toward your fee, and is fully refundable till 10 Nov." },
   { sel: "#demo", title: "Try before you pay", text: "Take a free demo class first. Sign in with your phone number, no payment." },
@@ -206,14 +205,11 @@ function OfferPopup({ onClose, onTour }: { onClose: () => void; onTour: () => vo
                 href={d.href}
                 onClick={(e) => { if (home && d.href === "/#plans") { e.preventDefault(); onTour(); } }}
               >
+                {/* What the offer is and how to get it; never a price shown as already applied. */}
                 <span className="dw-deal-t">
                   <b>{d.name}{d.hot ? <em>Best value</em> : null}</b>
-                  <small>{d.note}</small>
-                </span>
-                <span className="dw-deal-p">
-                  <s aria-label={"Was " + inr(d.now)}>{inr(d.now)}</s>
-                  <b>{inr(d.diwali)}</b>
-                  <span className="dw-off">{inr(d.now - d.diwali)} off{d.code ? <> · <code>{d.code}</code></> : null}</span>
+                  <span className="dw-off">{d.offer}</span>
+                  <small>{d.how}</small>
                 </span>
               </a>
             </li>
@@ -221,9 +217,9 @@ function OfferPopup({ onClose, onTour }: { onClose: () => void; onTour: () => vo
         </ul>
         <div className="dw-pop-foot">
           {home ? (
-            <button type="button" className="btn btn--block" onClick={onTour}>Show me the Diwali prices</button>
+            <button type="button" className="btn btn--block" onClick={onTour}>Show me how to apply it</button>
           ) : (
-            <a className="btn btn--block" href="/?diwali-tour=1#plans">See the Diwali prices</a>
+            <a className="btn btn--block" href="/?diwali-tour=1#plans">Show me how to apply it</a>
           )}
           <p>Join for ₹1,000 to lock the price. Fully refundable till 10 Nov.</p>
         </div>

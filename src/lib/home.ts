@@ -189,7 +189,9 @@ export function initHome(): () => void {
       if (prEl) prEl.innerHTML = (save > 0 ? '<s class="pwas" aria-label="Was ' + inr(q.list) + '">' + inr(q.list) + "</s>" : "") + '<span class="cur">₹</span>' + q.now.toLocaleString("en-IN");
       const sw = $("[data-save-wrap]", card);
       const till = per === "launch" ? " till 2 November" : per === "diwali" ? " till 11 November" : "";
-      if (sw) sw.innerHTML = save > 0 ? '<span class="save">' + inr(save) + " off" + till + "</span>" : "";
+      /* How to get it: the student applies the Diwali offer at checkout. */
+      const how = per === "diwali" ? '<span class="save-how">Apply the Diwali offer at checkout</span>' : "";
+      if (sw) sw.innerHTML = save > 0 ? '<span class="save">' + inr(save) + " off" + till + "</span>" + how : "";
       const g = $("[data-gift]", card);
       if (g) {
         /* The brief's Diwali gifts: Live and Mentor only, the hoodie on Mentor paid in full. */
