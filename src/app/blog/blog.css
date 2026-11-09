@@ -70,3 +70,9 @@
 .blog-cta p{margin:0;color:var(--ink-2)}
 .blog-cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
 @media (max-width:420px){.blog-cta-row .btn{width:100%}}
+/* ---------- blog: keep reading ---------- */
+.blog-related{margin-top:clamp(40px,5vw,64px);padding-top:clamp(28px,3vw,40px);border-top:1px solid var(--line)}
+.blog-related h2{margin:0;font-size:clamp(22px,2.2vw,28px);line-height:1.15}
+.blog-related .blog-grid{margin-top:20px;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr))}
+.blog-related .blog-card h3{font-size:18px}
+.blog-related .blog-card p:not(.blog-meta){display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:15px}

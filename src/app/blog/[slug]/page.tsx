@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/meta";
-import { getPost, postDate, wasUpdated, type Post } from "@/lib/blog";
+import { getPost, getPosts, postDate, wasUpdated, type Post } from "@/lib/blog";
+import { PostCard, relatedPosts } from "@/components/BlogCards";
 import "../blog.css";
 
 export const revalidate = 60;
@@ -97,6 +98,7 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   const updated = wasUpdated(post);
+  const related = relatedPosts(await getPosts(50), post);
 
   return (
     <article className="section blog-post">
@@ -144,6 +146,14 @@ export default async function BlogPostPage({ params }: Props) {
         ) : null}
         {/* The app turns the Markdown into HTML and strips anything unsafe before sending it. */}
         <div className="blog-prose" dangerouslySetInnerHTML={{ __html: post.html }} />
+        {related.length > 0 ? (
+          <nav className="blog-related" aria-labelledby="related-h">
+            <h2 id="related-h">Keep reading</h2>
+            <ul className="blog-grid">
+              {related.map((item) => <li key={item.slug}><PostCard post={item} /></li>)}
+            </ul>
+          </nav>
+        ) : null}
         <aside className="blog-cta">
           <h2>Preparing for UCEED, NID or NIFT?</h2>
           <p>Talk to a mentor about where you stand and what to do next. It is free.</p>

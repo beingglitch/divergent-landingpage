@@ -93,13 +93,17 @@ function windowText(s: AidmtSitting): string {
 }
 
 /* The whole series, in date order, with where each sitting stands today. */
-export function AidmtSchedule({ builtAt }: { builtAt: number }) {
+/* A blog guide linked from a sitting's card, keyed by the sitting's key. */
+export type AidmtGuides = Partial<Record<string, { href: string; label: string }>>;
+
+export function AidmtSchedule({ builtAt, guides = {} }: { builtAt: number; guides?: AidmtGuides }) {
   const t = useNow(builtAt);
   return (
     <ol className="aidmt-tl" aria-label="AIDMT 2027 schedule">
       {AIDMT_SERIES.map((s) => {
         const state = aidmtState(s, t);
         const st = status(s, state, t);
+        const guide = guides[s.key];
         return (
           <li key={s.key} className={`aidmt-tl-i is-${state}${s.free ? " is-free" : ""}`}>
             <p className="aidmt-tl-d">{days(s)}</p>
@@ -116,6 +120,7 @@ export function AidmtSchedule({ builtAt }: { builtAt: number }) {
                 {s.solutions ? <li><b>Solutions</b><span>{aidmtDays(s.solutions.from, s.solutions.to)}, {s.solutions.how}</span></li> : null}
                 {s.results ? <li><b>Results</b><span>{aidmtDays(s.results)}</span></li> : null}
                 {s.perk ? <li className="aidmt-tl-perk"><b>Scholarship</b><span>{s.perk}</span></li> : null}
+                {guide ? <li className="aidmt-tl-guide"><b>Guide</b><span><a href={guide.href}>{guide.label}</a></span></li> : null}
               </ul>
             </div>
           </li>

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
 import { AIDMT, AIDMT_SERIES, CONTACT, aidmtDays, aidmtTime } from "@/lib/config";
-import { AidmtCtaHead, AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
-import { getPost } from "@/lib/blog";
+import { AidmtCtaHead, AidmtRegLine, AidmtSchedule, type AidmtGuides } from "@/components/Aidmt";
+import { getPosts } from "@/lib/blog";
 
 export const metadata: Metadata = pageMeta({
   title: "AIDMT 2027: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
@@ -89,13 +89,21 @@ const FAQS = [
   ["Is it linked to IIT Bombay, NID or NIFT?", "No. AIDMT is an independent mock by Divergent Classes. It is practice, not an admission test."],
 ];
 
-/* The full guide on the blog. The link shows once that post is published,
-   so the page never sends anyone to a missing page. Checked every minute. */
+/* Guides on the blog. Each link shows once its post is published, so the
+   page never sends anyone to a missing page. Checked every minute. */
 const GUIDE_SLUG = "aidmt-all-india-design-mock-test";
+const CARD_GUIDES: { slug: string; label: string; sittings: string[] }[] = [
+  { slug: "free-uceed-part-b-mock-test", label: "How to make the most of the free sectional", sittings: ["sectional"] },
+  { slug: "nid-dat-mock-test-2027", label: "How to prepare for the NID mocks", sittings: ["aidmt-1", "aidmt-4"] },
+];
 export const revalidate = 60;
 
 export default async function AidmtPage() {
-  const guide = await getPost(GUIDE_SLUG).catch(() => null);
+  const live = new Set((await getPosts(100)).map((post) => post.slug));
+  const guide = live.has(GUIDE_SLUG);
+  const guides: AidmtGuides = Object.fromEntries(
+    CARD_GUIDES.filter((g) => live.has(g.slug)).flatMap((g) => g.sittings.map((key) => [key, { href: `/blog/${g.slug}/`, label: g.label }])),
+  );
   return (
     <>
       <section className="hero phero" id="top" data-dot="Top" aria-labelledby="hero-h">
@@ -170,7 +178,7 @@ export default async function AidmtPage() {
             <Eyebrow>Dates</Eyebrow>
             <h2 className="h2 rv" id="dates-h">Five dates, one series.</h2>
           </div>
-          <AidmtSchedule builtAt={Date.now()} />
+          <AidmtSchedule builtAt={Date.now()} guides={guides} />
           <p className="dates-note">Times in IST. {rupees(AIDMT.fee)} per student, or {rupees(AIDMT.groupFee)} for a group of {AIDMT.groupSize}. The sectional is free.</p>
         </div>
       </section>

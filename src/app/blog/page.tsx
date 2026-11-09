@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
-import { getPosts, postDate } from "@/lib/blog";
+import { getPosts } from "@/lib/blog";
+import { PostCard, PostMeta, PostThumb } from "@/components/BlogCards";
 import "./blog.css";
 
 export const revalidate = 60;
@@ -39,7 +40,7 @@ export default async function BlogPage() {
           ) : (
             <>
               <a className="blog-lead" href={`/blog/${lead.slug}/`}>
-                {lead.coverImage ? <img src={lead.coverImage} alt={lead.coverAlt ?? ""} width={lead.coverWidth ?? undefined} height={lead.coverHeight ?? undefined} loading="eager" fetchPriority="high" decoding="async" /> : <span className="blog-cover-fallback" aria-hidden="true" />}
+                <PostThumb post={lead} eager />
                 <div className="blog-lead-body">
                   <PostMeta tags={lead.tags} publishedAt={lead.publishedAt} minutes={lead.readingMinutes} />
                   <h2>{lead.title}</h2>
@@ -51,14 +52,7 @@ export default async function BlogPage() {
                 <ul className="blog-grid">
                   {rest.map((post) => (
                     <li key={post.slug}>
-                      <a className="blog-card" href={`/blog/${post.slug}/`}>
-                        {post.coverImage ? <img src={post.coverImage} alt={post.coverAlt ?? ""} width={post.coverWidth ?? undefined} height={post.coverHeight ?? undefined} loading="lazy" decoding="async" /> : <span className="blog-cover-fallback" aria-hidden="true" />}
-                        <div className="blog-card-body">
-                          <PostMeta tags={post.tags} publishedAt={post.publishedAt} minutes={post.readingMinutes} />
-                          <h3>{post.title}</h3>
-                          <p>{post.excerpt}</p>
-                        </div>
-                      </a>
+                      <PostCard post={post} />
                     </li>
                   ))}
                 </ul>
@@ -68,15 +62,5 @@ export default async function BlogPage() {
         </div>
       </section>
     </>
-  );
-}
-
-function PostMeta({ tags, publishedAt, minutes }: { tags: string[]; publishedAt: string | null; minutes: number }) {
-  return (
-    <p className="blog-meta">
-      {tags[0] ? <span className="blog-tag">{tags[0]}</span> : null}
-      <span>{postDate(publishedAt)}</span>
-      <span>{minutes} min read</span>
-    </p>
   );
 }

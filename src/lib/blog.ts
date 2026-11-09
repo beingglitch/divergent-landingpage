@@ -14,6 +14,8 @@ export type PostSummary = {
   coverAlt: string | null;
   coverWidth: number | null;
   coverHeight: number | null;
+  /* The link preview picture, if not the cover. Cards show it when there is no cover. */
+  ogImage: string | null;
   tags: string[];
   authorName: string;
   publishedAt: string | null;
@@ -29,7 +31,6 @@ export type Post = PostSummary & {
   seoDescription: string | null;
   reviewedBy: string | null;
   canonicalUrl: string | null;
-  ogImage: string | null;
   toc: TocEntry[];
 };
 
@@ -46,6 +47,7 @@ function summary(raw: Partial<PostSummary> & { slug: string; title: string }): P
     coverAlt: raw.coverAlt ?? null,
     coverWidth: raw.coverWidth ?? null,
     coverHeight: raw.coverHeight ?? null,
+    ogImage: raw.ogImage ?? null,
     tags: Array.isArray(raw.tags) ? raw.tags : [],
     authorName: raw.authorName || "Divergent Classes",
     publishedAt: raw.publishedAt ?? null,
@@ -84,7 +86,6 @@ export async function getPost(slug: string): Promise<Post | null> {
     seoDescription: raw.seoDescription ?? null,
     reviewedBy: raw.reviewedBy ?? null,
     canonicalUrl: raw.canonicalUrl ?? null,
-    ogImage: raw.ogImage ?? null,
     toc: Array.isArray(raw.toc) ? raw.toc.filter((t: Partial<TocEntry>) => t && typeof t.id === "string" && typeof t.text === "string") : [],
   };
 }
