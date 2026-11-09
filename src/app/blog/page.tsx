@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { getPosts } from "@/lib/blog";
-import { PostCard, PostMeta, PostThumb } from "@/components/BlogCards";
+import { PostCard, PostLabel, PostPoster } from "@/components/BlogCards";
 import "./blog.css";
 
 export const revalidate = 60;
@@ -14,7 +14,9 @@ export const metadata: Metadata = pageMeta({
 
 export default async function BlogPage() {
   const posts = await getPosts();
-  const [lead, ...rest] = posts;
+  // The newest is pinned up large once there are enough to fill the rows under it.
+  const lead = posts.length >= 4 ? posts[0] : null;
+  const rest = lead ? posts.slice(1) : posts;
   return (
     <>
       <section className="hero phero" id="top" aria-labelledby="hero-h">
@@ -29,9 +31,9 @@ export default async function BlogPage() {
         </div>
       </section>
 
-      <section className="section" aria-label="Posts">
+      <section className="section wall" aria-label="Posts">
         <div className="wrap">
-          {!lead ? (
+          {posts.length === 0 ? (
             <div className="blog-empty">
               <h2 className="h2">The first posts are on their way.</h2>
               <p className="lede">Till then, join our free community for daily prompts and tips.</p>
@@ -39,20 +41,17 @@ export default async function BlogPage() {
             </div>
           ) : (
             <>
-              <a className="blog-lead" href={`/blog/${lead.slug}/`}>
-                <PostThumb post={lead} eager />
-                <div className="blog-lead-body">
-                  <PostMeta tags={lead.tags} publishedAt={lead.publishedAt} minutes={lead.readingMinutes} />
-                  <h2>{lead.title}</h2>
-                  <p>{lead.excerpt}</p>
-                  <span className="blog-more">Read the post <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></span>
-                </div>
-              </a>
+              {lead ? (
+                <a className="wall-item wall-lead" href={`/blog/${lead.slug}/`}>
+                  <PostPoster post={lead} eager sizes="(min-width: 900px) 420px, 90vw" />
+                  <PostLabel post={lead} heading="h2" lead />
+                </a>
+              ) : null}
               {rest.length > 0 ? (
-                <ul className="blog-grid">
-                  {rest.map((post) => (
+                <ul className="wall-grid">
+                  {rest.map((post, n) => (
                     <li key={post.slug}>
-                      <PostCard post={post} />
+                      <PostCard post={post} heading={lead ? "h3" : "h2"} eager={!lead && n < 3} />
                     </li>
                   ))}
                 </ul>
