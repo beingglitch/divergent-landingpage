@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
 import { AIDMT, AIDMT_SERIES, CONTACT, aidmtDays, aidmtTime } from "@/lib/config";
 import { AidmtCtaHead, AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
+import { getPost } from "@/lib/blog";
 
 export const metadata: Metadata = pageMeta({
   title: "AIDMT 2027: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
@@ -88,7 +89,13 @@ const FAQS = [
   ["Is it linked to IIT Bombay, NID or NIFT?", "No. AIDMT is an independent mock by Divergent Classes. It is practice, not an admission test."],
 ];
 
-export default function AidmtPage() {
+/* The full guide on the blog. The link shows once that post is published,
+   so the page never sends anyone to a missing page. Checked every minute. */
+const GUIDE_SLUG = "aidmt-all-india-design-mock-test";
+export const revalidate = 60;
+
+export default async function AidmtPage() {
+  const guide = await getPost(GUIDE_SLUG).catch(() => null);
   return (
     <>
       <section className="hero phero" id="top" data-dot="Top" aria-labelledby="hero-h">
@@ -98,7 +105,7 @@ export default function AidmtPage() {
               <p className="pills"><span className="pill">UCEED · CEED · NID · NIFT</span><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>AIDMT 2027</span></p>
               <h1 className="h1" id="hero-h">All India <span className="hl">Design Mock.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></h1>
               <p className="hero-sub">Four national mocks, set like NID, UCEED and NIFT, plus a free sectional. Sit each one from home and see your All India Rank.</p>
-              <p className="aidmt-guide"><a href="/blog/aidmt-all-india-design-mock-test/">New to AIDMT? Read the full guide <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p>
+              {guide ? <p className="aidmt-guide"><a href={`/blog/${GUIDE_SLUG}/`}>New to AIDMT? Read the full guide <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p> : null}
             </div>
           </div>
           <div className="wrap hero-low">
