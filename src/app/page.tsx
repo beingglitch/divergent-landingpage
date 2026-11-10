@@ -215,11 +215,11 @@ export default function HomePage() {
               <a className="btn btn--ghost" href="/about/#mentors">Meet all mentors <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
             </div>
             <ul className="pmentors rv">
-              <li className="pm"><img src="/assets/img/mentors/vihang.webp" alt="Vihang" width="480" height="600" loading="lazy" /><b>Vihang</b><span>IIT Bombay</span></li>
-              <li className="pm"><img src="/assets/img/mentors/kaushik.webp" alt="Kaushik" width="480" height="600" loading="lazy" /><b>Kaushik</b><span>IIT Delhi</span></li>
-              <li className="pm n"><img src="/assets/img/mentors/atharva.webp" alt="Atharva" width="480" height="595" loading="lazy" /><b>Atharva</b><span>NID Ahmedabad</span></li>
-              <li className="pm n"><img src="/assets/img/mentors/anshika.webp" alt="Anshika" width="343" height="449" loading="lazy" /><b>Anshika</b><span>NID Ahmedabad</span></li>
-              <li className="pm"><img src="/assets/img/mentors/sparsh.webp" alt="Sparsh" width="480" height="638" loading="lazy" /><b>Sparsh</b><span>IIT Bombay</span></li>
+              <li className="pm"><img src="/assets/img/mentors/aanik.webp" alt="Aanik Sirothiya" width="478" height="597" loading="lazy" /><b>Aanik Sirothiya</b><span>IIT Delhi · UCEED AIR 17</span></li>
+              <li className="pm n"><img src="/assets/img/mentors/atharva.webp" alt="Atharva Lotake" width="480" height="595" loading="lazy" /><b>Atharva Lotake</b><span>NID Ahmedabad</span></li>
+              <li className="pm f"><img src="/assets/img/mentors/kalyani.webp" alt="Kalyani Pisal" width="394" height="492" loading="lazy" /><b>Kalyani Pisal</b><span>NIFT Mumbai · AIR 9</span></li>
+              <li className="pm"><img src="/assets/img/mentors/shardul.webp" alt="Shardul Deogade" width="388" height="485" loading="lazy" /><b>Shardul Deogade</b><span>IIT Delhi · UCEED AIR 101</span></li>
+              <li className="pm n"><img src="/assets/img/mentors/anshika.webp" alt="Anshika Vijay" width="343" height="449" loading="lazy" /><b>Anshika Vijay</b><span>NID Ahmedabad</span></li>
               <li className="pm f"><img src="/assets/img/mentors/om.webp" alt="Om Mishra" width="480" height="600" loading="lazy" /><b>Om Mishra</b><span>NIFT Delhi</span></li>
             </ul>
           </div>

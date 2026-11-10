@@ -106,16 +106,21 @@ export default function NidPage() {
             <div className="men-head">
               <div>
                 <p className="eyebrow-l"><svg className="dots6" viewBox="0 0 14 21" aria-hidden="true"><circle className="b" cx="3.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "0"} as CSSProperties} cx="10.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "1"} as CSSProperties} cx="3.5" cy="10.5" r="3" /><circle className="b" cx="10.5" cy="10.5" r="3" /><circle className="b" cx="3.5" cy="17.5" r="3" /><circle className="y" style={{"--k": "2"} as CSSProperties} cx="10.5" cy="17.5" r="3" /></svg>NID mentors</p>
-                <h2 className="h2 rv" id="men-h">Taught by NID Ahmedabad students.</h2>
+                <h2 className="h2 rv" id="men-h">Taught by students from NID.</h2>
               </div>
               <a className="btn btn--ghost" href="/about/#mentors">All mentors <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
             </div>
             <ul className="pmentors">
-              <li className="pm n rv"><img src="/assets/img/mentors/atharva.webp" alt="Atharva" width="480" height="595" loading="lazy" /><b>Atharva</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/anshika.webp" alt="Anshika" width="343" height="449" loading="lazy" /><b>Anshika</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/ujjwal.webp" alt="Ujjwal" width="308" height="399" loading="lazy" /><b>Ujjwal</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/aayush.webp" alt="Aayush" width="343" height="420" loading="lazy" /><b>Aayush</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv"><img src="/assets/img/mentors/piyusha.webp" alt="Piyusha" width="480" height="600" loading="lazy" /><b>Piyusha</b><span>NID Ahmedabad</span></li>
+              <li className="pm n rv"><img src="/assets/img/mentors/atharva.webp" alt="Atharva Lotake" width="480" height="595" loading="lazy" /><b>Atharva Lotake</b><span>NID Ahmedabad</span></li>
+              <li className="pm n rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/anshika.webp" alt="Anshika Vijay" width="343" height="449" loading="lazy" /><b>Anshika Vijay</b><span>NID Ahmedabad</span></li>
+              <li className="pm n rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/adarshdeep.webp" alt="Adarshdeep Kaur" width="506" height="632" loading="lazy" /><b>Adarshdeep Kaur</b><span>NID Ahmedabad</span></li>
+              <li className="pm n rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/kratika.webp" alt="Kratika" width="333" height="416" loading="lazy" /><b>Kratika</b><span>NID Ahmedabad</span></li>
+              <li className="pm n rv"><img src="/assets/img/mentors/piyush.webp" alt="Piyush" width="406" height="507" loading="lazy" /><b>Piyush</b><span>NID Ahmedabad</span></li>
+              <li className="pm n rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/ujjwal.webp" alt="Ujjwal Rathore" width="308" height="399" loading="lazy" /><b>Ujjwal Rathore</b><span>NID Bhopal</span></li>
+              <li className="pm n rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/kankana.webp" alt="Kankana" width="411" height="514" loading="lazy" /><b>Kankana</b><span>NID Assam</span></li>
+              <li className="pm n rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/priyam.webp" alt="Priyam Biswas" width="430" height="537" loading="lazy" /><b>Priyam Biswas</b><span>NID Assam</span></li>
+              <li className="pm n rv"><img src="/assets/img/mentors/shivansh.webp" alt="Shivansh Gupta" width="474" height="592" loading="lazy" /><b>Shivansh Gupta</b><span>NID Haryana · AIR 234</span></li>
+              <li className="pm n rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/daksh.webp" alt="Daksh Meena" width="364" height="455" loading="lazy" /><b>Daksh Meena</b><span>NID Haryana</span></li>
             </ul>
           </div>
         </div>
