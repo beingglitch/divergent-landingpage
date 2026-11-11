@@ -36,7 +36,7 @@ export const CONFIG = {
   } as Record<string, boolean>,
 
   /* Prices in rupees, GST included. launch is the early price (until
-     2 Nov), diwali is 6 to 11 Nov (Diwali Offer 2026 brief: ₹1,000 off
+     2 Nov), diwali is 6 to 15 Nov (extended from 11 Nov; Diwali Offer 2026 brief: ₹1,000 off
      single-exam plans, ₹2,000 off Combos), list is every other day. The app sends
      the live prices on load; these are the fallback and must match it. */
   prices: {
@@ -87,7 +87,7 @@ export const CONFIG = {
     launchEnds: "2026-11-02T23:59:59",
     batchStartEnd: "2026-11-03T23:59:59",
     diwaliStart: "2026-11-06T00:00:00",
-    diwaliEnds: "2026-11-11T23:59:59",
+    diwaliEnds: "2026-11-15T23:59:59",
     uceedRegEnds: "2026-10-31T23:59:59",
     uceedLateEnds: "2026-11-06T23:59:59",
     nidRegEnds: "2026-11-30T23:59:59",
