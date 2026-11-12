@@ -320,14 +320,8 @@ export default async function HomePage() {
           </div>
 
           <div className="pfoot">
-            <div className="pjoinbox">
-              <p className="pj-k">Not sure yet?</p>
-              <p className="pj-v">₹{CONFIG.joinAmount.toLocaleString("en-IN")} today</p>
-              <p className="pj-t">Join today. It counts toward your fee and locks today&apos;s price.</p>
-            </div>
             <ul className="terms" aria-label="Payment terms">
               <li data-req="gst"><svg aria-hidden="true"><use href="#tick" /></svg><span><b>GST included</b><small>Nothing extra at checkout</small></span></li>
-              <li data-req="refund"><svg aria-hidden="true"><use href="#tick" /></svg><span><b>Full refund till 10 November</b><small>Within 7 days of the batch start</small></span></li>
               <li data-req="upgrades"><svg aria-hidden="true"><use href="#tick" /></svg><span><b>Upgrade any time</b><small>Pay only the difference</small></span></li>
               <li><svg aria-hidden="true"><use href="#tick" /></svg><span><b>Have a coupon code?</b><small>Add it at checkout</small></span></li>
             </ul>
@@ -345,7 +339,7 @@ export default async function HomePage() {
                 <tr><th scope="row">Sketch reviews</th><td data-label="Recorded">3</td><td data-label="Live">Weekly</td><td data-label="Mentor">Weekly + log</td></tr>
                 <tr><th scope="row">Personal mentor, 1:1</th><td data-label="Recorded" className="no">No</td><td data-label="Live" className="no">No</td><td data-label="Mentor">Yes</td></tr>
                 <tr><th scope="row">Exam-week call</th><td data-label="Recorded" className="no">No</td><td data-label="Live" className="no">No</td><td data-label="Mentor">Yes</td></tr>
-                <tr><th scope="row">Payment options</th><td data-label="Recorded">In full, or 2 or 3 installments. Or start with ₹1,000.</td><td data-label="Live">In full, or 2 or 3 installments. Or start with ₹1,000.</td><td data-label="Mentor">In full, or 2 or 3 installments. Or start with ₹1,000.</td></tr>
+                <tr><th scope="row">Payment options</th><td data-label="Recorded">In full. Combo with the Mock &amp; Live Pack: also 2 installments.</td><td data-label="Live">In full, or 2 installments (3 in the Combo).</td><td data-label="Mentor">In full, or 2 or 3 installments.</td></tr>
               </tbody>
             </table>
           </details>
@@ -389,7 +383,6 @@ export default async function HomePage() {
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do I get an onboarding call if I pay in full?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Mentor: pay in full and get a 1:1 onboarding call with Devansh. 15 minutes, in your first two weeks, plus first priority on the 80 Mentor seats. Live, and Recorded Combo with the Mock &amp; Live Pack: pay in full and join Devansh&apos;s onboarding session in week 1. Installments do not include an onboarding call.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is GST extra?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No. GST is included.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I try a class first?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. The <a href={FREE_CLASS_URL}>free demo class</a> needs only your phone number, no payment.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I get a refund?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Full refund within 7 days of the batch start (by 10 November). This includes the ₹1,000 you paid to join.</p></div></div></div></div>
             </div>
             <div className="faq-group" id="faq-exams" role="tabpanel" aria-labelledby="ft-exams">
               <h3>The exams</h3>

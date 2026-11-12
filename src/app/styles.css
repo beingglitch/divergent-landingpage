@@ -1090,3 +1090,4 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .cd-part[hidden],.cd-plus[hidden]{display:none}
 .cd-row--split .cd-unit{font-size:clamp(15px,1.5vw,19px);padding-bottom:0}
 .cd-plus{font-family:var(--f-display);font-weight:800;font-size:clamp(44px,5vw,72px);line-height:.85;opacity:.55;padding-top:.12em}
+.pfoot:not(:has(.pjoinbox)){grid-template-columns:1fr}

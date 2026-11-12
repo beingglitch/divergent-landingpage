@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
-import { CONFIG } from "@/lib/config";
 import { dealHref, festivalStage, istDay, istDayTime, loadFestivalOffer, type FestivalOffer, type FestivalStage } from "@/lib/diwali";
 
 /* The festival offer (set by admins in the app, loaded by src/lib/diwali.ts):
@@ -99,26 +98,17 @@ function Fireworks({ host }: { host: HTMLElement }) {
    note beside it. Steps whose part is missing are skipped. */
 type Step = { sel: string; title: string; text: string };
 
-const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 const sentence = (s: string) => (/[.!?]$/.test(s) ? s : s + ".");
 /* "a", "a and b", "a, b and c". */
 const listOf = (xs: string[]) => (xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1]);
-
-/* The Join for ₹1,000 line: refundable till a date, or else it counts toward the fee. */
-function joinLine(o: FestivalOffer): string {
-  return o.joinRefundEnds ? "Fully refundable till " + istDay(o.joinRefundEnds) + "." : "It counts toward your fee.";
-}
 
 function tourSteps(o: FestivalOffer): Step[] {
   const n = o.name, till = istDay(o.offerEnds);
   const onCourse = o.deals.filter((d) => d.link === "course").map((d) => d.offer);
   const what = onCourse.length ? listOf(onCourse) + ", till " + till + "." : "Till " + till + ".";
-  const join = "Join for " + inr(CONFIG.joinAmount) + ". It locks the " + n + " price" +
-    (o.joinRefundEnds ? ", counts toward your fee, and is fully refundable till " + istDay(o.joinRefundEnds) + "." : " and counts toward your fee.");
   return [
     { sel: "#planPick .pcol.on .pcard", title: "The " + n + " offer is on every plan", text: what + " To get it, open Apply discount at checkout and apply the " + n + " offer." },
     ...(o.giftLine ? [{ sel: "#planPick .pcol.on .gift:not([hidden])", title: n + " gifts on Live and Mentor", text: sentence(o.giftLine) }] : []),
-    { sel: ".pjoinbox", title: "Not ready to pay it all?", text: join },
     { sel: "#demo", title: "Try before you pay", text: "Take a free demo class first. Sign in with your phone number, no payment." },
   ];
 }
@@ -247,7 +237,6 @@ function OfferPopup({ offer, onClose, onTour }: { offer: FestivalOffer; onClose:
           ) : (
             <a className="btn btn--block" href="/?diwali-tour=1#plans">Show me how to apply it</a>
           )}
-          <p>Join for {inr(CONFIG.joinAmount)} to lock the price. {joinLine(offer)}</p>
         </div>
       </div>
     </div>
