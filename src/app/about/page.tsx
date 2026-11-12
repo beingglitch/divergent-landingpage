@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
+import { MentorCards } from "@/components/MentorCards";
+import { getMentors } from "@/lib/mentors";
 
 export const metadata: Metadata = pageMeta({
   title: "About us | Divergent Classes",
@@ -8,7 +10,9 @@ export const metadata: Metadata = pageMeta({
   path: "/about/",
 });
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const mentors = await getMentors();
+  const byExam = (exam: "uceed" | "nid" | "nift") => mentors.filter((mentor) => mentor.categories.includes(exam));
   return (
     <>
       <section className="hero phero" id="top" data-dot="Top" aria-labelledby="hero-h">
@@ -69,37 +73,12 @@ export default function AboutPage() {
                 <h2 className="h2 rv" id="men-h">Meet your mentors.</h2>
               </div>
             </div>
-            <h3 className="men-k">UCEED · from IIT and IIIT</h3>
-            <ul className="pmentors">
-              <li className="pm rv"><img src="/assets/img/mentors/aanik.webp" alt="Aanik Sirothiya" width="478" height="597" loading="lazy" /><b>Aanik Sirothiya</b><span>IIT Delhi · UCEED AIR 17</span></li>
-              <li className="pm rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/shardul.webp" alt="Shardul Deogade" width="388" height="485" loading="lazy" /><b>Shardul Deogade</b><span>IIT Delhi · UCEED AIR 101</span></li>
-              <li className="pm rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/anushka.webp" alt="Anushka Kumar" width="288" height="360" loading="lazy" /><b>Anushka Kumar</b><span>IIT Delhi</span></li>
-              <li className="pm rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/krishang.webp" alt="Krishang Vardhan Narain" width="226" height="282" loading="lazy" /><b>Krishang Vardhan Narain</b><span>IIT Delhi</span></li>
-              <li className="pm rv"><img src="/assets/img/mentors/megha.webp" alt="Megha" width="268" height="335" loading="lazy" /><b>Megha</b><span>IIT Bombay</span></li>
-              <li className="pm rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/vidyuth.webp" alt="Vidyuth" width="336" height="420" loading="lazy" /><b>Vidyuth</b><span>IIT Guwahati</span></li>
-              <li className="pm rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/atulya.webp" alt="Atulya Srivastava" width="326" height="407" loading="lazy" /><b>Atulya Srivastava</b><span>IIIT Jabalpur · UCEED AIR 128</span></li>
-              <li className="pm rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/ayushri.webp" alt="Ayushri Ghope" width="552" height="690" loading="lazy" /><b>Ayushri Ghope</b><span>IIIT Jabalpur · Rank 31</span></li>
-              <li className="pm rv"><img src="/assets/img/mentors/kavya.webp" alt="Kavya Sahu" width="320" height="400" loading="lazy" /><b>Kavya Sahu</b><span>UCEED AIR 114 · CAT Rank 20</span></li>
-            </ul>
-            <h3 className="men-k n">NID · from NID campuses</h3>
-            <ul className="pmentors">
-              <li className="pm n rv"><img src="/assets/img/mentors/atharva.webp" alt="Atharva Lotake" width="480" height="595" loading="lazy" /><b>Atharva Lotake</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/anshika.webp" alt="Anshika Vijay" width="343" height="449" loading="lazy" /><b>Anshika Vijay</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/adarshdeep.webp" alt="Adarshdeep Kaur" width="506" height="632" loading="lazy" /><b>Adarshdeep Kaur</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/kratika.webp" alt="Kratika" width="333" height="416" loading="lazy" /><b>Kratika</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv"><img src="/assets/img/mentors/piyush.webp" alt="Piyush" width="406" height="507" loading="lazy" /><b>Piyush</b><span>NID Ahmedabad</span></li>
-              <li className="pm n rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/ujjwal.webp" alt="Ujjwal Rathore" width="308" height="399" loading="lazy" /><b>Ujjwal Rathore</b><span>NID Bhopal</span></li>
-              <li className="pm n rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/kankana.webp" alt="Kankana" width="411" height="514" loading="lazy" /><b>Kankana</b><span>NID Assam</span></li>
-              <li className="pm n rv" style={{"--i": "3"} as CSSProperties}><img src="/assets/img/mentors/priyam.webp" alt="Priyam Biswas" width="430" height="537" loading="lazy" /><b>Priyam Biswas</b><span>NID Assam</span></li>
-              <li className="pm n rv"><img src="/assets/img/mentors/shivansh.webp" alt="Shivansh Gupta" width="474" height="592" loading="lazy" /><b>Shivansh Gupta</b><span>NID Haryana · AIR 234</span></li>
-              <li className="pm n rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/daksh.webp" alt="Daksh Meena" width="364" height="455" loading="lazy" /><b>Daksh Meena</b><span>NID Haryana</span></li>
-            </ul>
-            <h3 className="men-k f">NIFT · from NIFT</h3>
-            <ul className="pmentors">
-              <li className="pm f rv"><img src="/assets/img/mentors/om.webp" alt="Om Mishra" width="480" height="600" loading="lazy" /><b>Om Mishra</b><span>NIFT Delhi</span></li>
-              <li className="pm f rv" style={{"--i": "1"} as CSSProperties}><img src="/assets/img/mentors/kalyani.webp" alt="Kalyani Pisal" width="394" height="492" loading="lazy" /><b>Kalyani Pisal</b><span>NIFT Mumbai · AIR 9</span></li>
-              <li className="pm f rv" style={{"--i": "2"} as CSSProperties}><img src="/assets/img/mentors/mihika.webp" alt="Mihika Manudhane" width="449" height="561" loading="lazy" /><b>Mihika Manudhane</b><span>NIFT Mumbai · AIR 33</span></li>
-            </ul>
+            {byExam("uceed").length ? <h3 className="men-k">UCEED · from IIT and IIIT</h3> : null}
+            <MentorCards mentors={byExam("uceed")} tone="uceed" stagger />
+            {byExam("nid").length ? <h3 className="men-k n">NID · from NID campuses</h3> : null}
+            <MentorCards mentors={byExam("nid")} tone="nid" stagger />
+            {byExam("nift").length ? <h3 className="men-k f">NIFT · from NIFT</h3> : null}
+            <MentorCards mentors={byExam("nift")} tone="nift" stagger />
             <p className="men-cta"><a className="btn" href="/#book">Talk to a mentor <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p>
           </div>
         </div>

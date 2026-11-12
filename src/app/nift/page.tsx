@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
-import { CourseCards } from "@/components/CourseCards";
+import { CategoryCards } from "@/components/CategoryCards";
 import { pageMeta } from "@/lib/meta";
 
 export const metadata: Metadata = pageMeta({
@@ -28,7 +28,7 @@ export default function NiftPage() {
               <li><span>Campuses</span><b>16 across India</b></li>
             </ul>
             <div className="hero-ctas">
-              <a className="btn" href="/courses/?exam=nift">NIFT courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href="/courses/">NIFT courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="/#book">Book a free call</a>
             </div>
           </div>
@@ -111,10 +111,9 @@ export default function NiftPage() {
               <p className="eyebrow-l"><svg className="dots6" viewBox="0 0 14 21" aria-hidden="true"><circle className="b" cx="3.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "0"} as CSSProperties} cx="10.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "1"} as CSSProperties} cx="3.5" cy="10.5" r="3" /><circle className="b" cx="10.5" cy="10.5" r="3" /><circle className="b" cx="3.5" cy="17.5" r="3" /><circle className="y" style={{"--k": "2"} as CSSProperties} cx="10.5" cy="17.5" r="3" /></svg>Prepare with us</p>
               <h2 className="h2 rv" id="pp-h">Pick how you prepare.</h2>
             </div>
-            <a className="btn btn--ghost" href="/courses/?exam=nift">All NIFT courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
           </div>
           <ul className="ccards">
-      <CourseCards only={["nift-10-mocks", "crash-120-uceed-nid-nift", "nova-uceed-nid-nift", "free-120-day-trial"]} />
+      <CategoryCards />
           </ul>
         </div>
       </section>
@@ -126,7 +125,7 @@ export default function NiftPage() {
               <h2 className="h2" id="start-h">Learn from a NIFT Delhi mentor.</h2>
               <p className="lede">Om Mishra, from NIFT Delhi, mentors our NIFT students.</p>
               <div className="acts">
-                <a className="btn btn--dark" href="/courses/?exam=nift">See NIFT courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+                <a className="btn btn--dark" href="/courses/">See NIFT courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
                 <a className="btn btn--light" href="/#book">Book a free call</a>
               </div>
             </div>

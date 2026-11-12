@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
+import { MentorCards } from "@/components/MentorCards";
+import { getMentors } from "@/lib/mentors";
 import { CONFIG, COURSE_APP_URL, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
@@ -13,7 +15,8 @@ export const metadata: Metadata = pageMeta({
   path: "/",
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  const mentors = await getMentors();
   return (
     <>
       <section className="hero" id="top" data-dot="Home" aria-labelledby="hero-h">
@@ -106,7 +109,7 @@ export default function HomePage() {
             <button type="button" className="who-c c2 rv" style={{"--i": "1"} as CSSProperties} data-pick="mentor"><span className="who-top"><span className="who-n" aria-hidden="true">2</span><span className="tag">Dropper</span></span><span className="who-q">Need weekly follow-up?</span><span className="who-p">Someone who reviews your sheets.</span><span className="go"><span className="go-t"><small>Best fit</small><b>Mentor</b></span><span className="go-a" aria-hidden="true"><svg width="18" height="18"><use href="#arrow" /></svg></span></span></button>
             <button type="button" className="who-c c3 rv" style={{"--i": "2"} as CSSProperties} data-pick-batch="combo"><span className="who-top"><span className="who-n" aria-hidden="true">3</span><span className="tag">Both exams</span></span><span className="who-q">Writing UCEED and NID?</span><span className="who-p">Two tracks, one batch, one price.</span><span className="go"><span className="go-t"><small>Best fit</small><b>Combo</b></span><span className="go-a" aria-hidden="true"><svg width="18" height="18"><use href="#arrow" /></svg></span></span></button>
           </div>
-          <p className="fine who-fine">In Class 11? See the <a href="/courses/?exam=all&amp;type=nova">NOVA foundation batch</a>.</p>
+          <p className="fine who-fine">In Class 11? See the <a href="https://courses.divergentclasses.com/learn/categories/nova" target="_blank" rel="noopener">NOVA foundation batch</a>.</p>
         </div>
       </section>
 
@@ -214,14 +217,8 @@ export default function HomePage() {
               </div>
               <a className="btn btn--ghost" href="/about/#mentors">Meet all mentors <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
             </div>
-            <ul className="pmentors rv">
-              <li className="pm"><img src="/assets/img/mentors/aanik.webp" alt="Aanik Sirothiya" width="478" height="597" loading="lazy" /><b>Aanik Sirothiya</b><span>IIT Delhi · UCEED AIR 17</span></li>
-              <li className="pm n"><img src="/assets/img/mentors/atharva.webp" alt="Atharva Lotake" width="480" height="595" loading="lazy" /><b>Atharva Lotake</b><span>NID Ahmedabad</span></li>
-              <li className="pm f"><img src="/assets/img/mentors/kalyani.webp" alt="Kalyani Pisal" width="394" height="492" loading="lazy" /><b>Kalyani Pisal</b><span>NIFT Mumbai · AIR 9</span></li>
-              <li className="pm"><img src="/assets/img/mentors/shardul.webp" alt="Shardul Deogade" width="388" height="485" loading="lazy" /><b>Shardul Deogade</b><span>IIT Delhi · UCEED AIR 101</span></li>
-              <li className="pm n"><img src="/assets/img/mentors/anshika.webp" alt="Anshika Vijay" width="343" height="449" loading="lazy" /><b>Anshika Vijay</b><span>NID Ahmedabad</span></li>
-              <li className="pm f"><img src="/assets/img/mentors/om.webp" alt="Om Mishra" width="480" height="600" loading="lazy" /><b>Om Mishra</b><span>NIFT Delhi</span></li>
-            </ul>
+            {/* People > Website mentors in the LMS: the first six. */}
+            <MentorCards mentors={mentors.slice(0, 6)} reveal />
           </div>
         </div>
       </section>
