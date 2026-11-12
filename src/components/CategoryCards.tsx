@@ -1,6 +1,8 @@
+import { fromPrice } from "@/lib/config";
 import { FESTIVAL_PRICES, courseType, getCourses, isMainCourse, type SiteCourse } from "@/lib/courses";
 
-/* The three course groups, each opening its category on Learnyst, where
+/* The 75-day course, sold through the plans on the home page, then the
+   three course groups, each opening its category on Learnyst, where
    every course in the group is listed and sold. The cheapest price comes
    from the app's course feed (src/lib/courses.ts); without it the card
    simply shows no price. */
@@ -54,6 +56,22 @@ export async function CategoryCards() {
   const courses = await getCourses().catch(() => [] as SiteCourse[]);
   return (
     <>
+      <li className="ccard ccard--feat" data-type="crash">
+        <a className="ccard-art" href="/#plans" tabIndex={-1} aria-hidden="true">
+          <b>75</b>
+          <span>days to UCEED and NID</span>
+        </a>
+        <div className="ccard-b">
+          <p className="ccard-k"><span>Crash course</span>UCEED · NID</p>
+          <h3><a href="/#plans">75 Day Crash Course</a></h3>
+          <p className="ccard-m">Class 12 and droppers. Live classes from 3 November, mocks and weekly feedback.</p>
+          <div className="ccard-f">
+            {/* The 75-day price follows the date; site.ts keeps it current. */}
+            <p className="ccard-p"><b data-crash-from="">From {inr(fromPrice(new Date()))}</b></p>
+            <a className="btn btn--sm" href="/#plans">See plans</a>
+          </div>
+        </div>
+      </li>
       {CATEGORIES.map((cat) => {
         const inGroup = courses.filter((c) => cat.has(c) && c.price > 0);
         const from = cheapest(inGroup.map((c) => c.price));
