@@ -139,3 +139,5 @@ html.diwali-offer .bunny-fab--diwali .bunny-fab-tag{display:block;padding:7px 12
 @keyframes dw-bunny-glow{0%,100%{box-shadow:0 12px 28px -10px rgba(11,11,12,.55),0 0 0 0 rgba(255,170,0,.55)}50%{box-shadow:0 12px 28px -10px rgba(11,11,12,.55),0 0 0 8px rgba(255,170,0,0)}}
 @media (max-width:479px){html.diwali-offer .bunny-fab--diwali .bunny-fab-tag{display:none}}
 @media (prefers-reduced-motion:reduce){html.diwali-offer .bunny-fab--diwali .bunny-fab-c,html.diwali-offer .bunny-fab--diwali .bunny-fab-tag{animation:none}}
+/* Offer FAQs are blocks, not flex rows. */
+html.diwali-offer .faq.dw-only{display:block}

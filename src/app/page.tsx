@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
 import { MentorCards } from "@/components/MentorCards";
 import { getMentors } from "@/lib/mentors";
-import { CONFIG, COURSE_APP_URL, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
+import { CONFIG, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
 import { AidmtStrip } from "@/components/Aidmt";
@@ -45,7 +45,7 @@ export default async function HomePage() {
             </div>
             <div className="hero-ctas">
               <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href={COURSE_APP_URL}>Try demo class</a>
+              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Attend a free live class</a>
             </div>
             {/* The course trailer: a thumbnail until tapped, so nothing from YouTube loads with the page. */}
             <TrailerFacade caption="Watch: how the 75 days run" />
@@ -126,7 +126,12 @@ export default async function HomePage() {
           <div className="cds">
             <div className="cd y rv" data-countdown="2026-12-20T00:00:00" data-countdown-date="2026-12-20">
               <div className="cd-name"><span className="cd-x">NID DAT Prelims</span><span className="cd-when"><span data-cd-when="">20 Dec 2026</span></span></div>
-              <div className="cd-row"><span className="cd-num" data-cd-num="">N/A</span><span className="cd-unit" data-cd-unit="">days to go</span></div>
+              {/* Days to Prelims, then the 60 days the NID plan runs on for Mains and the interview. */}
+              <div className="cd-row cd-row--split">
+                <span className="cd-part"><span className="cd-num" data-cd-num="">N/A</span><span className="cd-unit" data-cd-unit="">days to go</span></span>
+                <span className="cd-plus" aria-hidden="true" data-cd-after="">+</span>
+                <span className="cd-part" data-cd-after=""><span className="cd-num">60</span><span className="cd-unit">days for Mains + interview</span></span>
+              </div>
               <ul className="cd-dates" data-tl="" aria-label="NID DAT key dates">
                 <li data-end="2026-11-30T23:59:59"><span className="d">30 Nov</span><span className="w">Registration closes</span><span className="st"></span></li>
                 <li data-end="2026-12-10T23:59:59"><span className="d">10 Dec</span><span className="w">Admit card</span><span className="st"></span></li>
@@ -310,7 +315,7 @@ export default async function HomePage() {
             </div>
             <div className="pdemo-acts">
               <TrailerButton label="Watch the trailer" />
-              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Try a free demo class <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Attend a free live class <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
             </div>
           </div>
 
@@ -366,16 +371,24 @@ export default async function HomePage() {
             </div>
             <div className="faq-group" id="faq-batch" role="tabpanel" aria-labelledby="ft-batch">
               <h3>The batch</h3>
+              <div className="faq dw-only"><h4><button className="faq-q" type="button" aria-expanded="false">Till when is the Diwali offer live?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Till 15 November, 11:59 pm IST. It will not be extended again. From 16 November every course goes back to its normal price.</p></div></div></div></div>
+              <div className="faq dw-only"><h4><button className="faq-q" type="button" aria-expanded="false">Do I need a coupon code?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No. The offer price is already on the page and at checkout.</p></div></div></div></div>
+              <div className="faq dw-only"><h4><button className="faq-q" type="button" aria-expanded="false">I bought a mock or the self-learning course. Does that count?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. 100% of what you paid counts toward any crash course you buy by 15 November.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is 75 days enough?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Mocks show where you lose marks, and classes fix those first.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I prepare for UCEED and NID together?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. The Combo runs both tracks every week, with 20 full mocks.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I prepare for UCEED and NID together?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. If you&apos;re writing both exams, take the Combo. It&apos;s one batch and costs less than two single plans.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">How many classes a week?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>3 a week for one exam, 5 a week in the Combo.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">What&apos;s the difference between Recorded, Live and Mentor?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Recorded: the full course on replay, 3 mocks (6 in the Combo), 3 sketch reviews. Live: 32+ live classes per exam, weekly feedback, 10 mocks per exam. Mentor: everything in Live plus a personal mentor, a weekly 1:1 check-in and an exam-week call.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is AIDMT included?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Live and Mentor students get every AIDMT free.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is the NID plan only till Prelims?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No. NID Prelims is on 20 December, and the NID plan continues after it with 60 more days for the studio test and interview.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">What if I miss a class?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Every class is recorded. Catch up and join from the next live class.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I join after 3 November?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Classes run from 3 November, and you get recordings of everything you missed. If you join after 10 November, any installments already due are paid when you join.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I switch plans?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Upgrade any time. Pay only the difference in plan price. The Mock &amp; Live Pack is not credited toward an upgrade.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I join after 3 November?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes, you&apos;re not late. Every class is recorded: you catch up first, then join live. If you join after 10 November, any installments already due are paid when you join.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I switch plans?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes, upgrade any time. You pay only the difference in plan price. The Mock &amp; Live Pack is not credited toward an upgrade.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do you guarantee a rank?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No one can. We guarantee the classes, mocks and feedback in your plan.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">How does joining with ₹1,000 work?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Pay ₹1,000 and you join the batch straight away, at the price live that day. It counts toward your fee. Then pay the rest in full by 10 November, or in installments.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I pay in installments, or use EMI?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Live, Mentor and Recorded Combo with the Mock &amp; Live Pack can be paid in 2 installments, due 10 November and 1 December. Plans of ₹17,999 and above can also be paid in 3 installments, due 10 November, 1 December and 20 December. Each option shows its total. Other Recorded plans are paid in full. Any plan can use EMI on your credit card at the pay-in-full price; your bank charges its own interest. If an installment is missed, live classes and new recordings pause 3 days after the due date and return once it is paid.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I pay in installments, or use EMI?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Live, Mentor and Recorded Combo with the Mock &amp; Live Pack can be paid in 2 installments: the first when you join, the second on 1 December. Live Combo and Mentor can also be paid in 3 installments: when you join, 1 December and 20 December. Each option shows its total. Other Recorded plans are paid in full. Any plan can use EMI on your credit card at the pay-in-full price; your bank charges its own interest. If an installment is missed, live classes and new recordings pause 3 days after the due date and return once it is paid.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">How many mocks come with Recorded?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>3 mocks (6 in the Combo). Add the Mock &amp; Live Pack for ₹2,000 to get 3 more mocks (6 more in the Combo) and access to selected live sessions. Mocks are a mix of recorded mock-test resources and live mock sessions.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do I get an onboarding call if I pay in full?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Mentor: pay in full and get a 1:1 onboarding call with Devansh. 15 minutes, in your first two weeks, plus first priority on the 80 Mentor seats. Live, and Recorded Combo with the Mock &amp; Live Pack: pay in full and join Devansh&apos;s onboarding session in week 1. Installments do not include an onboarding call.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is GST extra?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No. GST is included.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I try a class first?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. The <a href={FREE_CLASS_URL}>free demo class</a> needs only your phone number, no payment.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I get a refund?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Full refund within 7 days of the batch start (by 10 November). This includes the ₹1,000 you paid to join.</p></div></div></div></div>
             </div>
             <div className="faq-group" id="faq-exams" role="tabpanel" aria-labelledby="ft-exams">
@@ -410,7 +423,7 @@ export default async function HomePage() {
         <span className="st-t"><b>75-Day Crash Course</b><span data-from="">from ₹5,999</span></span>
         <div className="st-acts">
           <a className="btn btn--ghost btn--sm st-book" href="#book" tabIndex={-1}>Free call</a>
-          <a className="btn btn--ghost btn--sm st-demo" href={COURSE_APP_URL} tabIndex={-1}>Try demo</a>
+          <a className="btn btn--ghost btn--sm st-demo" href={FREE_CLASS_URL} tabIndex={-1}>Free class</a>
           <a className="btn btn--sm" href="#plans" tabIndex={-1}>Enrol</a>
         </div>
       </div>

@@ -1084,3 +1084,9 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .ccard--cat[data-type="nova"] .ccard-art b{color:var(--ink)}
 .ccard--cat[data-type="mocks"] .ccard-art{background:radial-gradient(120% 130% at 50% -10%,#3A3F4B 0%,#22262F 60%,#15181E 100%);color:#fff}
 .ccards:has(.ccard--cat){grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+/* NID card: days to Prelims, plus the days after it for Mains and the interview. */
+.cd-row--split{align-items:flex-start;gap:10px 18px}
+.cd-part{display:flex;flex-direction:column;gap:10px}
+.cd-part[hidden],.cd-plus[hidden]{display:none}
+.cd-row--split .cd-unit{font-size:clamp(15px,1.5vw,19px);padding-bottom:0}
+.cd-plus{font-family:var(--f-display);font-weight:800;font-size:clamp(44px,5vw,72px);line-height:.85;opacity:.55;padding-top:.12em}

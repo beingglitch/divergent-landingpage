@@ -128,6 +128,8 @@ export function initHome(): () => void {
       const target = ist(el.getAttribute("data-countdown") || ""), day = ist(el.getAttribute("data-countdown-date") + "T12:00:00");
       const num = $("[data-cd-num]", el), unit = $("[data-cd-unit]", el), when = $("[data-cd-when]", el);
       if (!num || !unit) return;
+      // The "+ 60 days" beside NID Prelims stays only until Prelims is over.
+      $$("[data-cd-after]", el).forEach((after) => { after.hidden = t > target; });
       if (sameDay(t, day)) { num.textContent = "Today"; unit.textContent = dfmt.format(day); return; }
       if (t > target) { num.textContent = "Done"; unit.textContent = "held on " + (when?.textContent || "").split(" · ")[0]; return; }
       const ms = target.getTime() - t.getTime(), days = Math.floor(ms / 864e5), hrs = Math.floor((ms % 864e5) / 36e5);
