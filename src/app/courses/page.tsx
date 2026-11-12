@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CategoryCards } from "@/components/CategoryCards";
+import { CourseCards } from "@/components/CourseCards";
 import { pageMeta } from "@/lib/meta";
 
 export const metadata: Metadata = pageMeta({
@@ -34,7 +34,7 @@ export default function CoursesPage() {
         <div className="wrap">
           <h2 className="sr-only" id="all-h">All courses</h2>
           <ul className="ccards">
-            <CategoryCards />
+            <CourseCards />
           </ul>
         </div>
       </section>

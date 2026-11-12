@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
-import { CategoryCards } from "@/components/CategoryCards";
+import { CourseCards } from "@/components/CourseCards";
 import { pageMeta } from "@/lib/meta";
 import { MentorCards } from "@/components/MentorCards";
 import { getMentors } from "@/lib/mentors";
@@ -127,7 +127,7 @@ export default async function NidPage() {
             </div>
           </div>
           <ul className="ccards">
-      <CategoryCards />
+      <CourseCards />
           </ul>
         </div>
       </section>

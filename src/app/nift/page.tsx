@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
-import { CategoryCards } from "@/components/CategoryCards";
+import { CourseCards } from "@/components/CourseCards";
 import { pageMeta } from "@/lib/meta";
 
 export const metadata: Metadata = pageMeta({
@@ -113,7 +113,7 @@ export default function NiftPage() {
             </div>
           </div>
           <ul className="ccards">
-      <CategoryCards />
+      <CourseCards />
           </ul>
         </div>
       </section>

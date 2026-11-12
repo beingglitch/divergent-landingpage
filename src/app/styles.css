@@ -1075,15 +1075,6 @@ html.has-promo{--promo-h:36px}
 .trailer-x:hover{background:#fff;color:var(--ink)}
 .trailer-dlg .trailer-frame{border-radius:var(--radius);box-shadow:none}
 html:has(.trailer-dlg[open]){overflow:hidden}
-/* Category cards (CategoryCards): a coloured panel with the group's name. */
-.ccard--cat .ccard-art{display:flex;align-items:center;gap:12px;padding:0 22px;text-decoration:none;color:var(--ink)}
-.ccard--cat .ccard-art b{font-family:var(--f-display);font-weight:800;font-size:64px;letter-spacing:-.05em;line-height:.8;color:#fff}
-.ccard--cat .ccard-art span{font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.1;max-width:10ch}
-.ccard--cat[data-type="crash"] .ccard-art{background:radial-gradient(120% 130% at 50% -10%,#6FCBF0 0%,#2FA7DB 34%,var(--blue) 60%,#1C90C4 100%)}
-.ccard--cat[data-type="nova"] .ccard-art{background:radial-gradient(120% 130% at 50% -10%,#FFE27A 0%,var(--yellow) 55%,#E9B400 100%)}
-.ccard--cat[data-type="nova"] .ccard-art b{color:var(--ink)}
-.ccard--cat[data-type="mocks"] .ccard-art{background:radial-gradient(120% 130% at 50% -10%,#3A3F4B 0%,#22262F 60%,#15181E 100%);color:#fff}
-.ccards:has(.ccard--cat){grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 /* NID card: days to Prelims, plus the days after it for Mains and the interview. */
 .cd-row--split{align-items:flex-start;gap:10px 18px}
 .cd-part{display:flex;flex-direction:column;gap:10px}

@@ -24,34 +24,6 @@ export type SiteCourse = {
   mock: boolean;
 };
 
-/* The Type filter on /courses/. */
-export type CourseType = "crash" | "nova" | "mocks" | "self" | "free";
-export const TYPE_NAMES: Record<CourseType, string> = { crash: "Crash course", nova: "Class 11", mocks: "Mocks", self: "Self-learning", free: "Free" };
-
-/* Worked out from the app's own fields: the Mock test tag, a zero price, and
-   the subtitle, which the app writes as "Class 11 · ..." or "Self-learning · ...". */
-export function courseType(c: SiteCourse): CourseType {
-  if (c.mock) return "mocks";
-  if (c.price === 0 && !c.priceFrom) return "free";
-  const words = `${c.subtitle ?? ""} ${c.title}`.toLowerCase();
-  if (/class 11|\bnova\b/.test(words)) return "nova";
-  if (/self[- ]learning/.test(words)) return "self";
-  return "crash";
-}
-
-/* The festival price of a card, shown only while the app's festival offer
-   runs (src/lib/diwali.ts). The coupon codes are not shown on the cards. */
-export const FESTIVAL_PRICES: Record<string, { price: number }> = {
-  "crash-120-uceed-nid": { price: 21999 },
-  "crash-120-uceed": { price: 15999 },
-  "nova-uceed": { price: 18999 },
-  "nova-uceed-nid": { price: 24999 },
-  "nova-uceed-nid-nift": { price: 27999 },
-  "uceed-nid-mocks-bundle": { price: 2999 },
-  "nift-10-mocks": { price: 1999 },
-  "uceed-self-learning": { price: 5999 },
-};
-
 /* The 75-day course is sold on the home page, so its card goes to the plans there. */
 export const isMainCourse = (c: SiteCourse) => c.slug === COURSE_SLUG;
 
