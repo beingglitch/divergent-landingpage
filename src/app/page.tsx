@@ -307,11 +307,11 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Where the hero's Try demo class lands: the plans, with the free way in beside them. */}
+          {/* Where the hero's free class button lands: the plans, with the free way in beside them. */}
           <div className="pdemo" id="demo">
             <div>
               <p className="pdemo-k">Not sure yet?</p>
-              <p className="pdemo-t">Watch how the 75 days run, then try a free demo class. Sign in with your phone number; no payment.</p>
+              <p className="pdemo-t">Watch how the 75 days run, then attend the next live class free. Confirm your WhatsApp number; one free class per number, no payment.</p>
             </div>
             <div className="pdemo-acts">
               <TrailerButton label="Watch the trailer" />
@@ -382,7 +382,7 @@ export default async function HomePage() {
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">How many mocks come with Recorded?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>3 mocks (6 in the Combo). Add the Mock &amp; Live Pack for ₹2,000 to get 3 more mocks (6 more in the Combo) and access to selected live sessions. Mocks are a mix of recorded mock-test resources and live mock sessions.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do I get an onboarding call if I pay in full?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Mentor: pay in full and get a 1:1 onboarding call with Devansh. 15 minutes, in your first two weeks, plus first priority on the 80 Mentor seats. Live, and Recorded Combo with the Mock &amp; Live Pack: pay in full and join Devansh&apos;s onboarding session in week 1. Installments do not include an onboarding call.</p></div></div></div></div>
               <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is GST extra?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>No. GST is included.</p></div></div></div></div>
-              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I try a class first?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. The <a href={FREE_CLASS_URL}>free demo class</a> needs only your phone number, no payment.</p></div></div></div></div>
+              <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I try a class first?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. The <a href={FREE_CLASS_URL}>free live class</a> needs only your WhatsApp number, no payment. One per number.</p></div></div></div></div>
             </div>
             <div className="faq-group" id="faq-exams" role="tabpanel" aria-labelledby="ft-exams">
               <h3>The exams</h3>

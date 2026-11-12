@@ -149,12 +149,11 @@ export function bundleSlug(plan: Plan, batch: Batch, exam: Exam, pack = false): 
 
 /* Checkout for a plan in the app. pay picks the payment option; without it
    the app asks. */
-/* "Try demo class": the course page in the app, open without signing in.
-   It shows what the course holds; its own Try a free demo class button asks
-   for the WhatsApp number there. */
+/* The course page in the app, open without signing in. */
 export const COURSE_APP_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}`;
 
-/* "Try a free class": the app opens the course's first free class. */
+/* "Attend a free live class": the app asks for the WhatsApp number on the
+   course page, then opens the next live class, one per verified number. */
 export const FREE_CLASS_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}/free`;
 
 /* A slug may carry add-ons after "+": "recorded-uceed+mock-live-pack" is the
