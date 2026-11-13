@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
 import { MentorCards } from "@/components/MentorCards";
-import { getMentors } from "@/lib/mentors";
+import { getMentorData, TONE_CLASS } from "@/lib/mentors";
 
 export const metadata: Metadata = pageMeta({
   title: "About us | Divergent Classes",
@@ -11,8 +11,10 @@ export const metadata: Metadata = pageMeta({
 });
 
 export default async function AboutPage() {
-  const mentors = await getMentors();
-  const byExam = (exam: "uceed" | "nid" | "nift") => mentors.filter((mentor) => mentor.categories.includes(exam));
+  const { mentors, categories } = await getMentorData();
+  // The original three keep their longer headings while their names are unchanged; anything else shows its name from the LMS.
+  const HEADINGS: Record<string, [string, string]> = { uceed: ["UCEED", "UCEED · from IIT and IIIT"], nid: ["NID", "NID · from NID campuses"], nift: ["NIFT", "NIFT · from NIFT"] };
+  const heading = (key: string, label: string) => (HEADINGS[key]?.[0] === label ? HEADINGS[key][1] : label);
   return (
     <>
       <section className="hero phero" id="top" data-dot="Top" aria-labelledby="hero-h">
@@ -73,12 +75,16 @@ export default async function AboutPage() {
                 <h2 className="h2 rv" id="men-h">Meet your mentors.</h2>
               </div>
             </div>
-            {byExam("uceed").length ? <h3 className="men-k">UCEED · from IIT and IIIT</h3> : null}
-            <MentorCards mentors={byExam("uceed")} tone="uceed" stagger />
-            {byExam("nid").length ? <h3 className="men-k n">NID · from NID campuses</h3> : null}
-            <MentorCards mentors={byExam("nid")} tone="nid" stagger />
-            {byExam("nift").length ? <h3 className="men-k f">NIFT · from NIFT</h3> : null}
-            <MentorCards mentors={byExam("nift")} tone="nift" stagger />
+            {categories.map((category) => {
+              const inCategory = mentors.filter((mentor) => mentor.categories.includes(category.key));
+              if (!inCategory.length) return null;
+              return (
+                <Fragment key={category.key}>
+                  <h3 className={["men-k", TONE_CLASS[category.tone]].filter(Boolean).join(" ")}>{heading(category.key, category.label)}</h3>
+                  <MentorCards mentors={inCategory} tone={category.tone} stagger />
+                </Fragment>
+              );
+            })}
             <p className="men-cta"><a className="btn" href="/#book">Talk to a mentor <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p>
           </div>
         </div>

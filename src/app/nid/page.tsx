@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { CourseCards } from "@/components/CourseCards";
 import { pageMeta } from "@/lib/meta";
 import { MentorCards } from "@/components/MentorCards";
-import { getMentors } from "@/lib/mentors";
+import { getMentorData, toneOf } from "@/lib/mentors";
 
 export const metadata: Metadata = pageMeta({
   title: "NID DAT 2027: stages, dates and campuses | Divergent Classes",
@@ -12,7 +12,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 export default async function NidPage() {
-  const mentors = await getMentors();
+  const { mentors, categories } = await getMentorData();
   return (
     <>
       <section className="hero phero" id="top" data-dot="Top" aria-labelledby="hero-h">
@@ -113,7 +113,7 @@ export default async function NidPage() {
               </div>
               <a className="btn btn--ghost" href="/about/#mentors">All mentors <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
             </div>
-            <MentorCards mentors={mentors.filter((mentor) => mentor.categories.includes("nid"))} tone="nid" stagger />
+            <MentorCards mentors={mentors.filter((mentor) => mentor.categories.includes("nid"))} tone={toneOf(categories, "nid")} stagger />
           </div>
         </div>
       </section>

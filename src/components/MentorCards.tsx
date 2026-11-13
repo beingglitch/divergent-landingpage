@@ -1,12 +1,12 @@
 import type { CSSProperties } from "react";
-import { TONE_CLASS, type MentorCategory, type SiteMentor } from "@/lib/mentors";
+import { TONE_CLASS, type MentorTone, type SiteMentor } from "@/lib/mentors";
 
 /* A row of mentor cards (ul.pmentors). `tone` colours every card for one
-   exam's list; without it each card takes its first exam's colour. `stagger`
+   category's list; without it each card takes its first category's colour. `stagger`
    gives each card the reveal and the four-step delay the exam lists use. */
 export function MentorCards({ mentors, tone, stagger = false, reveal = false }: {
   mentors: SiteMentor[];
-  tone?: MentorCategory;
+  tone?: MentorTone;
   stagger?: boolean;
   /* Reveal the list as one, as the home page does. */
   reveal?: boolean;
@@ -15,7 +15,7 @@ export function MentorCards({ mentors, tone, stagger = false, reveal = false }: 
   return (
     <ul className={reveal ? "pmentors rv" : "pmentors"}>
       {mentors.map((mentor, index) => {
-        const colour = TONE_CLASS[tone ?? mentor.categories[0] ?? "uceed"] ?? "";
+        const colour = TONE_CLASS[tone ?? mentor.tone] ?? "";
         const step = index % 4;
         return (
           <li

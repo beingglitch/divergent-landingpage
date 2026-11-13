@@ -83,7 +83,7 @@ html.diwali .dw-greet .dw-diya{width:30px;height:30px}
 /* the offer popup */
 html.dw-locked{overflow:hidden}
 .dw-pop-back{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(6,10,24,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:dw-fade .3s ease-out}
-.dw-pop{position:relative;width:min(520px,100%);max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain;background:#fff;color:var(--ink);border-radius:26px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6),0 0 0 1px rgba(255,197,0,.5);animation:dw-rise .45s var(--ease-back)}
+.dw-pop{position:relative;width:min(520px,100%);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:contain;background:#fff;color:var(--ink);border-radius:26px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6),0 0 0 1px rgba(255,197,0,.5);animation:dw-rise .45s var(--ease-back)}
 .dw-pop-head{position:relative;overflow:hidden;padding:30px 24px 22px;text-align:center;color:#fff;border-radius:26px 26px 0 0;background:radial-gradient(70% 90% at 50% 120%,rgba(255,138,0,.55),transparent 70%),radial-gradient(40% 50% at 10% 0%,rgba(32,155,210,.45),transparent 70%),var(--ink)}
 .dw-pop-head::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 30%,rgba(255,214,90,.6) 0 2px,transparent 4px),radial-gradient(circle at 86% 22%,rgba(255,214,90,.5) 0 2px,transparent 4px),radial-gradient(circle at 70% 70%,rgba(255,255,255,.4) 0 1.5px,transparent 3px),radial-gradient(circle at 26% 76%,rgba(255,170,60,.5) 0 2px,transparent 4px);pointer-events:none}
 .dw-pop-lamps{display:flex;justify-content:center;gap:16px;margin-bottom:10px}
@@ -97,7 +97,13 @@ html.dw-locked{overflow:hidden}
 .dw-x:hover{background:rgba(255,255,255,.26);transform:rotate(90deg)}
 .dw-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .dw-x:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
-.dw-deals{list-style:none;margin:0;padding:14px 14px 4px;display:grid;gap:8px}
+.dw-pop-head{flex:none}
+/* Only the offers scroll, inside the card, so its rounded corners stay whole. */
+.dw-deals{list-style:none;margin:0;padding:14px 10px 6px 14px;display:grid;gap:8px;align-content:start;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(226,161,0,.55) transparent;scrollbar-gutter:stable}
+.dw-deals::-webkit-scrollbar{width:6px}
+.dw-deals::-webkit-scrollbar-track{background:transparent;margin:10px 0}
+.dw-deals::-webkit-scrollbar-thumb{background:rgba(226,161,0,.45);border-radius:99px}
+.dw-deals::-webkit-scrollbar-thumb:hover{background:#E2A100}
 .dw-deals a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-radius:14px;border:1px solid var(--line);text-decoration:none;color:inherit;transition:border-color .2s,background-color .2s,transform .2s}
 .dw-deals a:hover{border-color:#E2A100;background:var(--yellow-50);transform:translateY(-1px)}
 .dw-deals .hot a{border:1.5px solid #E2A100;background:linear-gradient(135deg,#FFF9E6,#FFF1C2)}
@@ -110,7 +116,9 @@ html.dw-locked{overflow:hidden}
 .dw-deal-p b{font:800 19px/1.05 var(--f-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .dw-off{font-size:11.5px;font-weight:750;color:#1F7A3A;white-space:nowrap}
 .dw-off code{font:750 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;color:var(--ink)}
-.dw-pop-foot{padding:12px 14px 18px;text-align:center}
+.dw-pop-foot{flex:none;position:relative;padding:12px 14px 18px;text-align:center;background:#fff;border-radius:0 0 26px 26px;box-shadow:0 -10px 18px -14px rgba(14,20,40,.35)}
+/* A short screen cannot fit the header: the whole card scrolls instead, with the same slim bar. */
+@media (max-height:620px){.dw-pop{overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(226,161,0,.55) transparent}.dw-pop::-webkit-scrollbar{width:6px}.dw-pop::-webkit-scrollbar-track{background:transparent;margin:22px 0}.dw-pop::-webkit-scrollbar-thumb{background:rgba(226,161,0,.45);border-radius:99px}.dw-deals{overflow:visible;flex:none}}
 .dw-pop-foot p{margin:10px 0 0;font-size:13px;color:var(--ink-3)}
 @media (max-width:479px){.dw-deal-t small{display:none}.dw-pop-head{padding:26px 18px 18px}}
 @keyframes dw-fade{from{opacity:0}}
