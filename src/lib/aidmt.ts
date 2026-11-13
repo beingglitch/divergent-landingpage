@@ -103,7 +103,7 @@ export const FALLBACK: Aidmt = {
       },
     ],
   },
-  dates: { heading: "Five dates, one series.", note: "Times in IST. ₹99 per mock, or any 3 for ₹199. The sectional is free." },
+  dates: { heading: "Scheduled exams. More coming soon.", note: "Times in IST. ₹99 per mock, or any 3 for ₹199. The sectional is free." },
   steps: {
     heading: "Register to rank in four steps.",
     items: [
