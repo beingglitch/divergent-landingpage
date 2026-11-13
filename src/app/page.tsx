@@ -7,6 +7,7 @@ import { CONFIG, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
 import { AidmtStrip } from "@/components/Aidmt";
+import { getAidmt } from "@/lib/aidmt";
 import { TrailerButton, TrailerFacade } from "@/components/Trailer";
 
 export const metadata: Metadata = pageMeta({
@@ -16,7 +17,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 export default async function HomePage() {
-  const mentors = await getMentors();
+  const [mentors, aidmt] = await Promise.all([getMentors(), getAidmt()]);
   return (
     <>
       <section className="hero" id="top" data-dot="Home" aria-labelledby="hero-h">
@@ -149,7 +150,7 @@ export default async function HomePage() {
           </div>
           <p className="dates-note">Times in IST. Confirm on <a href="https://uceed.iitb.ac.in/" rel="noopener" target="_blank">uceed.iitb.ac.in</a> and <a href="https://admissions.nid.edu/" rel="noopener" target="_blank">admissions.nid.edu</a>.</p>
           {/* Points to /aidmt/, naming the next AIDMT, until the last AIDMT date has passed. */}
-          <AidmtStrip builtAt={Date.now()} />
+          <AidmtStrip builtAt={Date.now()} series={aidmt.series} price={aidmt.pricing.perSitting} />
         </div>
       </section>
 

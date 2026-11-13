@@ -44,7 +44,7 @@ export function Footer() {
           </div>
           <div className="legal">
             <p>Ranks shown are official UCEED, NID and NIFT results of Divergent students.</p>
-            <p className="legal-links"><a href="/terms/">Terms and conditions</a><a href="/privacy/">Privacy policy</a></p>
+            <p className="legal-links"><a href="/terms/">Terms and conditions</a><a href="/privacy/">Privacy policy</a><a href="/delete-account/">Delete your account</a></p>
             <p>© <span data-year="">2026</span> Divergent Classes</p>
           </div>
         </div>

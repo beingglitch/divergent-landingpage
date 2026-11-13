@@ -20,6 +20,7 @@ const PAGES: { path: string; priority: number; changeFrequency: MetadataRoute.Si
   { path: "/community/", priority: 0.6, changeFrequency: "monthly" },
   { path: "/contact/", priority: 0.5, changeFrequency: "yearly" },
   { path: "/privacy/", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/delete-account/", priority: 0.1, changeFrequency: "yearly" },
   { path: "/terms/", priority: 0.2, changeFrequency: "yearly" },
 ];
 
