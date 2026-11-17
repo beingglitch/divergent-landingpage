@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
 import { CONTACT } from "@/lib/config";
-import { aidmtDays, getAidmt, rupees } from "@/lib/aidmt";
+import { aidmtDays, getAidmt, leadOffer, offerFact, rupees } from "@/lib/aidmt";
 import { AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
 import { getPosts } from "@/lib/blog";
 
@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const span = a.series.length ? `, ${aidmtDays(a.series[0].opens, a.series[a.series.length - 1].closes)}` : "";
   return pageMeta({
     title: "AIDMT 2027: All India Design Mock Test for UCEED, NID and NIFT | Divergent Classes",
-    description: `AIDMT 2027: national design mocks set like NID, UCEED and NIFT${span}, each with an All India Rank. ${paid.length ? `${rupees(a.pricing.perSitting)} a mock, or any ${a.pricing.bundleSize} for ${rupees(a.pricing.bundlePrice)}.` : "Free to sit."}`,
+    description: `AIDMT 2027: national design mocks set like NID, UCEED and NIFT${span}, each with an All India Rank. ${paid.length ? `${rupees(a.pricing.perSitting)} a mock${a.group ? `, or ${rupees(a.group.price)} for a group of ${a.group.size}` : ""}.` : "Free to sit."}`,
     path: "/aidmt/",
   });
 }
@@ -49,6 +49,8 @@ export default async function AidmtPage() {
   const seriesDays = a.series.length ? aidmtDays(a.series[0].opens, a.series[a.series.length - 1].closes) : "Dates soon";
   const allFree = paid.length === 0 || pricing.perSitting <= 0;
   const register = allFree ? "Register free" : `Register for ${rupees(pricing.perSitting)}`;
+  const lead = leadOffer(a.offers ?? []);
+  const offer = lead ? offerFact(lead, pricing.perSitting) : null;
   const closed = a.registrationEnds ? new Date(a.registrationEnds) < new Date() : false;
   return (
     <>
@@ -71,7 +73,9 @@ export default async function AidmtPage() {
               <li><span>Series</span><b>{seriesDays}</b></li>
               <li><span>Mocks</span><b>{a.series.length}{free ? `, ${free} free` : ""}</b></li>
               <li><span>Per mock</span><b>{allFree ? "Free" : rupees(pricing.perSitting)} {!allFree && off ? <s className="aidmt-was">{rupees(pricing.wasPrice!)}</s> : null}</b></li>
-              {allFree ? null : <li><span>Any {pricing.bundleSize}</span><b>{rupees(pricing.bundlePrice)}</b></li>}
+              {/* The offers live in the LMS now; the old "any 3" bundle price is no longer sold. */}
+              {allFree || !offer ? null : <li><span>{offer.label}</span><b>{offer.value}</b></li>}
+              {allFree || !a.group ? null : <li><span>Group of {a.group.size}</span><b>{rupees(a.group.price)}</b></li>}
             </ul>
             <div className="hero-ctas">
               {closed ? null : <a className="btn" href={a.enrolUrl}>{register} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>}

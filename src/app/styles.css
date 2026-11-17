@@ -115,6 +115,11 @@ html.js .rv.in{opacity:1;transform:none}
 .mnav a.ml{font-family:var(--f-display);font-size:30px;font-weight:650;color:var(--ink);text-decoration:none;padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 .mnav .mcta{display:grid;gap:12px;margin-top:24px}
 @media (min-width:1000px){.nav-links{display:flex}.nav-cta{display:flex}.menu-btn{display:none}.mnav{display:none}}
+/* Log in beside the menu on phones and tablets; in the button row on desktop. */
+.nav-login{min-height:40px;padding:0 14px;font-size:14px}
+@media (min-width:1000px){.nav-login{display:none}}
+/* Three buttons and six links: Contact us waits for the wider screens (it is in the footer and the menu too). */
+@media (min-width:1000px) and (max-width:1219px){.nav-cta .nav-contact{display:none}.nav-links a{padding:10px 10px}}
 
 /* ========================= HERO STAGE ========================= */
 .hero{padding:var(--inset) var(--inset) 0}

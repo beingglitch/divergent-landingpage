@@ -2,6 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import { OfferBar } from "@/components/OfferBar";
+import { APP_URL } from "@/lib/config";
+
+/* The app's sign-in. A WhatsApp code signs a new number up too, so one
+   button covers both; students looked for a sign-up link and found none. */
+const LOGIN = `${APP_URL}/login`;
 
 const EXAMS = ["uceed", "nid", "nift", "aidmt"];
 
@@ -37,9 +42,11 @@ export function Header() {
             </ul>
           </nav>
           <div className="nav-cta">
-            <a className="btn btn--ghost btn--sm" href="/contact/" data-nav="contact" aria-current={cur("contact")}>Contact us</a>
+            <a className="btn btn--ghost btn--sm" href={LOGIN}>Log in / Sign up</a>
+            <a className="btn btn--ghost btn--sm nav-contact" href="/contact/" data-nav="contact" aria-current={cur("contact")}>Contact us</a>
             <a className="btn btn--sm" href="/#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
           </div>
+          <a className="btn btn--ghost btn--sm nav-login" href={LOGIN}>Log in</a>
           <button className="menu-btn" type="button" aria-expanded="false" aria-controls="mnav"><span></span><b className="sr-only">Menu</b></button>
         </div>
         <div className="progress" aria-hidden="true"></div>
@@ -60,6 +67,7 @@ export function Header() {
         <a className="ml" href="/contact/">Contact us <svg width="20" height="20" aria-hidden="true"><use href="#arrow" /></svg></a>
         <div className="mcta">
           <a className="btn btn--block" href="/#plans">Enrol now</a>
+          <a className="btn btn--ghost btn--block" href={LOGIN}>Log in / Sign up</a>
           <a className="btn btn--ghost btn--block" href="/#book">Book a free call</a>
         </div>
       </div>

@@ -35,6 +35,8 @@ export type Aidmt = {
   pricing: { wasPrice: number | null; perSitting: number; bundleSize: number; bundlePrice: number; extraPerSitting: number };
   /* Friends registered together for one price, when the offer is on. */
   group: { price: number; size: number } | null;
+  /* The bundle offers switched on in the LMS (Bundle pricing tab). `hot` is the one to show first. */
+  offers: AidmtOffer[];
   registrationEnds: string | null;
   why: { heading: string; items: Item[] };
   pattern: { heading: string; intro: string; parts: AidmtPart[] };
@@ -50,6 +52,19 @@ export type Aidmt = {
   enrolUrl: string;
 };
 
+export type AidmtOffer =
+  | { id: string; kind: "fixed"; name: string; hot?: boolean; size: number; price: number; extra: number | null }
+  | { id: string; kind: "buyGetFree"; name: string; hot?: boolean; buy: number; free: number };
+
+/* An offer as a fact: "Any 3" ₹399, or "Buy 2 get 1 free" 3 for ₹398. */
+export function offerFact(offer: AidmtOffer, perSitting: number): { label: string; value: string } {
+  if (offer.kind === "fixed") return { label: `Any ${offer.size}`, value: rupees(offer.price) };
+  return { label: offer.name || `Buy ${offer.buy} get ${offer.free} free`, value: `${offer.buy + offer.free} for ${rupees(offer.buy * perSitting)}` };
+}
+
+/* The offer to show: the hot one, else the first. */
+export const leadOffer = (offers: AidmtOffer[]) => offers.find((offer) => offer.hot) ?? offers[0] ?? null;
+
 const ENROL_URL = `${APP_URL}/dashboard/aidmt`;
 
 const topper = (name: string, exam: string, rank: string) => ({ name, exam, rank, photo: `/assets/img/toppers/${name.toLowerCase()}.webp` });
@@ -64,8 +79,9 @@ export const FALLBACK: Aidmt = {
     guideLabel: "New to AIDMT? Read the full guide",
     guideUrl: "/blog/aidmt-all-india-design-mock-test/",
   },
-  pricing: { wasPrice: 499, perSitting: 99, bundleSize: 3, bundlePrice: 199, extraPerSitting: 89 },
-  group: { price: 199, size: 3 },
+  pricing: { wasPrice: 599, perSitting: 199, bundleSize: 3, bundlePrice: 398, extraPerSitting: 199 },
+  group: { price: 399, size: 3 },
+  offers: [{ id: "fallback", kind: "buyGetFree", name: "Buy 2 get 1 free", hot: true, buy: 2, free: 1 }],
   registrationEnds: null,
   why: {
     heading: "Know where you stand before exam day.",
@@ -103,7 +119,7 @@ export const FALLBACK: Aidmt = {
       },
     ],
   },
-  dates: { heading: "Scheduled exams. More coming soon.", note: "Times in IST. ₹99 per mock, or any 3 for ₹199. The sectional is free." },
+  dates: { heading: "Scheduled exams. More coming soon.", note: "Times in IST. ₹199 per student, or ₹399 for a group of 3. The sectional is free." },
   steps: {
     heading: "Register to rank in four steps.",
     items: [
@@ -133,11 +149,11 @@ export const FALLBACK: Aidmt = {
       { question: "What is AIDMT?", answer: "The All India Design Mock Test, run by Divergent Classes. AIDMT 2027 is a series of four national mocks, set like NID, UCEED and NIFT, each with a national rank, plus a free sectional." },
       { question: "Who can take it?", answer: "Anyone preparing for a design entrance: Class 11, Class 12 and droppers." },
       { question: "Can I take a mock again?", answer: "No. One attempt per student per mock, so the ranks stay fair and the questions stay private." },
-      { question: "What does it cost?", answer: "₹99 a mock, or any 3 for ₹199. That covers marking, your rank, percentile and topic report. The sectional is free." },
+      { question: "What does it cost?", answer: "₹199 for one student, down from ₹599, or ₹399 for a group of 3. That covers marking, your rank, percentile and topic report. The sectional is free." },
       { question: "Is it linked to IIT Bombay, NID or NIFT?", answer: "No. AIDMT is an independent mock by Divergent Classes. It is practice, not an admission test." },
     ],
   },
-  cta: { heading: "Register now and see where you stand.", lede: "₹99 a mock, with your rank, percentile and topic report, or any 3 for ₹199. Each mock takes registrations until its window closes." },
+  cta: { heading: "Register now and see where you stand.", lede: "₹199 per student, with your rank, percentile and topic report, or ₹399 for 3 friends together. Each mock takes registrations until its window closes." },
   series: [
     { key: "sectional", name: "Free sectional", exam: "", detail: "Part B only (drawing and design), free for everyone", opens: "2026-11-08T09:00:00", closes: "2026-11-11T23:59:59", free: true, solutions: "", results: null, guide: null },
     { key: "aidmt-1", name: "AIDMT 1", exam: "NID", detail: "NID full-length mock, ranked across India", opens: "2026-11-15T09:00:00", closes: "2026-11-17T23:59:59", free: true, solutions: "18 to 19 Nov, on a live meet", results: "2026-11-20T23:59:59", guide: null },
