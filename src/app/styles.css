@@ -1041,6 +1041,10 @@ html.has-promo{--promo-h:36px}
 .aidmt-tl-i.is-live .aidmt-tl-st{background:var(--ink);color:var(--yellow);border-color:var(--ink)}
 .aidmt-tl-i.is-next{border-color:#F3D67A;background:var(--yellow-50)}
 .aidmt-tl-i.is-next .aidmt-tl-st{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}
+/* The pill is a link while the sitting is on or still to come. */
+.aidmt-tl-go{display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:transform .2s var(--ease-out),box-shadow .2s}
+.aidmt-tl-go:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,42,58,.18)}
+.aidmt-tl-go .arr{flex:none}
 .aidmt-tl-i.is-after .aidmt-tl-st{background:var(--blue-100);border-color:var(--blue-200);color:var(--ink)}
 .aidmt-tl-i.is-done{background:var(--blue-50)}
 .aidmt-tl-i.is-done .aidmt-tl-d,.aidmt-tl-i.is-done .aidmt-tl-h b{color:var(--ink-3)}

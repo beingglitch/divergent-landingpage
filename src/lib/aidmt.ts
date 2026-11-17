@@ -25,6 +25,10 @@ export type AidmtSitting = {
   /* Scorecards and ranks are out by the end of this day. */
   results: string | null;
   guide: { href: string; label: string } | null;
+  /* Its own price from the LMS; 0 is free to register. Missing on the fallback. */
+  price?: number | null;
+  /* The paper in the app once it is published, e.g. /dashboard/courses/aidmt-2026/tests/abc. */
+  examPath?: string | null;
 };
 
 type Item = { title: string; body: string };
@@ -178,7 +182,7 @@ export function localLink(href: string): string {
 }
 
 type Api = Omit<Aidmt, "series" | "enrolUrl"> & {
-  sittings: { id: string; name: string; exam: string; detail: string; opens: string; closes: string; results: string | null; solutions: string; free: boolean; guide: { href: string; label: string } | null }[];
+  sittings: { id: string; name: string; exam: string; detail: string; opens: string; closes: string; results: string | null; solutions: string; free: boolean; guide: { href: string; label: string } | null; price?: number; examPath?: string | null }[];
 };
 
 /* AIDMT from the LMS, or FALLBACK. Sections missing from the answer keep the fallback's. */
@@ -200,6 +204,8 @@ export async function getAidmt(): Promise<Aidmt> {
       solutions: s.solutions,
       results: s.results ? toIst(s.results) : null,
       guide: s.guide ? { href: localLink(s.guide.href), label: s.guide.label } : null,
+      price: typeof s.price === "number" ? s.price : null,
+      examPath: typeof s.examPath === "string" && s.examPath.startsWith("/") ? s.examPath : null,
     }));
     const { sittings: _sittings, ...text } = data;
     void _sittings;

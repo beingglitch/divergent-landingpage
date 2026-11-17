@@ -7,7 +7,7 @@
    ?preview-date=2026-11-16 (or 2026-11-16T10:00) shows another day, the
    same switch the home page uses. The series comes from lib/aidmt.ts. */
 import { useSyncExternalStore } from "react";
-import { ist } from "@/lib/config";
+import { APP_URL, ist } from "@/lib/config";
 import { aidmtDays, aidmtState, aidmtTime, nextAidmt, rupees, seriesEnds, type AidmtSitting, type AidmtState } from "@/lib/aidmt";
 
 const MINUTE = 60_000;
@@ -45,7 +45,10 @@ export function AidmtStrip({ builtAt, series, price }: { builtAt: number; series
     head = t >= ist(s.opens) ? `${label(s)} is open and free till ${aidmtDays(s.closes)}.` : `Test yourself first: ${label(s)}, free, ${days(s)}.`;
     sub = (s.detail ? `${s.detail}.` : "") + (paid ? ` Then ${label(paid)}, ${days(paid)}.` : "");
   } else {
-    head = t >= ist(s.opens) ? `${label(s)} is on now, till ${aidmtDays(s.closes)}.` : `Test yourself first: ${label(s)}, ${days(s)}.`;
+    /* The sitting's own price: a ranked mock can be free too. */
+    const cost = s.price ?? price;
+    badge = cost > 0 ? `New · ${rupees(cost)}` : "Free";
+    head = t >= ist(s.opens) ? `${label(s)} is on now${cost > 0 ? "" : ", free"}, till ${aidmtDays(s.closes)}.` : `Test yourself first: ${label(s)}, ${days(s)}.`;
     /* A mock just closed: say when its results are out. */
     const done = series.find((x) => x.results && aidmtState(series, x, t) === "after");
     sub = (s.detail ? `${s.detail}.` : "") + (done?.results ? ` ${done.name} results on ${aidmtDays(done.results)}.` : ` ${ranked(series)} national mocks in all.`);
@@ -79,7 +82,16 @@ function windowText(s: AidmtSitting): string {
 
 /* The whole series, in date order, with where each sitting stands today.
    live is the set of blog paths that are published, so a guide never links to a missing post. */
-export function AidmtSchedule({ builtAt, series, price, live }: { builtAt: number; series: AidmtSitting[]; price: number; live: string[] }) {
+/* What a sitting's pill does. On now: straight to the paper (the app asks
+   the visitor to sign in first, then opens it). Still to come: Register. */
+function sittingLink(s: AidmtSitting, state: AidmtState, enrolUrl: string): { href: string; text: string } | null {
+  if (state === "live") return s.examPath ? { href: `${APP_URL}${s.examPath}`, text: "On now · Attempt" } : { href: enrolUrl, text: "On now · Register" };
+  if (state === "next") return { href: enrolUrl, text: "Next · Register" };
+  if (state === "later") return { href: enrolUrl, text: "Register" };
+  return null;
+}
+
+export function AidmtSchedule({ builtAt, series, price, live, enrolUrl }: { builtAt: number; series: AidmtSitting[]; price: number; live: string[]; enrolUrl: string }) {
   const t = useNow(builtAt);
   return (
     <ol className="aidmt-tl" aria-label="AIDMT schedule">
@@ -87,6 +99,9 @@ export function AidmtSchedule({ builtAt, series, price, live }: { builtAt: numbe
         const state = aidmtState(series, s, t);
         const st = STATUS[state];
         const guide = s.guide && (!s.guide.href.startsWith("/blog/") || live.includes(s.guide.href)) ? s.guide : null;
+        const link = sittingLink(s, state, enrolUrl);
+        /* The sitting's own price; the series price only when the LMS did not say. */
+        const cost = s.free ? 0 : s.price ?? price;
         return (
           <li key={s.key} className={`aidmt-tl-i is-${state}${s.free ? " is-free" : ""}`}>
             <p className="aidmt-tl-d">{days(s)}</p>
@@ -95,12 +110,12 @@ export function AidmtSchedule({ builtAt, series, price, live }: { builtAt: numbe
                 <b>{s.name}</b>
                 {s.exam ? <span className="aidmt-tl-x">{s.exam}</span> : null}
                 {s.free ? <span className="aidmt-tl-x">Free</span> : null}
-                {st ? <span className="aidmt-tl-st">{st}</span> : null}
+                {link ? <a className="aidmt-tl-st aidmt-tl-go" href={link.href}>{link.text} <svg className="arr" width="14" height="14" aria-hidden="true"><use href="#arrow" /></svg></a> : st ? <span className="aidmt-tl-st">{st}</span> : null}
               </p>
               {s.detail ? <p className="aidmt-tl-t">{s.detail}.</p> : null}
               <ul className="aidmt-tl-l">
                 <li><b>Window</b><span>{windowText(s)}</span></li>
-                <li><b>{s.free ? "Fee" : "Register"}</b><span>{s.free ? "Free for everyone" : `${rupees(price)}, open till the window closes`}</span></li>
+                <li><b>{s.free || cost === 0 ? "Fee" : "Register"}</b><span>{s.free ? "Free for everyone" : cost === 0 ? "Free. Register to sit it, open till the window closes" : `${rupees(cost)}, open till the window closes`}</span></li>
                 {s.solutions ? <li><b>Solutions</b><span>{s.solutions}</span></li> : null}
                 {s.results ? <li><b>Results</b><span>{aidmtDays(s.results)}</span></li> : null}
                 {guide ? <li className="aidmt-tl-guide"><b>Guide</b><span><a href={guide.href}>{guide.label}</a></span></li> : null}

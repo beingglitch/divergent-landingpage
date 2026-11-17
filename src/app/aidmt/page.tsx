@@ -130,7 +130,7 @@ export default async function AidmtPage() {
             <Eyebrow>Dates</Eyebrow>
             <h2 className="h2 rv" id="dates-h">{a.dates.heading}</h2>
           </div>
-          <AidmtSchedule builtAt={Date.now()} series={a.series} price={pricing.perSitting} live={live} />
+          <AidmtSchedule builtAt={Date.now()} series={a.series} price={pricing.perSitting} live={live} enrolUrl={a.enrolUrl} />
           {a.dates.note ? <p className="dates-note">{a.dates.note}</p> : null}
         </div>
       </section>
