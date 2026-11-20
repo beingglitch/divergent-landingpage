@@ -18,8 +18,11 @@ export type SiteCourse = {
   originalPrice: number | null;
   href: string;
   external: boolean;
-  /* uceed, nid, nift, from the course's tags. */
+  /* uceed, nid, nift: the course's Exams field in the app. */
   exams: string[];
+  /* "11", "12", "dropper": the course's Classes field. Empty means every class.
+     Missing from an app that predates the field, so read it as `?? []`. */
+  classes?: string[];
   /* Tagged "Mock test" in the app. */
   mock: boolean;
 };

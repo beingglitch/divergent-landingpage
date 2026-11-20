@@ -15,7 +15,7 @@ function CourseCard({ c }: { c: SiteCourse }) {
   const ext = !main && c.external ? { target: "_blank", rel: "noopener" } : {};
   const free = c.price === 0 && !c.priceFrom;
   return (
-    <li className={"ccard" + (main ? " ccard--feat" : "")} data-exams={c.exams.join(" ")}>
+    <li className={"ccard" + (main ? " ccard--feat" : "")} data-exams={c.exams.join(" ")} data-classes={(c.classes ?? []).join(" ")}>
       <a className={"ccard-art" + (c.thumbnail ? " ccard-art--img" : "")} href={href} {...ext} tabIndex={-1} aria-hidden="true">
         {c.thumbnail ? (
           <img src={c.thumbnail} alt="" width="640" height="360" loading="lazy" />

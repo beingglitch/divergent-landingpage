@@ -171,7 +171,7 @@ export default async function AidmtPage() {
                 <Eyebrow>Made by</Eyebrow>
                 <h2 className="h2 rv" id="by-h">{a.madeBy.heading}</h2>
               </div>
-              <a className="btn btn--ghost" href="/results/">See every result <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn btn--ghost" href="/results/">See every result</a>
             </div>
             <ul className="toppers rv">
               {a.madeBy.toppers.map((t) => (

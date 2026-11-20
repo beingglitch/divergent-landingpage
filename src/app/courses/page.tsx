@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { CourseCards } from "@/components/CourseCards";
+import { CourseClassFilter } from "@/components/StudentClass";
 import { pageMeta } from "@/lib/meta";
+import { CONTACT } from "@/lib/config";
 
 export const metadata: Metadata = pageMeta({
   title: "Courses | Divergent Classes",
@@ -33,6 +35,7 @@ export default function CoursesPage() {
       <section className="section" id="all" data-dot="Courses" aria-labelledby="all-h">
         <div className="wrap">
           <h2 className="sr-only" id="all-h">All courses</h2>
+          <CourseClassFilter />
           <ul className="ccards">
             <CourseCards />
           </ul>
@@ -47,7 +50,7 @@ export default function CoursesPage() {
               <p className="lede">Tell a counsellor your class and target. Free, 10 minutes.</p>
               <div className="acts">
                 <a className="btn btn--dark" href="/#book">Book a free call <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-                <a className="btn btn--light" href="https://wa.me/918383056332?text=Hi%2C%20I%20need%20help%20choosing%20a%20course" target="_blank" rel="noopener">WhatsApp us</a>
+                <a className="btn btn--light" href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent("Hi, I need help choosing a course")}`} target="_blank" rel="noopener">WhatsApp us</a>
               </div>
             </div>
           </div>

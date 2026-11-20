@@ -31,7 +31,7 @@ export default async function NidPage() {
               <li><span>Mode</span><b>Pen and paper · studio</b></li>
             </ul>
             <div className="hero-ctas">
-              <a className="btn" href="/#plans">75-day crash course <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href="/#plans">See the 75-day course <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="/courses/">All NID courses</a>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default async function NidPage() {
                 <p className="eyebrow-l"><svg className="dots6" viewBox="0 0 14 21" aria-hidden="true"><circle className="b" cx="3.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "0"} as CSSProperties} cx="10.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "1"} as CSSProperties} cx="3.5" cy="10.5" r="3" /><circle className="b" cx="10.5" cy="10.5" r="3" /><circle className="b" cx="3.5" cy="17.5" r="3" /><circle className="y" style={{"--k": "2"} as CSSProperties} cx="10.5" cy="17.5" r="3" /></svg>NID mentors</p>
                 <h2 className="h2 rv" id="men-h">Taught by students from NID.</h2>
               </div>
-              <a className="btn btn--ghost" href="/about/#mentors">All mentors <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn btn--ghost" href="/about/#mentors">Meet all mentors</a>
             </div>
             <MentorCards mentors={mentors.filter((mentor) => mentor.categories.includes("nid"))} tone={toneOf(categories, "nid")} stagger />
           </div>

@@ -174,7 +174,7 @@ export default async function BlogPostPage({ params }: Props) {
             <p>Talk to a mentor about where you stand and what to do next. It is free.</p>
             <div className="blog-cta-row">
               <a className="btn" href="/#book">Book a free call <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href="/courses/">See courses</a>
+              <a className="btn btn--ghost" href="/courses/">Explore courses</a>
             </div>
           </aside>
         </div>

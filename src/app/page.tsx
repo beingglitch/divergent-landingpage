@@ -221,7 +221,7 @@ export default async function HomePage() {
                 <p className="eyebrow-l"><svg className="dots6" viewBox="0 0 14 21" aria-hidden="true"><circle className="b" cx="3.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "0"} as CSSProperties} cx="10.5" cy="3.5" r="3" /><circle className="y" style={{"--k": "1"} as CSSProperties} cx="3.5" cy="10.5" r="3" /><circle className="b" cx="10.5" cy="10.5" r="3" /><circle className="b" cx="3.5" cy="17.5" r="3" /><circle className="y" style={{"--k": "2"} as CSSProperties} cx="10.5" cy="17.5" r="3" /></svg>Mentors</p>
                 <h2 className="h2 rv" id="men-h">Taught by people who cleared it.</h2>
               </div>
-              <a className="btn btn--ghost" href="/about/#mentors">Meet all mentors <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn btn--ghost" href="/about/#mentors">Meet all mentors</a>
             </div>
             {/* People > Website mentors in the LMS: the first six. */}
             <MentorCards mentors={mentors.slice(0, 6)} reveal />
@@ -316,7 +316,7 @@ export default async function HomePage() {
             </div>
             <div className="pdemo-acts">
               <TrailerButton label="Watch the trailer" />
-              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Attend a free live class <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Attend a free live class</a>
             </div>
           </div>
 
@@ -356,7 +356,7 @@ export default async function HomePage() {
             <div className="ask rv" style={{"--i": "1"} as CSSProperties}>
               <p className="ask-h">Still unsure?</p>
               <p>Talk to a counsellor. Free, 10 minutes.</p>
-              <a className="btn btn--sm" href="#book">Book a free call</a>
+              <a className="btn btn--sm" href="#book">Book a free call <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
             </div>
           </div></div>
           <div>

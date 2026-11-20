@@ -28,7 +28,7 @@ export default function NiftPage() {
               <li><span>Campuses</span><b>16 across India</b></li>
             </ul>
             <div className="hero-ctas">
-              <a className="btn" href="/courses/">NIFT courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href="/courses/">See NIFT courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="/#book">Book a free call</a>
             </div>
           </div>

@@ -558,7 +558,8 @@ html.js .faq.open .faq-a{grid-template-rows:1fr}
 html.js .faq.open .faq-a>.clip{visibility:visible;transition-delay:0s}
 
 /* ========================= ENROL STAGE ========================= */
-.enrol-wrap{padding:0 var(--inset) var(--inset)}
+/* The closing band sits clear of the footer: two dark blocks touching read as one. */
+.enrol-wrap{padding:0 var(--inset) clamp(28px,4vw,56px)}
 .stage-e{border-radius:var(--radius-xl);background:var(--ink);color:#fff;overflow:hidden;isolation:isolate;position:relative}
 .stage-e .arc{padding-bottom:clamp(64px,8vw,110px)}
 .stage-e .arc .h2{margin-inline:auto;color:var(--ink);font-size:clamp(32px,4.2vw,58px);max-width:16ch}
@@ -572,7 +573,7 @@ html.js .faq.open .faq-a>.clip{visibility:visible;transition-delay:0s}
 @media (min-width:640px){.more-in{grid-template-columns:1fr 1fr}}
 
 /* ========================= FOOTER ========================= */
-.foot{background:var(--ink);color:var(--on-dark-2);padding:clamp(48px,6vw,80px) 0 calc(36px + env(safe-area-inset-bottom));font-size:14.5px;margin-top:calc(-1 * var(--inset))}
+.foot{background:var(--ink);color:var(--on-dark-2);padding:clamp(48px,6vw,80px) 0 calc(36px + env(safe-area-inset-bottom));font-size:14.5px}
 .foot a{color:#fff;text-decoration:none}
 .foot a:hover{color:var(--yellow)}
 .foot-grid{display:grid;gap:36px;grid-template-columns:1.1fr 1fr 1fr}
@@ -628,9 +629,40 @@ html.js .faq.open .faq-a>.clip{visibility:visible;transition-delay:0s}
 .nav-links .dd-menu a{padding:10px 12px;border-radius:9px;font-size:15px}
 .nav-links .dd-menu a::after{display:none}
 .nav-links .dd-menu a:hover{background:var(--blue-50)}
-.mnav .ml-k{margin:14px 0 6px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-ink)}
-.mnav .ml-row{display:flex;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--line)}
-.mnav .ml-row a{flex:1;text-align:center;padding:12px 0;border:1.5px solid var(--line-2);border-radius:999px;font-weight:650;color:var(--ink);text-decoration:none}
+/* The visitor's class: a button in the nav, the phone menu row, and the
+   popup that asks once, 5 seconds after landing (StudentClass.tsx). */
+.nav-links .cm{position:relative}
+.cm-btn{display:flex;align-items:center;gap:8px;padding:10px 13px;border:0;background:none;color:var(--ink-2);font:inherit;font-weight:550;font-size:15.5px;cursor:pointer}
+.cm-btn:hover,.cm-btn[aria-expanded="true"],.cm-btn[aria-current="page"]{color:var(--ink)}
+.cm-btn svg{transition:transform .25s var(--ease-out)}
+.cm-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.cm-pop{position:absolute;left:0;top:calc(100% + 8px);z-index:5;width:min(460px,calc(100vw - 2 * var(--gutter)));padding:22px;display:grid;gap:14px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-md)}
+.cm-pop::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:12px}
+.cm-pop[hidden]{display:none}
+.cm-k{margin:0;font-family:var(--f-display);font-size:18px;font-weight:650;color:var(--ink)}
+.nav-links .cm-all{justify-self:start;display:inline-flex;align-items:center;gap:8px;padding:6px 2px;font-weight:650;font-size:15px;color:var(--ink)}
+.nav-links .cm-all::after{left:2px;right:26px}
+.cm-all svg{transition:transform .25s var(--ease-out)}
+.cm-all:hover svg{transform:translateX(3px)}
+.cls-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cls-opts button{min-height:52px;padding:0 8px;border:1.5px solid var(--line-2);border-radius:14px;background:#fff;color:var(--ink);font-family:var(--f-display);font-weight:650;font-size:16px;cursor:pointer;transition:border-color .2s,background-color .2s,color .2s}
+.cls-opts button:hover{border-color:var(--ink)}
+.cls-opts button[aria-checked="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.cls-opts button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.cls-opts--lg button{min-height:72px;font-size:20px;border-radius:16px}
+.cls-dlg{width:min(520px,calc(100vw - 32px));padding:0;border:0;border-radius:var(--radius-xl);background:#fff;color:var(--ink);box-shadow:0 30px 80px -30px rgba(11,11,12,.6)}
+.cls-dlg::backdrop{background:rgba(11,11,12,.55);backdrop-filter:blur(3px)}
+.cls-dlg[open]{animation:cls-in .35s var(--ease-out)}
+@keyframes cls-in{from{opacity:0;transform:translateY(12px) scale(.98)}}
+.cls-dlg-in{padding:clamp(24px,4vw,36px);display:grid;gap:14px;text-align:center}
+.cls-dlg h2{margin:0;font-family:var(--f-display);font-size:clamp(26px,4vw,34px);font-weight:700;line-height:1.1}
+.cls-dlg p{margin:0 0 8px;color:var(--ink-3);font-size:16px}
+.cls-skip{justify-self:center;margin-top:4px;padding:8px 12px;border:0;background:none;color:var(--ink-3);font:inherit;font-size:15px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cls-skip:hover{color:var(--ink)}
+@media (max-width:480px){.cls-opts--lg{grid-template-columns:1fr}.cls-opts--lg button{min-height:60px}}
+
+.mnav .ml-pick{padding:10px 0 18px;border-bottom:1px solid var(--line)}
+.mnav .ml-k{margin:4px 0 10px;font-size:14px;font-weight:650;color:var(--blue-ink)}
 
 /* ========================= SIDE DOTS ========================= */
 .sdots{position:fixed;right:clamp(10px,1.6vw,26px);top:50%;transform:translateY(-50%);z-index:95}
@@ -781,7 +813,8 @@ html.js .faq.open .faq-a>.clip{visibility:visible;transition-delay:0s}
 .ccards{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
 .ccard{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
 .ccard:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
-.ccard[hidden]{display:none}
+.ccard[data-exam-off],.ccard[data-class-off]{display:none}
+.ccards-filter button{padding:0;border:0;background:none;font:inherit;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .ccard-art{display:block;aspect-ratio:16/9;background:var(--blue-50);overflow:hidden}
 .ccard-art img{width:100%;height:100%;object-fit:cover}
 .ccard--feat{border-color:var(--yellow);box-shadow:0 0 0 2px var(--yellow)}
@@ -1091,3 +1124,27 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .cd-row--split .cd-unit{font-size:clamp(15px,1.5vw,19px);padding-bottom:0}
 .cd-plus{font-family:var(--f-display);font-weight:800;font-size:clamp(44px,5vw,72px);line-height:.85;opacity:.55;padding-top:.12em}
 .pfoot:not(:has(.pjoinbox)){grid-template-columns:1fr}
+.ccards-filter{margin:0 0 20px;font-size:15px;color:var(--ink-3)}
+.ccards-filter a{color:var(--ink);font-weight:600}
+.ccard[data-exam-off],.ccard[data-class-off]{display:none}
+.ccards-filter button{padding:0;border:0;background:none;font:inherit;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cls-dlg h2:focus{outline:none}
+.cls-opts--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:480px){.cls-opts--lg.cls-opts--4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cm-pop{width:min(520px,calc(100vw - 2 * var(--gutter)))}
+.mnav .cm-rows{display:grid;gap:10px}
+.mnav .cm-rows .cm-k{font-size:15px}
+@media (max-width:480px){.cls-opts--md.cls-opts--4{grid-template-columns:repeat(4,minmax(0,1fr))}.cls-opts--md button{font-size:15px}}
+/* The courses page's filter bar (CourseClassFilter in StudentClass.tsx). */
+.cf{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin:0 0 28px}
+.cf-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.cf-k{margin-right:4px;font-size:14px;font-weight:650;color:var(--ink-3)}
+.cf-row button{min-height:42px;padding:0 16px;border:1.5px solid var(--line-2);border-radius:999px;background:#fff;color:var(--ink);font:inherit;font-weight:650;font-size:15px;cursor:pointer;transition:border-color .2s,background-color .2s,color .2s}
+.cf-row button:hover{border-color:var(--ink)}
+.cf-row button[aria-checked="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.cf-row button:focus-visible,.cf-clear:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.cf-clear{margin-left:auto;padding:8px 4px;border:0;background:none;color:var(--ink-3);font:inherit;font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cf-clear:hover{color:var(--ink)}
+.cf-empty{flex-basis:100%;margin:8px 0 0;padding:18px 20px;border:1.5px dashed var(--line-2);border-radius:var(--radius-lg);color:var(--ink-2);font-size:15.5px}
+.cf-empty button,.cf-empty a{padding:0;border:0;background:none;font:inherit;color:var(--ink);font-weight:650;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+@media (max-width:640px){.cf{gap:14px}.cf-row{width:100%}.cf-k{width:100%;margin:0}.cf-clear{margin-left:0}}

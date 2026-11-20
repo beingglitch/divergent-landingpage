@@ -85,7 +85,7 @@ export default async function AboutPage() {
                 </Fragment>
               );
             })}
-            <p className="men-cta"><a className="btn" href="/#book">Talk to a mentor <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p>
+            <p className="men-cta"><a className="btn" href="/#book">Book a free call <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p>
           </div>
         </div>
       </section>
@@ -97,7 +97,7 @@ export default async function AboutPage() {
           <p className="lede rv" style={{"--i": "1"} as CSSProperties}>We don't just coach. We mentor, guide and push you the way toppers prepare.</p>
           <div className="acts">
             <a className="btn" href="/courses/">Explore courses <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-            <a className="btn btn--ghost" href="/results/">See results</a>
+            <a className="btn btn--ghost" href="/results/">See every result</a>
           </div>
         </div>
       </section>

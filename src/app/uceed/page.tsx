@@ -28,7 +28,7 @@ export default function UceedPage() {
               <li><span>Mode</span><b>Computer + drawing</b></li>
             </ul>
             <div className="hero-ctas">
-              <a className="btn" href="/#plans">75-day crash course <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href="/#plans">See the 75-day course <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="/courses/">All UCEED courses</a>
             </div>
           </div>
