@@ -179,7 +179,7 @@ export function AidmtBuy({ series, offers, perSitting, enrolUrl }: { series: Aid
                 {free.map((s) => (
                   <li key={s.key} className="buy-row">
                     <span className="buy-name"><b>{label(s)}</b><span>{aidmtDays(s.opens, s.closes)}</span></span>
-                    <a className="btn btn--ghost btn--sm" href={enrolUrl}>Sit free</a>
+                    <a className="btn btn--ghost btn--sm" href={`${enrolUrl}?to=sittings`}>Sit free</a>
                   </li>
                 ))}
               </ul>
