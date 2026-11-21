@@ -1103,6 +1103,48 @@ html.has-promo{--promo-h:36px}
 .trailer-cap svg{flex:none;color:var(--yellow)}
 @media (max-width:560px){.trailer-play{width:64px;height:64px;margin:-32px 0 0 -32px}}
 @media (prefers-reduced-motion:reduce){.trailer-btn img,.trailer-play{transition:none}.trailer-btn:hover img{transform:none}}
+/* The AIDMT video (ReelFacade): 9:16, so narrower than the trailer. */
+.reel{max-width:340px}
+.reel-frame{aspect-ratio:9/16}
+.trailer-frame video.trailer-ifr{object-fit:contain;background:#000}
+/* AIDMT buy dialog (AidmtBuy): pick mocks, mobile number, pay. */
+.buy-dlg{width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;border:0;border-radius:var(--radius-xl);background:#fff;color:var(--ink);box-shadow:0 30px 80px -30px rgba(11,11,12,.6)}
+.buy-dlg::backdrop{background:rgba(11,11,12,.55);backdrop-filter:blur(3px)}
+.buy-dlg[open]{animation:cls-in .35s var(--ease-out)}
+html:has(.buy-dlg[open]){overflow:hidden}
+.buy-in{display:grid;gap:18px;padding:clamp(20px,4vw,32px)}
+.buy-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.buy-in h2{margin:0;font-family:var(--f-display);font-size:clamp(24px,4vw,30px);font-weight:700;line-height:1.1}
+.buy-x{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-2);background:#fff;color:var(--ink);font-size:26px;line-height:1;cursor:pointer}
+.buy-x:hover{background:var(--ink);color:#fff}
+.buy-k{margin:0 0 8px;font-size:14px;font-weight:700;color:var(--ink-3)}
+.buy-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.buy-row{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border:1.5px solid var(--line-2);border-radius:14px;background:#fff}
+.buy-pick{cursor:pointer;transition:border-color .2s,background-color .2s}
+.buy-pick:hover{border-color:var(--ink-3)}
+.buy-pick.on{border-color:var(--ink);background:var(--yellow-50)}
+.buy-pick input{flex:none;width:20px;height:20px;accent-color:var(--ink)}
+.buy-name{flex:1;min-width:0;display:grid;gap:2px}
+.buy-name b{font-size:16px;font-weight:700}
+.buy-name span{font-size:14px;color:var(--ink-3)}
+.buy-price{font-weight:700;font-size:16px}
+.buy-offers{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.buy-offers span{padding:4px 10px;border-radius:999px;background:var(--yellow-50);font-size:13px;font-weight:650}
+.buy-offers span.on{background:var(--ink);color:#fff}
+.buy-phone{margin-top:16px}
+.buy-phone label{display:block;margin-bottom:6px;font-weight:650}
+.buy-err{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:var(--yellow-50);font-weight:650;font-size:14px}
+.buy-foot{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line-2);background:#fff}
+.buy-total{margin:0;display:grid;grid-template-columns:auto auto;align-items:baseline;justify-content:start;column-gap:8px}
+.buy-total b{font-family:var(--f-display);font-size:28px;font-weight:800}
+.buy-total s{color:var(--ink-3);font-weight:600}
+.buy-total span{grid-column:1/-1;font-size:13px;color:var(--ink-3)}
+.buy-foot .btn[disabled]{opacity:.5;cursor:not-allowed}
+.buy-none{margin:0;color:var(--ink-3)}
+.buy-in h2:focus{outline:none}
+.buy-done{text-align:center;justify-items:center}
+.buy-done p{margin:0;color:var(--ink-2);max-width:40ch}
+@media (max-width:520px){.buy-foot{flex-direction:column;align-items:stretch}.buy-foot .btn{width:100%;justify-content:center}}
 /* "Not sure yet?" (#demo): the trailer button beside the free demo class. */
 .pdemo-acts{display:flex;flex-wrap:wrap;gap:10px}
 .pdemo-acts .btn svg{flex:none}

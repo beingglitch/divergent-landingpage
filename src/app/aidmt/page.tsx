@@ -5,6 +5,8 @@ import { CONTACT } from "@/lib/config";
 import { aidmtDays, getAidmt, leadOffer, offerFact, rupees } from "@/lib/aidmt";
 import { AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
 import { getPosts } from "@/lib/blog";
+import { ReelFacade } from "@/components/Trailer";
+import { AidmtBuy } from "@/components/AidmtBuy";
 
 /* Everything on this page is edited on the LMS admin AIDMT tab (lib/aidmt.ts).
    Dates are IST. The parts that depend on today (what is next, what is done)
@@ -78,10 +80,12 @@ export default async function AidmtPage() {
               {allFree || !a.group ? null : <li><span>Group of {a.group.size}</span><b>{rupees(a.group.price)}</b></li>}
             </ul>
             <div className="hero-ctas">
-              {closed ? null : <a className="btn" href={a.enrolUrl}>{register} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>}
+              {closed ? null : <a className="btn" href={a.enrolUrl} data-aidmt-buy="">{register} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>}
               <a className="btn btn--ghost" href="#dates">See the schedule</a>
             </div>
             {closed ? null : <AidmtRegLine builtAt={Date.now()} series={a.series} off={off} />}
+            {/* The AIDMT video: a poster until tapped, so the video loads only for those who play it. */}
+            <ReelFacade src="/assets/video/aidmt.mp4" poster="/assets/video/aidmt.webp" title="AIDMT 2027 explained" caption="Watch: AIDMT explained" />
           </div>
         </div>
       </section>
@@ -205,6 +209,9 @@ export default async function AidmtPage() {
         </section>
       ) : null}
 
+      {/* Every Register above opens this: pick mocks, a mobile number, pay. No sign-in. */}
+      <AidmtBuy series={a.series} offers={a.offers ?? []} perSitting={pricing.perSitting} enrolUrl={a.enrolUrl} />
+
       <section className="enrol-wrap" id="start" data-dot="Register" aria-labelledby="start-h">
         <div className="stage-e">
           <div className="arc">
@@ -212,7 +219,7 @@ export default async function AidmtPage() {
               <h2 className="h2" id="start-h">{closed ? "Registration is closed. Watch this space for the next AIDMT." : a.cta.heading}</h2>
               {a.cta.lede && !closed ? <p className="lede">{a.cta.lede}</p> : null}
               <div className="acts">
-                {closed ? null : <a className="btn btn--dark" href={a.enrolUrl}>{register} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>}
+                {closed ? null : <a className="btn btn--dark" href={a.enrolUrl} data-aidmt-buy="">{register} <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>}
                 <a className="btn btn--light" href="/#plans">See the 75-day course</a>
               </div>
             </div>

@@ -84,3 +84,27 @@ export function TrailerButton({ label, className = "btn btn--ghost" }: { label: 
     </>
   );
 }
+
+/* A tall video served from the site (public/assets/video). Only the poster
+   loads with the page; the video loads on the first tap and plays in place,
+   with the browser's own controls. */
+export function ReelFacade({ src, poster, title, caption }: { src: string; poster: string; title: string; caption: string }) {
+  const [on, setOn] = useState(false);
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => { if (on) ref.current?.focus(); }, [on]);
+  return (
+    <figure className="trailer reel">
+      <div className="trailer-frame reel-frame">
+        {on ? (
+          <video ref={ref} className="trailer-ifr" src={src} poster={poster} title={title} width={720} height={1280} controls autoPlay playsInline preload="auto" />
+        ) : (
+          <button type="button" className="trailer-btn" aria-label={`Play video: ${title}`} onClick={() => setOn(true)}>
+            <img src={poster} alt="" width={540} height={960} loading="lazy" decoding="async" />
+            <span className="trailer-play" aria-hidden="true"><svg width="30" height="30"><use href="#play" /></svg></span>
+          </button>
+        )}
+      </div>
+      <figcaption className="trailer-cap"><svg width="18" height="18" aria-hidden="true"><use href="#i-video" /></svg>{caption}</figcaption>
+    </figure>
+  );
+}

@@ -84,10 +84,11 @@ function windowText(s: AidmtSitting): string {
    live is the set of blog paths that are published, so a guide never links to a missing post. */
 /* What a sitting's pill does. On now: straight to the paper (the app asks
    the visitor to sign in first, then opens it). Still to come: Register. */
-function sittingLink(s: AidmtSitting, state: AidmtState, enrolUrl: string): { href: string; text: string } | null {
-  if (state === "live") return s.examPath ? { href: `${APP_URL}${s.examPath}`, text: "On now · Attempt" } : { href: enrolUrl, text: "On now · Register" };
-  if (state === "next") return { href: enrolUrl, text: "Next · Register" };
-  if (state === "later") return { href: enrolUrl, text: "Register" };
+/* buy: the sitting a Register opens in the buy dialog (AidmtBuy). */
+function sittingLink(s: AidmtSitting, state: AidmtState, enrolUrl: string): { href: string; text: string; buy?: string } | null {
+  if (state === "live") return s.examPath ? { href: `${APP_URL}${s.examPath}`, text: "On now · Attempt" } : { href: enrolUrl, text: "On now · Register", buy: s.key };
+  if (state === "next") return { href: enrolUrl, text: "Next · Register", buy: s.key };
+  if (state === "later") return { href: enrolUrl, text: "Register", buy: s.key };
   return null;
 }
 
@@ -110,7 +111,7 @@ export function AidmtSchedule({ builtAt, series, price, live, enrolUrl }: { buil
                 <b>{s.name}</b>
                 {s.exam ? <span className="aidmt-tl-x">{s.exam}</span> : null}
                 {s.free ? <span className="aidmt-tl-x">Free</span> : null}
-                {link ? <a className="aidmt-tl-st aidmt-tl-go" href={link.href}>{link.text} <svg className="arr" width="14" height="14" aria-hidden="true"><use href="#arrow" /></svg></a> : st ? <span className="aidmt-tl-st">{st}</span> : null}
+                {link ? <a className="aidmt-tl-st aidmt-tl-go" href={link.href} data-aidmt-buy={link.buy}>{link.text} <svg className="arr" width="14" height="14" aria-hidden="true"><use href="#arrow" /></svg></a> : st ? <span className="aidmt-tl-st">{st}</span> : null}
               </p>
               {s.detail ? <p className="aidmt-tl-t">{s.detail}.</p> : null}
               <ul className="aidmt-tl-l">
