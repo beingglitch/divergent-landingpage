@@ -8,7 +8,7 @@ import { AidmtBuyBar, AidmtChallenge, AidmtFaqMore, AidmtOffer } from "@/compone
 import { getPosts } from "@/lib/blog";
 import { ReelFacade } from "@/components/Trailer";
 import { AidmtBuy } from "@/components/AidmtBuy";
-import { ExamToggle, HeroDashboard, SampleDock, SampleProvider, ScorecardTour } from "@/components/AidmtScorecard";
+import { ExamNotes, ExamToggle, HeroDashboard, SampleDock, SampleProvider, ScorecardTour } from "@/components/AidmtScorecard";
 import { getMentors } from "@/lib/mentors";
 import { VideoStories } from "@/components/VideoStories";
 import { STORIES } from "@/lib/testimonials";
@@ -182,6 +182,8 @@ export default async function AidmtPage() {
           </section>
         </div>
         <SampleDock target="scorecard" />
+        {/* Real registrations as they happen, the visitor's exam first. */}
+        <ExamNotes lift />
       </SampleProvider>
 
       <section className="section tint am-dates" id="dates" data-dot="Dates" aria-labelledby="dates-h">

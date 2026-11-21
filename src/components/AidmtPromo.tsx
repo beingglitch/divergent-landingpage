@@ -13,8 +13,8 @@
    Every number is real: the deadline is the sitting's close from the LMS,
    the old price and the bundle are the admin's. Nothing here invents
    scarcity or a crowd. */
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { ist } from "@/lib/config";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { APP_URL, ist } from "@/lib/config";
 import { nextAidmt, rupees, type AidmtSitting } from "@/lib/aidmt";
 
 const SECOND = 1000, MINUTE = 60 * SECOND, HOUR = 60 * MINUTE, DAY = 24 * HOUR;
@@ -134,24 +134,26 @@ export function AidmtBuyBar({ away, ...sale }: Sale & { away: string[] }) {
 /* ------------------------------------------------------------ the question */
 
 /* Practice questions in the style of UCEED's Part A, one picked per visit
-   (one the visitor has not seen, while any are left). say is the answer as
-   it reads inside a sentence. figure names a drawing that shows the answer
-   once it is in. Every answer here is worked out in its why. */
-type Question = { topic: string; text: string; options: string[]; answer: number; why: string; say?: string; figure?: "cube" | "clock" | "square" };
+   (one the visitor has not seen, while any are left). key is what the LMS
+   counts answers under (/api/public/aidmt/try), so it never changes once a
+   question is live. say is the answer as it reads inside a sentence. figure
+   names a drawing that shows the answer once it is in. Every answer here is
+   worked out in its why. */
+type Question = { key: string; topic: string; text: string; options: string[]; answer: number; why: string; say?: string; figure?: "cube" | "clock" | "square" };
 const QUESTIONS: Question[] = [
-  { topic: "Visualisation", figure: "cube", text: "A cube painted red on every face is cut into 27 equal smaller cubes. How many of the small cubes have exactly two red faces?", options: ["6", "8", "12", "24"], answer: 2, why: "One sits in the middle of each of the cube’s 12 edges." },
-  { topic: "Reasoning", figure: "clock", text: "What is the angle between the hour and minute hands of a clock at 3:40?", options: ["120°", "130°", "140°", "150°"], answer: 1, why: "The minute hand is at 240°. The hour hand has moved on from 3 to 110°. That leaves 130° between them." },
-  { topic: "Observation", figure: "square", text: "How many triangles can you find in a square with both its diagonals drawn?", options: ["4", "6", "8", "10"], answer: 2, why: "Four small ones meet in the middle, and each diagonal cuts the square into two big ones." },
-  { topic: "Visualisation", text: "A square sheet of paper is folded in half, then in half again. One hole is punched through all the layers. How many holes are there when it is unfolded?", options: ["2", "3", "4", "8"], answer: 2, why: "Two folds make four layers, and the punch goes through all of them." },
-  { topic: "Visualisation", text: "How many edges does a triangular prism have?", options: ["6", "8", "9", "12"], answer: 2, why: "Three round each triangular end, and three joining the ends." },
-  { topic: "Reasoning", text: "What comes next: 2, 6, 12, 20, 30, …?", options: ["36", "40", "42", "48"], answer: 2, why: "The gaps grow by two each time: 4, 6, 8, 10, then 12." },
-  { topic: "Reasoning", text: "What comes next: B, D, G, K, P, …?", options: ["T", "U", "V", "W"], answer: 2, why: "The gaps grow by one: two letters, three, four, five, then six after P." },
-  { topic: "Reasoning", text: "On a map drawn to a scale of 1:50,000, two towns are 6 cm apart. How far apart are they on the ground?", options: ["300 m", "1.5 km", "3 km", "30 km"], answer: 2, why: "6 cm × 50,000 is 300,000 cm, which is 3 km." },
-  { topic: "Science", text: "A gear with 20 teeth drives a gear with 40 teeth. When the small gear turns 10 times, how many times does the big gear turn?", options: ["5", "10", "20", "40"], answer: 0, why: "Both pass the same number of teeth: 20 × 10 is 40 × 5." },
-  { topic: "Science", text: "A steel ball and a plastic ball of the same size are dropped together in a vacuum. Which one lands first?", options: ["The steel ball", "The plastic ball", "They land together", "It depends on the height"], answer: 2, say: "they land together", why: "With no air to slow them, everything falls with the same acceleration." },
-  { topic: "Observation", text: "Which of these is a primary colour of light, the kind a screen mixes?", options: ["Yellow", "Green", "Magenta", "Cyan"], answer: 1, say: "green", why: "Screens mix red, green and blue light. Yellow, magenta and cyan are the primaries of printing ink." },
-  { topic: "Design awareness", text: "Who drew up the master plan of Chandigarh?", options: ["Le Corbusier", "B. V. Doshi", "Charles Correa", "Laurie Baker"], answer: 0, why: "Le Corbusier planned the city in the early 1950s." },
-  { topic: "Language", text: "Which of these words is spelt correctly?", options: ["Accomodate", "Accommodate", "Acommodate", "Acomodate"], answer: 1, say: "accommodate", why: "It has a double c and a double m." },
+  { key: "cube-two-faces", topic: "Visualisation", figure: "cube", text: "A cube painted red on every face is cut into 27 equal smaller cubes. How many of the small cubes have exactly two red faces?", options: ["6", "8", "12", "24"], answer: 2, why: "One sits in the middle of each of the cube’s 12 edges." },
+  { key: "clock-3-40", topic: "Reasoning", figure: "clock", text: "What is the angle between the hour and minute hands of a clock at 3:40?", options: ["120°", "130°", "140°", "150°"], answer: 1, why: "The minute hand is at 240°. The hour hand has moved on from 3 to 110°. That leaves 130° between them." },
+  { key: "square-diagonals", topic: "Observation", figure: "square", text: "How many triangles can you find in a square with both its diagonals drawn?", options: ["4", "6", "8", "10"], answer: 2, why: "Four small ones meet in the middle, and each diagonal cuts the square into two big ones." },
+  { key: "paper-fold-holes", topic: "Visualisation", text: "A square sheet of paper is folded in half, then in half again. One hole is punched through all the layers. How many holes are there when it is unfolded?", options: ["2", "3", "4", "8"], answer: 2, why: "Two folds make four layers, and the punch goes through all of them." },
+  { key: "prism-edges", topic: "Visualisation", text: "How many edges does a triangular prism have?", options: ["6", "8", "9", "12"], answer: 2, why: "Three round each triangular end, and three joining the ends." },
+  { key: "series-2-6-12", topic: "Reasoning", text: "What comes next: 2, 6, 12, 20, 30, …?", options: ["36", "40", "42", "48"], answer: 2, why: "The gaps grow by two each time: 4, 6, 8, 10, then 12." },
+  { key: "series-b-d-g", topic: "Reasoning", text: "What comes next: B, D, G, K, P, …?", options: ["T", "U", "V", "W"], answer: 2, why: "The gaps grow by one: two letters, three, four, five, then six after P." },
+  { key: "map-scale", topic: "Reasoning", text: "On a map drawn to a scale of 1:50,000, two towns are 6 cm apart. How far apart are they on the ground?", options: ["300 m", "1.5 km", "3 km", "30 km"], answer: 2, why: "6 cm × 50,000 is 300,000 cm, which is 3 km." },
+  { key: "gear-turns", topic: "Science", text: "A gear with 20 teeth drives a gear with 40 teeth. When the small gear turns 10 times, how many times does the big gear turn?", options: ["5", "10", "20", "40"], answer: 0, why: "Both pass the same number of teeth: 20 × 10 is 40 × 5." },
+  { key: "vacuum-fall", topic: "Science", text: "A steel ball and a plastic ball of the same size are dropped together in a vacuum. Which one lands first?", options: ["The steel ball", "The plastic ball", "They land together", "It depends on the height"], answer: 2, say: "they land together", why: "With no air to slow them, everything falls with the same acceleration." },
+  { key: "light-primaries", topic: "Observation", text: "Which of these is a primary colour of light, the kind a screen mixes?", options: ["Yellow", "Green", "Magenta", "Cyan"], answer: 1, say: "green", why: "Screens mix red, green and blue light. Yellow, magenta and cyan are the primaries of printing ink." },
+  { key: "chandigarh-plan", topic: "Design awareness", text: "Who drew up the master plan of Chandigarh?", options: ["Le Corbusier", "B. V. Doshi", "Charles Correa", "Laurie Baker"], answer: 0, why: "Le Corbusier planned the city in the early 1950s." },
+  { key: "spelling-accommodate", topic: "Language", text: "Which of these words is spelt correctly?", options: ["Accomodate", "Accommodate", "Acommodate", "Acomodate"], answer: 1, say: "accommodate", why: "It has a double c and a double m." },
 ];
 const LIMIT = 60;
 
@@ -244,6 +246,82 @@ function Square() {
 
 const FIGURES = { cube: Cube, clock: Clock, square: Square };
 
+/* How everyone else did on a question, from the LMS's count of answers per
+   option. Thin numbers mislead, so under MIN_TRIES only the visitor's own
+   time shows. */
+const MIN_TRIES = 10;
+type Crowd =
+  | { k: "wait" }
+  | { k: "error" }
+  | { k: "few"; total: number }
+  | { k: "ready"; total: number; right: number; avgMs: number; fastMs: number | null };
+type ChoiceStats = { choice: number | null; n: number; avgMs: number; p10Ms: number };
+
+function crowdOf(q: Question, choices: ChoiceStats[]): Crowd {
+  const total = choices.reduce((sum, c) => sum + c.n, 0);
+  if (total < MIN_TRIES) return { k: "few", total };
+  const answered = choices.filter((c) => c.choice !== null);
+  const answeredN = answered.reduce((sum, c) => sum + c.n, 0);
+  const right = choices.find((c) => c.choice === q.answer);
+  return {
+    k: "ready",
+    total,
+    right: Math.round(((right?.n ?? 0) * 100) / total),
+    avgMs: answeredN ? answered.reduce((sum, c) => sum + c.n * c.avgMs, 0) / answeredN : LIMIT * SECOND,
+    /* The time the fastest tenth of right answers beat, once there are enough right answers to say. */
+    fastMs: right && right.n >= 5 ? right.p10Ms : null,
+  };
+}
+
+const secs = (ms: number) => `${Math.max(1, Math.round(ms / SECOND))}s`;
+
+/* Every way a line can read, stacked in one place with one showing, so the
+   line is always as tall as its longest form and the card never changes
+   size when the answer comes in. */
+function Alt({ items, on }: { items: ReactNode[]; on: number | null }) {
+  return (
+    <span className="ach-alt">
+      {items.map((item, n) => <span key={n} className={n === on ? "on" : undefined} aria-hidden={n !== on}>{item}</span>)}
+    </span>
+  );
+}
+
+function Bar({ label, ms, tone }: { label: string; ms: number | null; tone: "you" | "avg" | "top" }) {
+  return (
+    <li className={`ach-bar ${tone}${ms === null ? " na" : ""}`}>
+      <span>{label}</span>
+      <i><b style={{ width: ms === null ? 0 : `${Math.min(100, (ms * 100) / (LIMIT * SECOND))}%` }}></b></i>
+      <span className="v">{ms === null ? "N/A" : secs(ms)}</span>
+    </li>
+  );
+}
+
+function CrowdBars({ crowd, youMs, shown }: { crowd: Crowd; youMs: number | null; shown: boolean }) {
+  const ready = shown && crowd.k === "ready" ? crowd : null;
+  const order = ["wait", "error", "few", "ready"] as const;
+  return (
+    <div className="ach-stats">
+      <p className="ach-stats-h">
+        <Alt
+          on={shown ? order.indexOf(crowd.k) : null}
+          items={[
+            <>Counting everyone’s answers…</>,
+            <>Couldn’t load everyone else’s times.</>,
+            <>Too few tries yet to compare. Yours is in.</>,
+            /* Before the counts come, a stand-in as wide as the widest they can be. */
+            <><b>{ready ? ready.right : 100}%</b> got this right <small>· {(ready ? ready.total : 10000).toLocaleString("en-IN")} tries</small></>,
+          ]}
+        />
+      </p>
+      <ul className="ach-bars">
+        <Bar label="You" ms={shown ? youMs : null} tone="you" />
+        <Bar label="Average" ms={ready ? ready.avgMs : null} tone="avg" />
+        <Bar label="Fastest 10%" ms={ready ? ready.fastMs : null} tone="top" />
+      </ul>
+    </div>
+  );
+}
+
 export function AidmtChallenge({ enrolUrl, register }: { enrolUrl: string; register: string }) {
   /* The first question in the static HTML; the visitor's own once the page
      is running. It sits under a blur until the clock starts, so the swap
@@ -252,46 +330,61 @@ export function AidmtChallenge({ enrolUrl, register }: { enrolUrl: string; regis
   const [phase, setPhase] = useState<"ready" | "on" | "done">("ready");
   const [pick, setPick] = useState<number | null>(null);
   const [left, setLeft] = useState(LIMIT);
-  const [took, setTook] = useState(0);
+  const [tookMs, setTookMs] = useState(0);
+  const [crowd, setCrowd] = useState<Crowd>({ k: "wait" });
   const started = useRef(0);
+  const over = useRef(false);
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     setQi(nextQuestion(null));
   }, []);
+  /* The answer goes to the LMS, which answers with everyone's counts for this question. */
+  const finish = (question: number, choice: number | null) => {
+    if (over.current) return;
+    over.current = true;
+    const ms = choice === null ? LIMIT * SECOND : Math.min(LIMIT * SECOND, Date.now() - started.current);
+    setPick(choice);
+    setTookMs(ms);
+    setPhase("done");
+    setCrowd({ k: "wait" });
+    const q = QUESTIONS[question];
+    fetch(`${APP_URL}/api/public/aidmt/try`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: q.key, choice, ms }) })
+      .then((res) => res.json())
+      .then((body) => setCrowd(body?.success ? crowdOf(q, body.data.choices) : { k: "error" }))
+      .catch(() => setCrowd({ k: "error" }));
+  };
   useEffect(() => {
     if (phase !== "on") return;
     first.current?.focus();
     const id = window.setInterval(() => {
       const l = Math.max(0, LIMIT - Math.floor((Date.now() - started.current) / SECOND));
       setLeft(l);
-      if (!l) setPhase("done");
+      if (!l) finish(qi, null);
     }, 200);
     return () => window.clearInterval(id);
+    /* finish reads only refs and the question it is handed, so it need not be a dependency. */
   }, [phase, qi]);
   const begin = (question = qi) => {
     started.current = Date.now();
+    over.current = false;
     setQi(question);
     setLeft(LIMIT);
     setPick(null);
+    setCrowd({ k: "wait" });
     setPhase("on");
-  };
-  const choose = (n: number) => {
-    if (phase !== "on") return;
-    setPick(n);
-    setTook(Math.max(1, Math.round((Date.now() - started.current) / SECOND)));
-    setPhase("done");
   };
   const q = QUESTIONS[qi];
   const Figure = q.figure ? FIGURES[q.figure] : null;
-  const right = pick === q.answer;
+  const done = phase === "done";
+  const right = done && pick === q.answer;
   const answer = q.say ?? q.options[q.answer];
-  const result = phase !== "done" ? null
-    : right ? { head: `Correct, in ${took} ${took === 1 ? "second" : "seconds"}.`, line: "Now try a whole paper, and see where it puts you in India." }
-    : pick === null ? { head: `Time’s up. It’s ${answer}.`, line: `${q.why} The real paper won’t wait either.` }
-    : { head: `Not quite. It’s ${answer}.`, line: `${q.why} Better to slip here than in the exam.` };
+  const took = Math.max(1, Math.round(tookMs / SECOND));
+  /* The verdict in each form it can take; before the answer, the right one is sized for the longest time. */
+  const verdicts = [`Correct, in ${done ? took : LIMIT} ${done && took === 1 ? "second" : "seconds"}.`, `Not quite. It’s ${answer}.`, `Time’s up. It’s ${answer}.`];
+  const verdict = !done ? null : right ? 0 : pick === null ? 2 : 1;
   const long = q.options.some((o) => o.length > 7);
   return (
-    <div className={`ach is-${phase}`}>
+    <div className={`ach is-${phase}${right ? " is-right" : ""}`}>
       <div className="ach-top">
         <span className="ach-meta">{q.topic} · Single correct</span>
         <span className={`ach-timer${phase === "on" && left <= 10 ? " low" : ""}`} role="timer" aria-label={`${left} seconds left`}>
@@ -302,40 +395,42 @@ export function AidmtChallenge({ enrolUrl, register }: { enrolUrl: string; regis
           0:{two(left)}
         </span>
       </div>
-      <div className={`ach-body${Figure ? "" : " plain"}`} aria-hidden={phase === "ready"}>
-        {Figure ? <Figure /> : null}
-        <p className="ach-q">{q.text}</p>
-      </div>
-      <div className={`ach-opts${long ? " long" : ""}`} role="group" aria-label="Answers" aria-hidden={phase === "ready"}>
-        {q.options.map((option, n) => (
-          <button
-            key={`${qi}-${option}`}
-            ref={n === 0 ? first : undefined}
-            type="button"
-            className={`ach-o${phase === "done" && n === q.answer ? " right" : ""}${phase === "done" && n === pick && !right ? " wrong" : ""}`}
-            disabled={phase !== "on"}
-            onClick={() => choose(n)}
-          >
-            <span className="ach-l" aria-hidden="true">{"ABCD"[n]}</span>{option}
-          </button>
-        ))}
-      </div>
-      {phase === "ready" ? (
-        <div className="ach-gate">
-          <button type="button" className="btn btn--dark" onClick={() => begin()}>Start the clock</button>
-          <small>60 seconds. One try.</small>
+      {/* Two faces in one place: the question, and once it is answered, how it went. */}
+      <div className="ach-flip">
+        <div className="ach-face ach-front" inert={done}>
+          <div className={`ach-body${Figure ? "" : " plain"}`} aria-hidden={phase === "ready"}>
+            {Figure ? <Figure /> : null}
+            <p className="ach-q">{q.text}</p>
+          </div>
+          <div className={`ach-opts${long ? " long" : ""}`} role="group" aria-label="Answers" aria-hidden={phase === "ready"}>
+            {q.options.map((option, n) => (
+              <button key={`${qi}-${option}`} ref={n === 0 ? first : undefined} type="button" className="ach-o" disabled={phase !== "on"} onClick={() => finish(qi, n)}>
+                <span className="ach-l" aria-hidden="true">{"ABCD"[n]}</span>{option}
+              </button>
+            ))}
+          </div>
+          {phase === "ready" ? (
+            <div className="ach-gate">
+              <button type="button" className="btn btn--dark" onClick={() => begin()}>Start the clock</button>
+              <small>60 seconds. One try.</small>
+            </div>
+          ) : null}
         </div>
-      ) : null}
-      {result ? (
-        <div className="ach-res" role="status">
-          <p className="ach-res-h">{result.head}</p>
-          <p className="ach-res-p">{result.line}</p>
+        <div className="ach-face ach-back" inert={!done} aria-hidden={!done} role="status">
+          <div className={`ach-v${Figure ? "" : " plain"}`}>
+            {Figure ? <Figure /> : null}
+            <div>
+              <p className="ach-res-h"><Alt items={verdicts} on={verdict} /></p>
+              <p className="ach-res-p">{q.why}</p>
+            </div>
+          </div>
+          <CrowdBars crowd={crowd} youMs={done ? tookMs : null} shown={done} />
           <div className="ach-acts">
             <a className="btn" href={enrolUrl} data-aidmt-buy="">{register} <Arrow /></a>
             <button type="button" className="btn btn--ghost" onClick={() => begin(nextQuestion(qi))}>Try another</button>
           </div>
         </div>
-      ) : null}
+      </div>
     </div>
   );
 }

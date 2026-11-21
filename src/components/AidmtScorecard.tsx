@@ -22,6 +22,7 @@ import {
   type Band, type CategoryKey, type SampleQuestion, type SampleScorecard,
 } from "@/lib/aidmt-sample";
 import { FEATURES, type FeatureId } from "@/lib/aidmt-scorecard";
+import { AidmtNotes } from "@/components/AidmtNotes";
 
 const n0 = (v: number) => Math.round(v).toLocaleString("en-IN");
 const clamp = (v: number, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
@@ -136,6 +137,12 @@ export function SampleProvider({ children }: { children: ReactNode }) {
     if (lens === "women" && !SAMPLES.find((x) => x.id === next)!.woman) setLens("all");
   };
   return <SampleCtx.Provider value={{ s, pick, lens, setLens, cat, setCat }}>{children}</SampleCtx.Provider>;
+}
+
+/* The corner notes (AidmtNotes) on this page, with the visitor's exam first. */
+export function ExamNotes(props: { lift?: boolean }) {
+  const exam = useContext(SampleCtx)?.s.exam ?? null;
+  return <AidmtNotes scope="aidmt" exam={exam} {...props} />;
 }
 
 function useSample(): Sample {

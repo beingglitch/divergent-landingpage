@@ -7,6 +7,7 @@ import { CONFIG, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
 import { AidmtHeroLink, AidmtStrip } from "@/components/Aidmt";
+import { AidmtNotes } from "@/components/AidmtNotes";
 import { getAidmt } from "@/lib/aidmt";
 import { TrailerButton, TrailerFacade } from "@/components/Trailer";
 
@@ -429,6 +430,8 @@ export default async function HomePage() {
           <a className="btn btn--sm" href="#plans" tabIndex={-1}>Enrol</a>
         </div>
       </div>
+      {/* Real course joins and AIDMT registrations as they happen, above the sticky bar. */}
+      <AidmtNotes scope="home" lift />
       <HomeBehaviour />
     </>
   );
