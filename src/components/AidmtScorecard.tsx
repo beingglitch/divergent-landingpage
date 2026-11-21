@@ -874,16 +874,44 @@ export function FeatureCard({ id }: { id: FeatureId }) {
 /* The scorecard card by card, in three chapters: where you stand, why marks
    slipped, what to do next. Each chapter is its own stage (dark, white,
    tint, as the site alternates) with its cards in a grid, each under one
-   short question. On a phone a chapter's cards swipe sideways, so the page
-   stays short. Cards keep their dashboard numbers, as on the hero's callouts. */
+   short question. On a phone a chapter shows one card at a time, picked
+   with a row of chips, so the page only ever scrolls down and stays short.
+   Cards keep their dashboard numbers, as on the hero's callouts. */
 const CHAPTERS: { key: string; title: string; tone: "dark" | "light" | "tint"; ids: FeatureId[] }[] = [
   { key: "stand", title: "Where you stand", tone: "dark", ids: ["rank", "crowd"] },
   { key: "why", title: "Why marks slipped", tone: "light", ids: ["parts", "skills", "accuracy", "time", "missed"] },
   { key: "next", title: "What to do next", tone: "tint", ids: ["progress", "colleges", "plan", "share"] },
 ];
 const numberOf = new Map(FEATURES.map((f, n) => [f.id, n + 1]));
+const chapterOf = (id: FeatureId) => CHAPTERS.find((c) => c.ids.includes(id));
 
 export function ScorecardTour() {
+  /* The card each chapter shows on a phone (wider screens show them all). */
+  const [shown, setShown] = useState<Record<string, FeatureId>>(() => Object.fromEntries(CHAPTERS.map((c) => [c.key, c.ids[0]])));
+  useEffect(() => {
+    /* A link to a card (the hero's callouts, #f-parts) opens it in its
+       chapter first: on a phone it may be hidden behind another chip. */
+    const open = (id: FeatureId, smooth: boolean) => {
+      const chapter = chapterOf(id);
+      if (!chapter) return false;
+      setShown((s) => ({ ...s, [chapter.key]: id }));
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.getElementById(`f-${id}`)?.scrollIntoView({ behavior: smooth && !reducedMotion() ? "smooth" : "auto", block: "start" });
+      }));
+      return true;
+    };
+    const click = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest?.('a[href^="#f-"]');
+      const id = a?.getAttribute("href")?.slice(3) as FeatureId | undefined;
+      if (id && open(id, true)) {
+        e.preventDefault();
+        history.replaceState(null, "", `#f-${id}`);
+      }
+    };
+    if (location.hash.startsWith("#f-")) open(location.hash.slice(3) as FeatureId, false);
+    document.addEventListener("click", click);
+    return () => document.removeEventListener("click", click);
+  }, []);
   return (
     <>
       {CHAPTERS.map((chapter) => (
@@ -891,11 +919,22 @@ export function ScorecardTour() {
           <div className="sct-ch-in">
             <div className="wrap">
               <h3 className="sct-ch-t" id={`ch-${chapter.key}`}>{chapter.title}</h3>
+              <div className="sct-chips" role="group" aria-label={`Cards in ${chapter.title}`}>
+                {chapter.ids.map((id) => {
+                  const f = FEATURES.find((x) => x.id === id)!;
+                  return (
+                    <button key={id} type="button" className="sct-chip" aria-pressed={shown[chapter.key] === id} aria-controls={`f-${id}`} onClick={() => setShown((s) => ({ ...s, [chapter.key]: id }))}>
+                      <span className="ball" aria-hidden="true">{numberOf.get(id)}</span>
+                      {f.short}
+                    </button>
+                  );
+                })}
+              </div>
               <ol className={`sct-grid sct-grid--${chapter.key}`}>
                 {chapter.ids.map((id) => {
                   const f = FEATURES.find((x) => x.id === id)!;
                   return (
-                    <li key={id} id={`f-${id}`} className={`sct-slide s-${id}`}>
+                    <li key={id} id={`f-${id}`} className={`sct-slide s-${id}${shown[chapter.key] === id ? " on" : ""}`}>
                       <p className="sct-q">
                         <span className="ball" aria-hidden="true">{numberOf.get(id)}</span>
                         <span>{f.heading}</span>

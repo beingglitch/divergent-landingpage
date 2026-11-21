@@ -1344,7 +1344,7 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 /* the scorecard on the dark stage, tilted back. It is laid out 1200px wide
    and scaled (--k, set by HeroDashboard), so it keeps its shape on a phone;
    scrolling stands it up a little (--t). */
-.hd{position:relative;height:clamp(300px,50vw,640px);margin:clamp(28px,4vw,44px) calc(-1 * var(--gutter)) 0;overflow:hidden;overflow:clip;-webkit-mask-image:linear-gradient(#000 64%,transparent);mask-image:linear-gradient(#000 64%,transparent)}
+.hd{position:relative;height:clamp(300px,50vw,640px);margin:clamp(28px,4vw,44px) 0 0;overflow:hidden;overflow:clip;-webkit-mask-image:linear-gradient(#000 64%,transparent);mask-image:linear-gradient(#000 64%,transparent)}
 .hd::before{content:"";position:absolute;left:12%;right:12%;top:8%;bottom:0;background:radial-gradient(closest-side,rgba(32,155,210,.5),transparent);filter:blur(24px)}
 .hd-plane{position:absolute;left:50%;top:24px;width:1200px;transform-origin:50% 0;opacity:0;transform:translateX(-50%) perspective(2200px) rotateX(calc(24deg - 14deg * var(--t,0))) scale(var(--k,.5))}
 .hd.ready .hd-plane{opacity:1;animation:hd-in 1.3s var(--ease-out) backwards}
@@ -1624,11 +1624,25 @@ html:has(.trailer-dlg[open]){overflow:hidden}
   .sct-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .sct-grid>.sct-slide{grid-column:auto}
 }
+/* a phone: one card at a time, picked with the chips (wider screens show
+   every card, so the chips are hidden there) */
+.sct-chips{display:none}
 @media (max-width:760px){
-  .sct-grid{display:flex;gap:12px;margin-inline:calc(-1 * var(--gutter));padding:2px var(--gutter) 14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);overscroll-behavior-x:contain;scrollbar-width:none}
-  .sct-grid::-webkit-scrollbar{display:none}
-  .sct-grid>.sct-slide{flex:0 0 86%;scroll-snap-align:start}
+  .sct-ch-t{margin-bottom:16px}
+  .sct-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+  .sct-chip{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:6px 15px 6px 6px;border:0;border-radius:999px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--line-2);color:var(--ink);font-family:var(--f-body);font-size:15px;font-weight:650;line-height:1;cursor:pointer;transition:background-color .2s,color .2s,box-shadow .2s}
+  .sct-chip .ball{width:28px;height:28px;font-size:12.5px;border-width:1.5px}
+  .sct-chip[aria-pressed="true"]{background:var(--ink);color:var(--page);box-shadow:none}
+  .sct-chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+  .sct-ch--dark .sct-chip{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);color:#fff}
+  .sct-ch--dark .sct-chip[aria-pressed="true"]{background:#fff;color:#0B0B0C}
+  .sct-grid{display:block}
+  .sct-grid>.sct-slide:not(.on){display:none}
+  .sct-grid>.sct-slide.on{animation:sct-swap .3s var(--ease-out)}
+  .sct-q .ball{display:none}
 }
+@keyframes sct-swap{from{opacity:0;translate:0 10px}}
+@media (prefers-reduced-motion:reduce){.sct-grid>.sct-slide.on{animation:none}}
 .ft-mat{position:relative;isolation:isolate;display:grid;justify-items:center;align-items:center;container-type:inline-size;padding:clamp(16px,3vw,40px);border-radius:28px;background:var(--blue-50)}
 .ft-mat::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background-image:linear-gradient(rgba(32,155,210,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(32,155,210,.12) 1px,transparent 1px);background-size:22px 22px;background-position:-1px -1px;-webkit-mask-image:radial-gradient(75% 75% at 50% 50%,#000 30%,transparent);mask-image:radial-gradient(75% 75% at 50% 50%,#000 30%,transparent)}
 .ft-mat>.sc-card{width:100%;max-width:600px;box-shadow:0 1px 2px rgba(11,11,12,.04),0 30px 60px -34px rgba(11,11,12,.42)}
@@ -1861,11 +1875,3 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 /* FAQs and student cards: white on the pale page, lifted instead of outlined. */
 :root:not([data-theme="dark"]) .faq{border-color:transparent;box-shadow:var(--lift)}
 :root:not([data-theme="dark"]) .tcard{box-shadow:var(--lift)}
-
-/* AIDMT on a phone: toppers and video stories swipe sideways instead of stacking */
-@media (max-width:760px){
-  .am .toppers,.am .vcards{display:flex;gap:12px;margin-inline:calc(-1 * var(--gutter));padding:2px var(--gutter) 14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);overscroll-behavior-x:contain;scrollbar-width:none}
-  .am .toppers::-webkit-scrollbar,.am .vcards::-webkit-scrollbar{display:none}
-  .am .toppers>li{flex:0 0 44%;scroll-snap-align:start}
-  .am .vcards>li{flex:0 0 74%;scroll-snap-align:start}
-}
