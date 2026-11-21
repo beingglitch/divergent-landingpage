@@ -79,7 +79,7 @@ export const FALLBACK: Aidmt = {
     pills: ["UCEED · CEED · NID · NIFT", "AIDMT 2027"],
     title: "All India",
     highlight: "Design Mock.",
-    tagline: "Four national mocks, set like NID, UCEED and NIFT, plus a free sectional. Sit each one from home and see your All India Rank.",
+    tagline: "Preparing alone, it’s hard to know if you’re on track. Sit a mock at home that feels like the real exam, and see where you stand among students across India, while there’s still time to improve.",
     guideLabel: "New to AIDMT? Read the full guide",
     guideUrl: "/blog/aidmt-all-india-design-mock-test/",
   },
@@ -123,7 +123,7 @@ export const FALLBACK: Aidmt = {
       },
     ],
   },
-  dates: { heading: "Scheduled exams. More coming soon.", note: "Times in IST. ₹199 per student, or ₹399 for a group of 3. The sectional is free." },
+  dates: { heading: "Scheduled exams. More coming soon.", note: "All times are IST. ₹199 a mock, or ₹399 for you and two friends." },
   steps: {
     heading: "Register to rank in four steps.",
     items: [
@@ -150,14 +150,14 @@ export const FALLBACK: Aidmt = {
   faqs: {
     heading: "Asked, answered.",
     items: [
-      { question: "What is AIDMT?", answer: "The All India Design Mock Test, run by Divergent Classes. AIDMT 2027 is a series of four national mocks, set like NID, UCEED and NIFT, each with a national rank, plus a free sectional." },
-      { question: "Who can take it?", answer: "Anyone preparing for a design entrance: Class 11, Class 12 and droppers." },
-      { question: "Can I take a mock again?", answer: "No. One attempt per student per mock, so the ranks stay fair and the questions stay private." },
-      { question: "What does it cost?", answer: "₹199 for one student, down from ₹599, or ₹399 for a group of 3. That covers marking, your rank, percentile and topic report. The sectional is free." },
+      { question: "What is AIDMT?", answer: "The All India Design Mock Test, run by Divergent Classes. Each mock is set like the real NID, UCEED or NIFT paper and sat by students across India in the same window, so the rank you get actually means something." },
+      { question: "Who can take it?", answer: "Anyone preparing for a design entrance exam: Class 11, Class 12 or a drop year. If you’re not sure you’re ready yet, that’s exactly when a mock helps most." },
+      { question: "Can I take a mock again?", answer: "No. Everyone gets one attempt per mock, which keeps the ranks fair and the questions private." },
+      { question: "What does it cost?", answer: "₹199 a mock, down from ₹599, or ₹399 for you and two friends. That covers marking, your rank and your full scorecard." },
       { question: "Is it linked to IIT Bombay, NID or NIFT?", answer: "No. AIDMT is an independent mock by Divergent Classes. It is practice, not an admission test." },
     ],
   },
-  cta: { heading: "Register now and see where you stand.", lede: "₹199 per student, with your rank, percentile and topic report, or ₹399 for 3 friends together. Each mock takes registrations until its window closes." },
+  cta: { heading: "Find your weak spots before the exam does.", lede: "₹199 a mock, or ₹399 for you and two friends. Registration for each mock stays open until its window closes." },
   series: [
     { key: "sectional", name: "Free sectional", exam: "", detail: "Part B only (drawing and design), free for everyone", opens: "2026-11-08T09:00:00", closes: "2026-11-11T23:59:59", free: true, solutions: "", results: null, guide: null },
     { key: "aidmt-1", name: "AIDMT 1", exam: "NID", detail: "NID full-length mock, ranked across India", opens: "2026-11-15T09:00:00", closes: "2026-11-17T23:59:59", free: true, solutions: "18 to 19 Nov, on a live meet", results: "2026-11-20T23:59:59", guide: null },

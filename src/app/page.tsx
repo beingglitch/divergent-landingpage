@@ -6,7 +6,7 @@ import { getMentors } from "@/lib/mentors";
 import { CONFIG, FREE_CLASS_URL, bundleSlug, checkoutUrl } from "@/lib/config";
 import { LeadForm } from "@/components/LeadForm";
 import { HomeBehaviour } from "@/components/HomeBehaviour";
-import { AidmtStrip } from "@/components/Aidmt";
+import { AidmtHeroLink, AidmtStrip } from "@/components/Aidmt";
 import { getAidmt } from "@/lib/aidmt";
 import { TrailerButton, TrailerFacade } from "@/components/Trailer";
 
@@ -20,36 +20,44 @@ export default async function HomePage() {
   const [mentors, aidmt] = await Promise.all([getMentors(), getAidmt()]);
   return (
     <>
-      <section className="hero" id="top" data-dot="Home" aria-labelledby="hero-h">
+      <section className="hero hero--split" id="top" data-dot="Home" aria-labelledby="hero-h">
         <div className="stage">
           <div className="arc">
-            <div className="wrap">
-              <p className="pills"><span className="pill">UCEED &amp; NID 2027</span><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>75-Day Crash Course</span></p>
-              <h1 className="h1 h1-swap" id="hero-h">
-                <span className="h1-line"><span className="num">75 days</span> to <span className="hl">UCEED and NID.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></span>
-                <span className="h1-line"><span className="num">Focus on prep,</span> <span className="hl">leave planning to us.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></span>
-              </h1>
-              <p className="hero-sub">Live classes, full mocks and weekly feedback from mentors who cleared it.</p>
+            {/* Copy on the left, the trailer on the right: the trailer is the
+                quickest way to show what the 75 days are, so it is on the
+                first screen. On a phone it follows the buttons. */}
+            <div className="wrap hero-grid">
+              <div className="hero-copy">
+                <AidmtHeroLink builtAt={Date.now()} series={aidmt.series} price={aidmt.pricing.perSitting} />
+                <h1 className="h1 h1-swap" id="hero-h">
+                  <span className="h1-line"><span className="num">75 days</span> to <span className="hl">UCEED and NID.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></span>
+                  <span className="h1-line"><span className="num">Focus on prep,</span> <span className="hl">leave planning to us.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></span>
+                </h1>
+                <p className="hero-sub">Live classes, full mocks and weekly feedback from mentors who cleared it.</p>
+                <div className="offer">
+                  <p className="offer-p"><span className="offer-k">Plans from</span><s className="offer-was" data-was="" hidden></s><b data-from-p="">₹5,999</b></p>
+                  <p className="deadline" data-req="launchPrice" data-until={CONFIG.dates.launchEnds}><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Launch price ends 2 November</p>
+                  {/* The festival offer's end, filled in by home.ts while it runs. */}
+                  <p className="deadline" data-fest-deadline="" hidden><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg><span data-fest-deadline-t=""></span></p>
+                </div>
+                <div className="hero-ctas">
+                  <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+                  <a className="btn btn--ghost" href={FREE_CLASS_URL}>Attend a free live class</a>
+                </div>
+              </div>
+              <div className="hero-media">
+                {/* A thumbnail until tapped, so nothing from YouTube loads with the page. */}
+                <TrailerFacade caption="Watch: how the 75 days run" />
+              </div>
             </div>
           </div>
+          {/* Below the blue: the facts and the 75 days. */}
           <div className="wrap hero-low">
             <ul className="hfacts">
               <li><span data-hf-k="">Classes start</span><b data-eyebrow-start="">3 November</b></li>
               <li><span>Every week</span><b>3 classes · 5 in Combo</b></li>
               <li><span>Per exam</span><b>32+ classes · 10 mocks</b></li>
             </ul>
-            <div className="offer">
-              <p className="offer-p"><span className="offer-k">Plans from</span><s className="offer-was" data-was="" hidden></s><b data-from-p="">₹5,999</b></p>
-              <p className="deadline" data-req="launchPrice" data-until={CONFIG.dates.launchEnds}><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>Launch price ends 2 November</p>
-              {/* The festival offer's end, filled in by home.ts while it runs. */}
-              <p className="deadline" data-fest-deadline="" hidden><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg><span data-fest-deadline-t=""></span></p>
-            </div>
-            <div className="hero-ctas">
-              <a className="btn" href="#plans">Enrol now <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-              <a className="btn btn--ghost" href={FREE_CLASS_URL}>Attend a free live class</a>
-            </div>
-            {/* The course trailer: a thumbnail until tapped, so nothing from YouTube loads with the page. */}
-            <TrailerFacade caption="Watch: how the 75 days run" />
             <div className="d75" aria-hidden="true">
               <div className="d75-h">
                 <p className="d75-t"><span className="d75-n">75</span><span className="d75-w"><b>days,</b><span>every one planned.</span></span></p>

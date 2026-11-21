@@ -10,6 +10,7 @@ import { SITE_URL } from "@/lib/meta";
 import { PIXEL_ID } from "@/lib/config";
 import { PIXEL_LOADER } from "@/lib/pixel";
 import { UTM_CAPTURE } from "@/lib/utm";
+import { THEME_BOOT } from "@/components/ThemeToggle";
 import "./styles.css";
 import "./diwali.css";
 
@@ -24,8 +25,13 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#ffffff",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0E11" },
+  ],
+  // The theme follows the device until someone uses the header toggle. CSS
+  // sets color-scheme per theme and ThemeToggle updates the theme-color tag.
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +46,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');" }} />
+        {/* Before paint, so a dark reader never sees a white flash. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         {/* Which ad or link brought them: see lib/utm. */}
         <script dangerouslySetInnerHTML={{ __html: UTM_CAPTURE }} />
         {PIXEL_ID ? <script dangerouslySetInnerHTML={{ __html: PIXEL_LOADER }} /> : null}

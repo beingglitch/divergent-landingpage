@@ -437,29 +437,5 @@ export function initHome(): () => void {
     cleanups.push(() => window.clearTimeout(timer));
   })();
 
-  /* ---------- a few seconds in: fit the facts, price, buttons and trailer in view, once ---------- */
-  (() => {
-    const first = $(".hero-low .hfacts"), last = $("#trailer") || $(".hero-low .hero-ctas");
-    if (!first || !last) return;
-    const timer = window.setTimeout(() => {
-      // Not over a dialog, a tour or the open phone menu.
-      if (doc.querySelector('[aria-modal="true"], .dw-tour, .menu-btn[aria-expanded="true"]')) return;
-      const hero = $(".hero");
-      // Someone already deep into the page is not pulled back to the top.
-      if (hero && hero.getBoundingClientRect().bottom < 0) return;
-      const navBottom = Math.max(0, $("#nav")?.getBoundingClientRect().bottom ?? 0);
-      const room = window.innerHeight - navBottom;
-      const top = first.getBoundingClientRect().top + window.scrollY;
-      const bottom = last.getBoundingClientRect().bottom + window.scrollY;
-      const height = bottom - top;
-      // Centred in the space under the menu when it fits, else its top just under the menu.
-      const gap = height < room ? (room - height) / 2 : 12;
-      const target = Math.max(0, Math.round(top - navBottom - gap));
-      if (Math.abs(target - window.scrollY) < 4) return;
-      window.scrollTo({ top: target, behavior: reduce ? "auto" : "smooth" });
-    }, 3000);
-    cleanups.push(() => window.clearTimeout(timer));
-  })();
-
   return () => cleanups.forEach((fn) => fn());
 }

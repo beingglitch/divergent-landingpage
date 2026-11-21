@@ -29,6 +29,21 @@ const label = (s: AidmtSitting) => (s.exam ? `${s.name} (${s.exam})` : s.name);
 const days = (s: AidmtSitting) => aidmtDays(s.opens, s.closes);
 const ranked = (series: AidmtSitting[]) => series.filter((s) => !s.free).length;
 
+/* The one line above the home page heading that points to /aidmt/. It
+   names the next mock's price and goes once the last AIDMT date has passed. */
+export function AidmtHeroLink({ builtAt, series, price }: { builtAt: number; series: AidmtSitting[]; price: number }) {
+  const t = useNow(builtAt);
+  if (!series.length || t > ist(seriesEnds(series))) return null;
+  const s = nextAidmt(series, t);
+  const cost = s ? (s.free ? 0 : s.price ?? price) : null;
+  const text = cost === null ? "AIDMT 2027 results soon" : cost > 0 ? `AIDMT 2027 mocks, ${rupees(cost)}` : "AIDMT 2027: free mock";
+  return (
+    <p className="hero-ann">
+      <a href="/aidmt/"><span className="hero-ann-b">New</span>{text}<svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+    </p>
+  );
+}
+
 /* The home page pointer to /aidmt/, under the exam countdowns. It names the
    next sitting by date and goes once the last AIDMT date has passed. */
 export function AidmtStrip({ builtAt, series, price }: { builtAt: number; series: AidmtSitting[]; price: number }) {
@@ -74,14 +89,11 @@ export function AidmtRegLine({ builtAt, series, off }: { builtAt: number; series
 
 const STATUS: Record<AidmtState, string> = { done: "Done", after: "Results next", live: "On now", next: "Next", later: "" };
 
-/* "15 Nov, 9 am to 17 Nov, 11:59 pm", or "9 Nov, 9 am to 11:59 pm" on one day. */
+/* "9 am to 11:59 pm": the row's date already says which days. */
 function windowText(s: AidmtSitting): string {
-  const a = `${aidmtDays(s.opens)}, ${aidmtTime(s.opens)}`;
-  return aidmtDays(s.opens) === aidmtDays(s.closes) ? `${a} to ${aidmtTime(s.closes)}` : `${a} to ${aidmtDays(s.closes)}, ${aidmtTime(s.closes)}`;
+  return `${aidmtTime(s.opens)} to ${aidmtTime(s.closes)}`;
 }
 
-/* The whole series, in date order, with where each sitting stands today.
-   live is the set of blog paths that are published, so a guide never links to a missing post. */
 /* What a sitting's pill does. On now: straight to the paper (the app asks
    the visitor to sign in first, then opens it). Still to come: Register. */
 /* buy: the sitting a Register opens in the buy dialog (AidmtBuy). */
@@ -92,6 +104,10 @@ function sittingLink(s: AidmtSitting, state: AidmtState, enrolUrl: string): { hr
   return null;
 }
 
+/* The whole series, in date order, one row each: when, what, the price and
+   where each sitting stands today. The solutions sessions are in the FAQs.
+   live is the set of blog paths that are published, so a guide never links
+   to a missing post. */
 export function AidmtSchedule({ builtAt, series, price, live, enrolUrl }: { builtAt: number; series: AidmtSitting[]; price: number; live: string[]; enrolUrl: string }) {
   const t = useNow(builtAt);
   return (
@@ -104,23 +120,20 @@ export function AidmtSchedule({ builtAt, series, price, live, enrolUrl }: { buil
         /* The sitting's own price; the series price only when the LMS did not say. */
         const cost = s.free ? 0 : s.price ?? price;
         return (
-          <li key={s.key} className={`aidmt-tl-i is-${state}${s.free ? " is-free" : ""}`}>
+          <li key={s.key} className={`aidmt-tl-i is-${state}${cost === 0 ? " is-free" : ""}`}>
             <p className="aidmt-tl-d">{days(s)}</p>
             <div className="aidmt-tl-b">
-              <p className="aidmt-tl-h">
-                <b>{s.name}</b>
-                {s.exam ? <span className="aidmt-tl-x">{s.exam}</span> : null}
-                {s.free ? <span className="aidmt-tl-x">Free</span> : null}
-                {link ? <a className="aidmt-tl-st aidmt-tl-go" href={link.href} data-aidmt-buy={link.buy}>{link.text} <svg className="arr" width="14" height="14" aria-hidden="true"><use href="#arrow" /></svg></a> : st ? <span className="aidmt-tl-st">{st}</span> : null}
+              <p className="aidmt-tl-h"><b>{s.name}</b>{s.exam ? <span className="aidmt-tl-x">{s.exam}</span> : null}</p>
+              <p className="aidmt-tl-m">
+                {s.detail ? <>{s.detail} · </> : null}
+                {windowText(s)}
+                {s.results ? <> · Results {aidmtDays(s.results)}</> : null}
+                {guide ? <> · <a href={guide.href}>{guide.label}</a></> : null}
               </p>
-              {s.detail ? <p className="aidmt-tl-t">{s.detail}.</p> : null}
-              <ul className="aidmt-tl-l">
-                <li><b>Window</b><span>{windowText(s)}</span></li>
-                <li><b>{s.free || cost === 0 ? "Fee" : "Register"}</b><span>{s.free ? "Free for everyone" : cost === 0 ? "Free. Register to sit it, open till the window closes" : `${rupees(cost)}, open till the window closes`}</span></li>
-                {s.solutions ? <li><b>Solutions</b><span>{s.solutions}</span></li> : null}
-                {s.results ? <li><b>Results</b><span>{aidmtDays(s.results)}</span></li> : null}
-                {guide ? <li className="aidmt-tl-guide"><b>Guide</b><span><a href={guide.href}>{guide.label}</a></span></li> : null}
-              </ul>
+            </div>
+            <p className="aidmt-tl-p">{cost === 0 ? "Free" : rupees(cost)}</p>
+            <div className="aidmt-tl-a">
+              {link ? <a className="aidmt-tl-st aidmt-tl-go" href={link.href} data-aidmt-buy={link.buy}>{link.text} <svg className="arr" width="14" height="14" aria-hidden="true"><use href="#arrow" /></svg></a> : st ? <span className="aidmt-tl-st">{st}</span> : null}
             </div>
           </li>
         );

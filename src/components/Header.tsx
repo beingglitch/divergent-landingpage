@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { OfferBar } from "@/components/OfferBar";
 import { ClassPopup, CourseRows, CoursesMenu, useStudent } from "@/components/StudentClass";
 import { APP_URL } from "@/lib/config";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 /* The app's sign-in. A WhatsApp code signs a new number up too, so one
    button covers both; students looked for a sign-up link and found none. */
@@ -42,6 +43,7 @@ export function Header() {
             <a className="btn btn--ghost btn--sm nav-contact" href="/contact/" data-nav="contact" aria-current={cur("contact")}>Contact us</a>
             <a className="btn btn--sm" href={account.href}>{account.label}</a>
           </div>
+          <ThemeToggle />
           <a className="btn btn--sm nav-login" href={account.href}>{account.short}</a>
           <button className="menu-btn" type="button" aria-expanded="false" aria-controls="mnav"><span></span><b className="sr-only">Menu</b></button>
         </div>
