@@ -9,14 +9,12 @@
    question map work, and nothing is sent anywhere.
 
    Laid out at 1280 by 860, a laptop screen, and scaled to fit, like the hero
-   scorecard, with yellow callouts on the parts the page names below it. */
+   scorecard. */
 
 import { useEffect, useReducer, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 const W = 1280;
 const H = 860;
-/* The scale on a phone: large enough to read, panned sideways. */
-const PHONE_K = 0.5;
 const PART_SECS = 120 * 60;
 const STARTED = 9;
 
@@ -123,14 +121,6 @@ function Stack() {
 const TimerIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>;
 const FlagIcon = ({ on }: { on: boolean }) => <svg width="16" height="16" viewBox="0 0 24 24" fill={on ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528" /></svg>;
 
-/* What the yellow callouts on the screen point at, listed under it. */
-const CALLOUTS = [
-  "A timer for each part, so pacing yourself on exam day already feels familiar.",
-  "The same NAT, MSQ and MCQ sections you’ll face in UCEED.",
-  "Mark for review, Clear response and Save & Next, right where they’ll be on the day.",
-  "The question map, so you learn to keep track of answered, skipped and marked questions under pressure.",
-];
-
 export function AidmtExamScreen() {
   const box = useRef<HTMLDivElement>(null);
   const [k, setK] = useState<number | null>(null);
@@ -144,7 +134,7 @@ export function AidmtExamScreen() {
     if (!el) return;
     /* The whole screen fits the column; on a phone that would be too small to
        read, so it stays at a readable size and pans sideways instead. */
-    const ro = new ResizeObserver(() => setK(el.clientWidth < 640 ? PHONE_K : el.clientWidth / W));
+    const ro = new ResizeObserver(() => setK(el.clientWidth / W));
     ro.observe(el);
     const io = new IntersectionObserver(([e]) => setShown(e.isIntersecting));
     io.observe(el);
@@ -217,7 +207,7 @@ export function AidmtExamScreen() {
 
   return (
     <>
-      <div className={`ex${k === PHONE_K ? " ex--pan" : ""}`} ref={box} style={{ "--k": k ?? 0.5 } as CSSProperties} role="region" aria-label="A working copy of the AIDMT exam screen" tabIndex={k === PHONE_K ? 0 : undefined}>
+      <div className="ex" ref={box} style={{ "--k": k ?? 0.5 } as CSSProperties} role="region" aria-label="A working copy of the AIDMT exam screen">
         <div className="ex-size" style={k ? { width: W * k, height: (H + 34) * k } : undefined}>
         <div className="ex-plane">
           <div className="ex-win">
@@ -328,17 +318,9 @@ export function AidmtExamScreen() {
               </div>
             </div>
           </div>
-          <span className="ball ex-call ex-call-1" aria-hidden="true">1</span>
-          <span className="ball ex-call ex-call-2" aria-hidden="true">2</span>
-          <span className="ball ex-call ex-call-3" aria-hidden="true">3</span>
-          <span className="ball ex-call ex-call-4" aria-hidden="true">4</span>
         </div>
         </div>
       </div>
-      {k === PHONE_K ? <p className="ex-swipe" aria-hidden="true">Swipe to see the whole screen</p> : null}
-      <ol className="ex-notes">
-        {CALLOUTS.map((note, n) => <li key={note}><span className="ball" aria-hidden="true">{n + 1}</span>{note}</li>)}
-      </ol>
     </>
   );
 }

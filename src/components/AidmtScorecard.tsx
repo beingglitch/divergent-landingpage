@@ -871,105 +871,46 @@ export function FeatureCard({ id }: { id: FeatureId }) {
   return <C />;
 }
 
-/* The scorecard one card at a time, in three chapters so a long scroll reads
-   as a story: where you stand, why marks slipped, what to do next. Each
-   chapter is its own stage (dark, white, tint, as the site alternates).
-   Its steps scroll past on the left; the card for the step in the middle of
-   the screen stays pinned on the right, shrunk to fit a short screen. On a
-   narrow screen there is no pinning: each step shows its own card. Steps keep
-   their dashboard numbers, as on the hero's callouts. */
-const CHAPTERS: { key: string; title: string; line: string; tone: "dark" | "light" | "tint"; ids: FeatureId[] }[] = [
-  { key: "stand", title: "Where you stand", line: "Your rank, and the crowd it came from.", tone: "dark", ids: ["rank", "crowd"] },
-  { key: "why", title: "Why marks slipped", line: "Part by part, skill by skill, answer by answer.", tone: "light", ids: ["parts", "skills", "accuracy", "time", "missed"] },
-  { key: "next", title: "What to do next", line: "Where you’re heading, and how to get there sooner.", tone: "tint", ids: ["progress", "colleges", "plan", "share"] },
+/* The scorecard card by card, in three chapters: where you stand, why marks
+   slipped, what to do next. Each chapter is its own stage (dark, white,
+   tint, as the site alternates) with its cards in a grid, each under one
+   short question. On a phone a chapter's cards swipe sideways, so the page
+   stays short. Cards keep their dashboard numbers, as on the hero's callouts. */
+const CHAPTERS: { key: string; title: string; tone: "dark" | "light" | "tint"; ids: FeatureId[] }[] = [
+  { key: "stand", title: "Where you stand", tone: "dark", ids: ["rank", "crowd"] },
+  { key: "why", title: "Why marks slipped", tone: "light", ids: ["parts", "skills", "accuracy", "time", "missed"] },
+  { key: "next", title: "What to do next", tone: "tint", ids: ["progress", "colleges", "plan", "share"] },
 ];
 const numberOf = new Map(FEATURES.map((f, n) => [f.id, n + 1]));
 
 export function ScorecardTour() {
-  const [on, setOn] = useState<FeatureId>(FEATURES[0].id);
-  const steps = useRef(new Map<FeatureId, HTMLElement>());
-  useEffect(() => {
-    if (!("IntersectionObserver" in window)) return;
-    const io = new IntersectionObserver((es) => {
-      for (const e of es) if (e.isIntersecting) setOn(e.target.getAttribute("data-step") as FeatureId);
-    }, { rootMargin: "-48% 0px -48% 0px" });
-    steps.current.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-  const keep = (id: FeatureId) => (el: HTMLElement | null) => {
-    if (el) steps.current.set(id, el);
-    else steps.current.delete(id);
-  };
   return (
     <>
-      {CHAPTERS.map((chapter, n) => (
-        <Chapter key={chapter.key} chapter={chapter} index={n} on={on} keep={keep} />
-      ))}
-    </>
-  );
-}
-
-function Chapter({ chapter, index, on, keep }: { chapter: (typeof CHAPTERS)[number]; index: number; on: FeatureId; keep: (id: FeatureId) => (el: HTMLElement | null) => void }) {
-  const features = chapter.ids.map((id) => FEATURES.find((f) => f.id === id)!);
-  // The pinned card: the step in view, or this chapter's first while another chapter is in view.
-  const shown = chapter.ids.includes(on) ? on : chapter.ids[0];
-  const pin = useRef<HTMLDivElement>(null);
-  const card = useRef<HTMLDivElement>(null);
-  const [fit, setFit] = useState({ k: 1, h: 0 });
-  useEffect(() => {
-    const p = pin.current, c = card.current;
-    if (!p || !c) return;
-    const measure = () => {
-      const h = c.offsetHeight;
-      /* Room under the card for the dots and the floating exam switcher. */
-      setFit({ k: Math.min(1, (p.clientHeight - 120) / Math.max(1, h)), h });
-    };
-    const ro = new ResizeObserver(measure);
-    ro.observe(p);
-    ro.observe(c);
-    return () => ro.disconnect();
-  }, [shown]);
-  const go = (id: FeatureId) => document.getElementById(`f-${id}`)?.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "center" });
-  return (
-    <section className={`sct-ch sct-ch--${chapter.tone}`} aria-labelledby={`ch-${chapter.key}`}>
-      <div className="sct-ch-in">
-        <div className="wrap">
-          <header className="sct-ch-h">
-            <p className="sct-ch-n">Chapter {index + 1} of {CHAPTERS.length}</p>
-            <h3 id={`ch-${chapter.key}`}>{chapter.title}</h3>
-            <p className="sct-ch-l">{chapter.line}</p>
-          </header>
-          <div className="sct">
-            <ol className="sct-steps">
-              {features.map((f) => (
-                <li key={f.id} id={`f-${f.id}`} data-step={f.id} ref={keep(f.id)} className={`sct-step${f.id === on ? " on" : ""}`}>
-                  <span className="sct-k"><span className="ball" aria-hidden="true">{numberOf.get(f.id)}</span>{f.soon ? <span className="sct-soon">Coming soon</span> : null}</span>
-                  <h4 className="sct-h">{f.heading}</h4>
-                  <ul className="sct-pts">{f.points.map((pt) => <li key={pt}>{pt}</li>)}</ul>
-                  <div className="sct-inline ft-mat"><FeatureCard id={f.id} /></div>
-                </li>
-              ))}
-            </ol>
-            <div className="sct-stage">
-              <div className="sct-pin" ref={pin}>
-                <div className="sct-fit" style={fit.h ? { height: fit.h * fit.k } : undefined}>
-                  <div className="sct-card ft-mat" ref={card} key={shown} style={fit.k < 1 ? { transform: `scale(${fit.k})` } : undefined}>
-                    <FeatureCard id={shown} />
-                  </div>
-                </div>
-                {features.length > 1 ? (
-                  <div className="sct-dots">
-                    {features.map((f) => (
-                      <button key={f.id} type="button" className={f.id === shown ? "on" : ""} aria-label={`${numberOf.get(f.id)}. ${f.title}`} aria-current={f.id === shown ? "step" : undefined} onClick={() => go(f.id)}></button>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
+      {CHAPTERS.map((chapter) => (
+        <section key={chapter.key} className={`sct-ch sct-ch--${chapter.tone}`} aria-labelledby={`ch-${chapter.key}`}>
+          <div className="sct-ch-in">
+            <div className="wrap">
+              <h3 className="sct-ch-t" id={`ch-${chapter.key}`}>{chapter.title}</h3>
+              <ol className={`sct-grid sct-grid--${chapter.key}`}>
+                {chapter.ids.map((id) => {
+                  const f = FEATURES.find((x) => x.id === id)!;
+                  return (
+                    <li key={id} id={`f-${id}`} className={`sct-slide s-${id}`}>
+                      <p className="sct-q">
+                        <span className="ball" aria-hidden="true">{numberOf.get(id)}</span>
+                        <span>{f.heading}</span>
+                        {f.soon ? <span className="sct-soon">Soon</span> : null}
+                      </p>
+                      <FeatureCard id={id} />
+                    </li>
+                  );
+                })}
+              </ol>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
+      ))}
+    </>
   );
 }
 
@@ -984,16 +925,21 @@ export function HeroDashboard() {
   const { s } = useSample();
   const box = useRef<HTMLDivElement>(null);
   const [k, setK] = useState<number | null>(null);
+  const [phone, setPhone] = useState(false);
   const [on, setOn] = useState(false);
   useEffect(() => {
     const el = box.current;
     if (!el) return;
-    /* Fills its box; on a phone a little wider than the screen. The phone
-       test reads the window, not the box: on a desktop the box is the
-       hero's right column, narrower than 700px but not a phone. */
+    /* Fills its box, tilted back. On a phone it is the phone's width
+       instead, flat, one card under another at full size, as the app lays
+       the scorecard out there: the laptop layout shrunk to a phone is too
+       small to read. The phone test reads the window, not the box: on a
+       desktop the box is the hero's right column, narrower than 700px but
+       not a phone. */
     const ro = new ResizeObserver(([e]) => {
-      const w = e.contentRect.width;
-      setK(Math.min(1, (w * (window.innerWidth < 700 ? 1.08 : 0.92)) / PLANE));
+      const small = window.innerWidth < 700;
+      setPhone(small);
+      setK(small ? 1 : Math.min(1, (e.contentRect.width * 0.92) / PLANE));
     });
     ro.observe(el);
     const io = new IntersectionObserver((es) => {
@@ -1025,7 +971,7 @@ export function HeroDashboard() {
   }, []);
   const p = useGrow(on, s.id, 1400);
   return (
-    <div ref={box} className={`hd${k ? " ready" : ""}`} style={k ? ({ "--k": k } as CSSProperties) : undefined}>
+    <div ref={box} className={`hd${k ? " ready" : ""}${phone ? " hd--phone" : ""}`} style={k ? ({ "--k": k } as CSSProperties) : undefined}>
       <div className="hd-plane">
         <div className="sc-win">
           <div className="sc-chrome" aria-hidden="true">

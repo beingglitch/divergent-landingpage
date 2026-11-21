@@ -82,6 +82,16 @@
   --paper:#fff; --fill:#0B0B0C; --blue-ink:#16719A;
   --line:#E2E6EA; --line-2:#C7CDD3;
 }
+/* The scorecard window in the hero is the app in the reader's theme: in the
+   dark theme it takes the dark palette back inside the blue hero card, whose
+   light palette would leave dark text on the window's dark panels. */
+:root[data-theme="dark"] .sc-win{
+  --ink:#EEF1F4; --ink-2:#C4CAD1; --ink-3:#939BA4;
+  --paper:#1A2128; --paper-2:#222B33; --fill:#151B21;
+  --line:#303A44; --line-2:#48535E; --blue-ink:#6FCBF0;
+  --blue-50:#143444; --blue-100:#1A4155; --blue-200:#26566E; --yellow-50:#3D3313;
+  color:var(--ink);
+}
 /* Text that inherits (no colour of its own) would come in light from the
    dark page, so these surfaces set it again. */
 :root[data-theme="dark"] :is(.am-part-bar,.pcol.on,.pillar,.cd.y,.cd.b,.blk.u,.blk.f,.ft-end-in,.promo,.save,.badge:not(.b),.sc-sample){color:var(--ink)}
@@ -1341,6 +1351,20 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 @keyframes hd-in{from{opacity:0;transform:translateX(-50%) translateY(120px) perspective(2200px) rotateX(42deg) scale(var(--k,.5))}}
 @media (prefers-reduced-motion:reduce){.hd.ready .hd-plane{animation:none}}
 .hd .sc-win{box-shadow:0 0 0 1px rgba(11,11,12,.08),0 50px 90px -30px rgba(11,11,12,.6)}
+/* on a phone: the phone's width, flat, one card under another at full size
+   (HeroDashboard sets --k to 1), so nothing is cut off at the sides */
+.hd--phone{height:clamp(380px,112vw,520px);margin-inline:0;-webkit-mask-image:linear-gradient(#000 72%,transparent);mask-image:linear-gradient(#000 72%,transparent)}
+.hd--phone .hd-plane{left:0;top:16px;width:100%;transform:none}
+.hd--phone.ready .hd-plane{animation-name:hd-in-phone}
+@keyframes hd-in-phone{from{opacity:0;transform:translateY(40px)}}
+.hd--phone .sc-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+.hd--phone .hd-cell{grid-column:auto}
+.hd--phone .sc-win{border-radius:18px}
+.hd--phone .sc-body{padding:16px}
+.hd--phone .sc-head{align-items:flex-start;gap:12px;margin-bottom:14px}
+.hd--phone .sc-mock{font-size:20px}
+.hd--phone .sc-score b{font-size:34px}
+.hd--phone .sc-score span{font-size:14px}
 .sc-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
 .hd-cell{position:relative;min-width:0}
 .hd-card,.hd-card>.sc-card{height:100%}
@@ -1571,7 +1595,7 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 @media (prefers-reduced-motion:reduce){.sc-dock{transition:none}}
 
 /* ---------- the scorecard, card by card ---------- */
-.ft-intro{padding-block:clamp(64px,8vw,112px) clamp(8px,2vw,24px)}
+.ft-intro{padding-block:clamp(56px,7vw,96px) 0}
 .ft-intro .h2{max-width:20ch}
 /* One card pinned on the right while its steps scroll past on the left
    (components/AidmtScorecard ScorecardTour). Below 1000px: no pinning, each
@@ -1582,44 +1606,28 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .sct-ch--dark{padding:0 var(--inset)}
 .sct-ch--dark .sct-ch-in{border-radius:var(--radius-xl);background:radial-gradient(60% 50% at 85% 0%,rgba(32,155,210,.45),transparent 70%),radial-gradient(45% 45% at 0% 100%,rgba(32,155,210,.22),transparent 70%),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/44px 44px,var(--fill);color:#fff}
 .sct-ch--tint{background:var(--blue-50)}
-.sct-ch-h{max-width:40rem;margin-bottom:clamp(8px,2vw,20px)}
-.sct-ch-n{display:inline-block;margin:0 0 14px;padding:5px 12px;border-radius:999px;background:var(--yellow);color:var(--ink);font-size:13px;font-weight:700}
-.sct-ch-h h3{font-size:clamp(34px,4.4vw,60px);font-weight:720;letter-spacing:-.035em;line-height:1}
-.sct-ch-l{margin:14px 0 0;font-size:clamp(17px,.5vw + 15px,20px);color:var(--ink-2)}
-.sct-ch--dark .sct-ch-l{color:var(--on-dark-2)}
-.sct-ch--dark .sct-h{color:#fff}
-.sct-ch--dark .sct-pts li{color:var(--on-dark)}
-.sct-ch--dark .sct-pts li::before{background:var(--yellow)}
-.sct-ch--dark .ft-mat{background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--line-dark)}
-.sct-ch--dark .ft-mat::before{background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px)}
-.sct-ch--dark .sct-dots button{background:rgba(255,255,255,.3)}
-.sct-ch--dark .sct-dots button.on{background:var(--yellow)}
-.sct-ch--tint .ft-mat{background:var(--paper)}
-.sct{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,80px)}
-.sct-steps{list-style:none;margin:0;padding:0}
-.sct-step{min-height:42vh;display:flex;flex-direction:column;justify-content:center;scroll-margin-top:calc(var(--nav-h) + var(--promo-h));opacity:.28;transition:opacity .35s var(--ease-out)}
-.sct-step.on{opacity:1}
-.sct-step .ball{width:34px;height:34px;font-size:15px}
-.sct-k{display:flex;align-items:center;gap:10px}
-.sct-soon{padding:4px 11px;border-radius:999px;background:var(--yellow-50);box-shadow:inset 0 0 0 1px #F3D67A;font-size:13px;font-weight:700;color:var(--ink)}
-.sct-h{margin-top:18px;font-size:clamp(30px,3.4vw,48px);font-weight:700;letter-spacing:-.03em;line-height:1.04;max-width:13ch;text-wrap:balance}
-.sct-line{margin:14px 0 0;max-width:36ch;font-size:clamp(16.5px,.4vw + 15px,18.5px);line-height:1.5;color:var(--ink-2)}
-.sct-step .sct-inline{display:none}
-.sct-pin{position:sticky;top:calc(var(--nav-h) + var(--promo-h) + 20px);height:calc(100vh - var(--nav-h) - var(--promo-h) - 40px);display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:16px}
-.sct-fit{display:flex;justify-content:center}
-.sct-card{width:100%;transform-origin:top center;animation:sct-in .45s var(--ease-out)}
-@keyframes sct-in{from{opacity:0;translate:0 14px}}
-.sct-dots{display:flex;justify-content:center;gap:6px}
-.sct-dots button{width:8px;height:8px;padding:0;border:0;border-radius:4px;background:var(--line-2);transition:width .3s var(--ease-out),background-color .2s}
-.sct-dots button:hover{background:var(--ink-3)}
-.sct-dots button.on{width:24px;background:var(--blue)}
-@media (prefers-reduced-motion:reduce){.sct-card{animation:none}.sct-step{transition:none}}
-@media (max-width:999px){
-  .sct{grid-template-columns:1fr}
-  .sct-stage{display:none}
-  .sct-step{min-height:0;opacity:1;padding-block:clamp(22px,5vw,36px)}
-  .sct-step .sct-inline{display:grid;margin-top:20px}
-  .sct-h{max-width:18ch}
+.sct-ch-t{margin:0 0 clamp(20px,3vw,32px);font-size:clamp(30px,4vw,52px);font-weight:720;letter-spacing:-.035em;line-height:1}
+.sct-ch--dark .sct-ch-t,.sct-ch--dark .sct-q{color:#fff}
+/* a chapter's cards: a grid, and on a phone a row that swipes sideways */
+.sct-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(14px,1.8vw,22px)}
+.sct-slide{display:flex;flex-direction:column;gap:12px;min-width:0;container-type:inline-size;scroll-margin-top:calc(var(--nav-h) + var(--promo-h) + 16px)}
+.sct-slide>.sc-card{flex:1}
+.sct-q{display:flex;align-items:center;gap:10px;margin:0;font-family:var(--f-display);font-size:clamp(17px,1.4vw,20px);font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.sct-q .ball{width:28px;height:28px;font-size:13px}
+.sct-soon{margin-left:auto;padding:3px 10px;border-radius:999px;background:var(--yellow-50);box-shadow:inset 0 0 0 1px #F3D67A;font-family:var(--f-body);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+.s-rank{grid-column:span 5}.s-crowd{grid-column:span 7}
+.s-parts{grid-column:span 7}.s-skills{grid-column:span 5}
+.s-accuracy,.s-time,.s-missed{grid-column:span 4}
+.s-progress{grid-column:span 5}.s-colleges{grid-column:span 7}
+.s-plan{grid-column:span 7}.s-share{grid-column:span 5}
+@media (max-width:1040px){
+  .sct-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sct-grid>.sct-slide{grid-column:auto}
+}
+@media (max-width:760px){
+  .sct-grid{display:flex;gap:12px;margin-inline:calc(-1 * var(--gutter));padding:2px var(--gutter) 14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);overscroll-behavior-x:contain;scrollbar-width:none}
+  .sct-grid::-webkit-scrollbar{display:none}
+  .sct-grid>.sct-slide{flex:0 0 86%;scroll-snap-align:start}
 }
 .ft-mat{position:relative;isolation:isolate;display:grid;justify-items:center;align-items:center;container-type:inline-size;padding:clamp(16px,3vw,40px);border-radius:28px;background:var(--blue-50)}
 .ft-mat::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background-image:linear-gradient(rgba(32,155,210,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(32,155,210,.12) 1px,transparent 1px);background-size:22px 22px;background-position:-1px -1px;-webkit-mask-image:radial-gradient(75% 75% at 50% 50%,#000 30%,transparent);mask-image:radial-gradient(75% 75% at 50% 50%,#000 30%,transparent)}
@@ -1670,10 +1678,6 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .ex-size{position:relative;width:100%;aspect-ratio:1280 / 894}
 .ex-plane{position:absolute;left:0;top:0;width:1280px;transform-origin:0 0;transform:scale(var(--k,.5))}
 /* on a phone: readable, and panned sideways */
-.ex--pan{overflow-x:auto;overscroll-behavior-x:contain;margin-inline:calc(-1 * var(--gutter));padding:0 var(--gutter) 8px;scrollbar-width:thin}
-.ex--pan .ex-size{aspect-ratio:auto}
-.ex--pan:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
-.ex-swipe{margin:-6px 0 16px;font-size:13px;font-weight:600;color:var(--ink-3)}
 .ex-win{border-radius:14px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px rgba(11,11,12,.12),0 40px 80px -36px rgba(11,11,12,.55)}
 .ex-chrome{display:flex;align-items:center;gap:12px;height:34px;padding:0 14px;background:#EEF1F4;border-bottom:1px solid #dfe3e8;font-family:var(--f-body)}
 .ex-dots{display:flex;gap:6px}
@@ -1790,15 +1794,6 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .ex-app .ex-qbtn:hover{filter:brightness(.93)}
 .ex-side-acts{display:flex;gap:16px;flex-shrink:0;padding:10px 16px;font-size:12px;color:#526171}
 /* the yellow callouts, at the screen's own coordinates */
-.ex-call{position:absolute;width:calc(30px / var(--k,.5));height:calc(30px / var(--k,.5));border-width:calc(2px / var(--k,.5));font-size:calc(14px / var(--k,.5));transform:translate(-50%,-50%);box-shadow:0 calc(4px / var(--k,.5)) calc(12px / var(--k,.5)) rgba(11,11,12,.3);pointer-events:none}
-.ex-call-1{left:785px;top:40px}
-.ex-call-2{left:586px;top:172px}
-.ex-call-3{left:319px;top:832px}
-.ex-call-4{left:963px;top:190px}
-.ex-notes{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 32px;margin:0 0 clamp(32px,4vw,48px);padding:0}
-.ex-notes li{display:flex;align-items:center;gap:12px;font-size:15.5px;line-height:1.45;color:var(--ink-2)}
-.ex-notes .ball{width:28px;height:28px;font-size:13px}
-@media (max-width:760px){.ex-notes{grid-template-columns:1fr}}
 
 /* the hero's exam toggle */
 .ah-exam{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:22px}
@@ -1811,9 +1806,6 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .am-hero .ah-exam{justify-content:center;margin-top:0}
 
 /* the scorecard steps' bullets */
-.sct-pts{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:9px}
-.sct-pts li{position:relative;padding-left:24px;font-size:clamp(16px,.3vw + 15px,17.5px);line-height:1.45;color:var(--ink-2)}
-.sct-pts li::before{content:"";position:absolute;left:2px;top:.5em;width:9px;height:9px;border-radius:3px;background:var(--blue)}
 
 /* "Still unsure?": faces, two ways to reach us, and the guide */
 .am-ask{margin-top:28px;max-width:400px;padding:22px;border-radius:var(--radius-lg);background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
@@ -1869,3 +1861,11 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 /* FAQs and student cards: white on the pale page, lifted instead of outlined. */
 :root:not([data-theme="dark"]) .faq{border-color:transparent;box-shadow:var(--lift)}
 :root:not([data-theme="dark"]) .tcard{box-shadow:var(--lift)}
+
+/* AIDMT on a phone: toppers and video stories swipe sideways instead of stacking */
+@media (max-width:760px){
+  .am .toppers,.am .vcards{display:flex;gap:12px;margin-inline:calc(-1 * var(--gutter));padding:2px var(--gutter) 14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);overscroll-behavior-x:contain;scrollbar-width:none}
+  .am .toppers::-webkit-scrollbar,.am .vcards::-webkit-scrollbar{display:none}
+  .am .toppers>li{flex:0 0 44%;scroll-snap-align:start}
+  .am .vcards>li{flex:0 0 74%;scroll-snap-align:start}
+}

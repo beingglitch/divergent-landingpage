@@ -46,7 +46,7 @@ function lastWordHighlighted(text: string) {
 
 /* The hero's line. The LMS has no admin field for it any more, so the page
    says it here rather than waiting on an LMS release for a copy change. */
-const HERO_LINE = "Preparing alone, it’s hard to tell if you’re on track. Sit a mock from home that feels just like the real exam, and see where you stand among students across India while there’s still time to improve.";
+const HERO_LINE = "Sit a mock that feels like the real exam, from home, and see where you stand across India.";
 
 const Arrow = () => <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg>;
 
@@ -132,7 +132,7 @@ export default async function AidmtPage() {
           <section className="ft-intro" aria-labelledby="sc-h">
             <div className="wrap">
               <h2 className="h2" id="sc-h">{a.why.heading || "Know where you stand before exam day."}</h2>
-              <p className="lede">After every mock, a scorecard like this one lands in your account. Here it’s filled in for a made-up student, so you can see what yours will show you.</p>
+              <p className="lede">Every mock ends with this scorecard. Shown here for a made-up student.</p>
             </div>
           </section>
 
