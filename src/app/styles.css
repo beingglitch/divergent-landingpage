@@ -68,7 +68,7 @@
    brand colour reads better than white in both themes. */
 /* The mock exam screen is a picture of the real exam, which is white: it
    keeps the whole light palette in both themes. */
-:root[data-theme="dark"] .ex-win{
+:root[data-theme="dark"] :is(.ex-win,.ach){
   color-scheme:light;
   --ink:#0B0B0C; --ink-2:#2D3034; --ink-3:#5C6168;
   --paper:#fff; --paper-2:#F4F6F8; --page:#fff; --fill:#0B0B0C; --blue-ink:#16719A;
@@ -262,7 +262,6 @@ html.js .hl path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s var(--
 .hero--split .arc .offer-p b{color:var(--ink)}
 .hero--split .arc .offer-was{color:var(--ink);text-decoration-color:rgba(11,11,12,.5)}
 .hero--split .arc .offer .deadline{color:var(--ink);border-color:rgba(11,11,12,.2);background:rgba(255,255,255,.55)}
-.hero--split .arc .aidmt-close{color:var(--ink)}
 .hero--split .arc .btn--ghost{--bd:var(--ink);--fg:var(--ink)}
 .hero--split .arc .btn--ghost:hover{--bg:var(--fill);--fg:#fff;--bd:var(--ink)}
 .hero--split .h1{font-size:clamp(36px,min(10.5vw,10.5svh),84px)}
@@ -1151,7 +1150,6 @@ html.has-promo{--promo-h:36px}
 @media (max-width:1000px){.kfacts--4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.kfacts--4{grid-template-columns:1fr}}
 .aidmt-was{font-weight:500;font-size:14px;color:var(--on-dark-2);margin-left:4px}
-.aidmt-close{display:inline-flex;align-items:center;gap:8px;margin:18px 0 0;font-size:14.5px;font-weight:600;color:var(--on-dark-2)}
 .aidmt-total{margin:0;font-size:16px;color:var(--ink-2)}
 .aidmt-guide{margin:18px 0 0;font-size:15.5px;font-weight:650}
 .aidmt-tl-guide a{color:var(--blue-ink);font-weight:650;text-decoration:underline;text-underline-offset:3px}
@@ -1324,7 +1322,6 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 
 /* ---------- hero: the split hero, copy left and scorecard right, on the blue ---------- */
 .am-hero .hero-sub{max-width:52ch}
-.am-hero .aidmt-close{margin-top:16px}
 /* a band of the dark stage under the arc, as on the home page */
 /* The AIDMT hero is one blue card the height of the screen (less the outer
    margin): the blue fills it to the bottom edge, so no dark band or next
@@ -1332,8 +1329,6 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 .am-hero>.stage{display:flex;flex-direction:column;min-height:calc(100svh - var(--nav-h) - var(--promo-h) - 2 * var(--inset))}
 .am-hero .arc{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;border-radius:0;box-shadow:none}
 .am-hero{padding-bottom:var(--inset)}
-/* centred and wrapping on a phone: the clock sits in the text, not beside it */
-@media (max-width:999px){.am-hero .aidmt-close{display:block}.am-hero .aidmt-close svg{display:inline-block;vertical-align:-4px;margin-right:6px}}
 @media (min-width:1000px){
   .am-hero .hero-copy .hero-sub{max-width:46ch}
   /* the scorecard fills its column and fades out within its second row
@@ -1875,3 +1870,109 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 /* FAQs and student cards: white on the pale page, lifted instead of outlined. */
 :root:not([data-theme="dark"]) .faq{border-color:transparent;box-shadow:var(--lift)}
 :root:not([data-theme="dark"]) .tcard{box-shadow:var(--lift)}
+
+/* ==========================================================================
+   AIDMT: the selling parts (components/AidmtPromo)
+   ========================================================================== */
+/* ---------- the offer: the next mock's real deadline counting down, Register, the price ---------- */
+.ao{display:grid;justify-items:center;gap:12px;max-width:420px;margin:26px auto 0}
+.ao-k{display:inline-flex;align-items:center;gap:9px;margin:0;font-size:15px;font-weight:650;color:var(--ink)}
+.ao-live{width:9px;height:9px;flex:none;border-radius:50%;background:#E5484D;animation:ao-pulse 1.8s ease-out infinite}
+@keyframes ao-pulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.6)}80%,100%{box-shadow:0 0 0 9px rgba(229,72,77,0)}}
+.ao-clock{display:flex;gap:8px;margin:0}
+.ao-u{display:grid;justify-items:center;gap:6px;min-width:66px;padding:12px 8px 9px;border-radius:14px;background:var(--fill);color:#fff;box-shadow:0 12px 24px -14px rgba(11,11,12,.85)}
+.ao-u b{font-family:var(--f-display);font-size:30px;font-weight:760;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ao-u small{font-size:11.5px;font-weight:600;line-height:1;color:rgba(255,255,255,.68)}
+.ao-btn{width:100%}
+.ao-deal{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:0;font-size:14.5px;font-weight:650;color:var(--ink)}
+.ao-deal s{opacity:.62;text-decoration-thickness:1.5px}
+.ao-off{padding:3px 10px;border-radius:999px;background:var(--paper);color:var(--ink);font-weight:760}
+.ao-bundle{padding:2px 10px;border-radius:999px;border:1.5px dashed rgba(11,11,12,.45)}
+@media (prefers-reduced-motion:reduce){.ao-live{animation:none}}
+/* the toppers behind the paper, under the offer */
+.am-proof{display:flex;align-items:center;justify-content:center;gap:10px;margin:20px 0 0;font-size:14.5px;font-weight:650;line-height:1.3;color:var(--ink)}
+.am-proof-faces{display:flex;flex:none}
+.am-proof-faces img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #fff;background:var(--blue-50)}
+.am-proof-faces img+img{margin-left:-10px}
+@media (min-width:1000px){
+  .hero--split .hero-copy .ao{justify-items:start;margin-inline:0}
+  .hero--split .hero-copy .ao-deal,.hero--split .hero-copy .am-proof{justify-content:flex-start}
+}
+/* the closing call to action: the offer again, and the course as a quiet way out */
+.enrol-wrap .ao{margin-top:28px}
+.am-also{margin:18px 0 0}
+.am-also a{display:inline-flex;align-items:center;gap:8px;font-weight:650;color:var(--ink);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px}
+
+/* ---------- one question against a 60 second clock ---------- */
+.am-try .h2{max-width:16ch;margin:0 auto clamp(24px,3vw,36px);text-align:center}
+.ach{position:relative;max-width:660px;margin:0 auto;padding:clamp(16px,2.6vw,26px);border-radius:24px;background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line),0 34px 70px -34px rgba(11,11,12,.4)}
+.ach-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.ach-meta{font-size:13.5px;font-weight:650;color:var(--ink-3)}
+.ach-timer{display:inline-flex;align-items:center;gap:8px;padding:5px 13px 5px 6px;border-radius:999px;background:var(--blue-50);color:var(--ink);font-family:var(--f-display);font-size:16px;font-weight:740;font-variant-numeric:tabular-nums;transition:background-color .3s,color .3s}
+.ach-timer svg{width:26px;height:26px;transform:rotate(-90deg)}
+.ach-tr{fill:none;stroke:var(--line);stroke-width:4}
+.ach-tf{fill:none;stroke:var(--blue);stroke-width:4;stroke-linecap:round;stroke-dasharray:100;transition:stroke-dashoffset 1s linear,stroke .3s}
+.ach-timer.low{background:#FDECEC;color:#B42318}
+.ach-timer.low .ach-tf{stroke:var(--bad)}
+.ach-body{display:grid;grid-template-columns:clamp(92px,24%,148px) minmax(0,1fr);gap:clamp(14px,2.6vw,26px);align-items:center}
+.ach-body.plain{grid-template-columns:minmax(0,1fr)}
+.ach-fig{display:block;width:100%;height:auto;overflow:visible}
+.ach-cube polygon{stroke:rgba(255,255,255,.7);stroke-width:1;stroke-linejoin:round}
+.ach.is-done .ach-cube .mid{fill:var(--yellow);stroke:#0B0B0C;stroke-width:1.2;animation:ach-lit .45s var(--ease-out) both}
+@keyframes ach-lit{from{fill-opacity:0}}
+.ach-clock .face{fill:#fff;stroke:#0B0B0C;stroke-width:2.5}
+.ach-clock .tick{stroke:#0B0B0C;stroke-width:2;stroke-linecap:round}
+.ach-clock .hour{stroke:#0B0B0C;stroke-width:5;stroke-linecap:round}
+.ach-clock .min{stroke:var(--blue);stroke-width:3.5;stroke-linecap:round}
+.ach-clock .pin{fill:#0B0B0C}
+.ach-clock .gap{fill:var(--yellow);opacity:0;transition:opacity .45s var(--ease-out)}
+.ach.is-done .ach-clock .gap{opacity:.9}
+.ach-square .edge{fill:none;stroke:#0B0B0C;stroke-width:2.5;stroke-linejoin:round}
+.ach-square .t{fill-opacity:0;transition:fill-opacity .45s var(--ease-out)}
+.ach-square .t1{fill:var(--yellow)}
+.ach-square .t2{fill:var(--blue)}
+.ach.is-done .ach-square .t{fill-opacity:.75}
+.ach-q{margin:0;font-size:clamp(16px,.4vw + 14.5px,18.5px);font-weight:550;line-height:1.5}
+.ach-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.ach-o{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 14px 8px 8px;border:1.5px solid var(--line-2);border-radius:16px;background:#fff;color:var(--ink);font-family:var(--f-display);font-size:21px;font-weight:720;cursor:pointer;transition:border-color .2s,background-color .2s,transform .15s}
+.ach-o:hover:not(:disabled){border-color:var(--blue);background:var(--blue-50)}
+.ach-o:active:not(:disabled){transform:scale(.98)}
+.ach-o:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ach-o:disabled{cursor:default}
+.ach-l{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:11px;background:var(--paper-2);font-size:14px;font-weight:760;color:var(--ink-2)}
+.ach-o.right{border-color:var(--ok);background:#E9F7EF}
+.ach-o.right .ach-l{background:var(--ok);color:#fff}
+.ach-o.wrong{border-color:var(--bad);background:#FDECEC}
+.ach-o.wrong .ach-l{background:var(--bad);color:#fff}
+/* before the clock starts, the question waits under a blur */
+.ach.is-ready :is(.ach-body,.ach-opts){filter:blur(8px);opacity:.55;user-select:none}
+.ach-gate{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;border-radius:inherit}
+.ach-gate small{font-size:14px;font-weight:650;color:var(--ink-2)}
+.ach-res{display:grid;justify-items:start;gap:6px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);animation:ach-in .4s var(--ease-out)}
+.ach-res-h{margin:0;font-family:var(--f-display);font-size:clamp(20px,1vw + 16px,24px);font-weight:740;letter-spacing:-.02em}
+.ach-res-p{margin:0 0 10px;font-size:15.5px;line-height:1.5;color:var(--ink-2)}
+.ach-acts{display:flex;flex-wrap:wrap;gap:10px}
+.ach-opts.long .ach-o{font-family:var(--f-body);font-size:16px;font-weight:650;line-height:1.25;text-align:left}
+@keyframes ach-in{from{opacity:0;translate:0 8px}}
+@media (max-width:520px){.ach-o{font-size:19px}.ach-opts.long{grid-template-columns:minmax(0,1fr)}.ach-opts.long .ach-o{font-size:16px}.ach-acts .btn{flex:1 1 auto}}
+@media (prefers-reduced-motion:reduce){.ach-res,.ach.is-done .ach-cube .mid{animation:none}.ach-tf,.ach-clock .gap,.ach-square .t{transition:none}}
+
+/* ---------- a phone's Register bar, left of the chat button ---------- */
+.abb{position:fixed;left:10px;right:calc(clamp(12px,1.6vw,24px) + 72px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:61;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:62px;padding:7px 7px 7px 18px;border-radius:999px;background:var(--fill);color:#fff;box-shadow:0 16px 34px -14px rgba(11,11,12,.7);transform:translateY(calc(100% + 30px));opacity:0;transition:transform .35s var(--ease-out),opacity .25s}
+.abb.on{transform:none;opacity:1}
+.abb-t{display:grid;gap:4px;margin:0;line-height:1}
+.abb-t b{display:flex;align-items:baseline;gap:7px;font-family:var(--f-display);font-size:19px;font-weight:760}
+.abb-t s{font-size:13px;font-weight:600;opacity:.6}
+.abb-t small{font-size:12px;font-weight:600;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums;white-space:nowrap}
+.abb .btn{min-height:48px;padding:0 18px}
+:root[data-theme="dark"] .abb{box-shadow:0 0 0 1px var(--line-2),0 16px 34px -14px rgba(0,0,0,.85)}
+@media (min-width:761px){.abb{display:none}}
+@media (prefers-reduced-motion:reduce){.abb{transition:none}}
+/* on a phone the bar takes the foot of the screen: the sample switcher stays in the hero */
+@media (max-width:760px){.sc-dock{display:none}}
+
+/* ---------- less to read on a phone ---------- */
+.am .faq-group:not([data-all])>.faq:nth-child(n+6){display:none}
+.am-faq-more{margin-top:16px}
+@media (max-width:760px){.am .vcard blockquote{display:none}}
+

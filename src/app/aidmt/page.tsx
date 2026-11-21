@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
 import { CONTACT } from "@/lib/config";
-import { aidmtDays, getAidmt, rupees } from "@/lib/aidmt";
-import { AidmtRegLine, AidmtSchedule } from "@/components/Aidmt";
+import { aidmtDays, getAidmt, leadOffer, rupees } from "@/lib/aidmt";
+import { AidmtSchedule } from "@/components/Aidmt";
+import { AidmtBuyBar, AidmtChallenge, AidmtFaqMore, AidmtOffer } from "@/components/AidmtPromo";
 import { getPosts } from "@/lib/blog";
 import { ReelFacade } from "@/components/Trailer";
 import { AidmtBuy } from "@/components/AidmtBuy";
@@ -17,15 +18,19 @@ import { AidmtExamScreen } from "@/components/AidmtExamScreen";
    AIDMT tab (lib/aidmt.ts). Dates are IST. The parts that depend on today
    (what is next, what is done) are client components in components/Aidmt.tsx.
 
-   The page sells the scorecard: the hero lays the whole of it on a drafting
-   table, and below it one card at a time stays pinned while its short steps
-   scroll past, numbered like a drawing's callouts (lib/aidmt-scorecard). The
-   students in it are made up (lib/aidmt-sample), and the page says so. "Set
-   like the real exam" shows the exam screen itself (AidmtExamScreen).
+   The page sells with as few words as it can. The hero: one line, the next
+   mock's real deadline counting down, Register, the price against the old
+   one, and the toppers behind the paper (components/AidmtPromo). Then one
+   question against a 60 second clock, the exam screen itself
+   (AidmtExamScreen), and the scorecard laid out card by card, numbered like
+   a drawing's callouts (lib/aidmt-scorecard). The students in it are made up
+   (lib/aidmt-sample), and the page says so. On a phone a Register bar stays
+   at the foot of the screen between the hero and the close.
 
-   Every section says one thing. Prices and offers are in the schedule and
-   the buy dialog; the detail behind the steps is in the FAQs. The admin's
-   rules (Read before you start) are not shown. */
+   Every section says one thing. The admin's intro and footnotes for the
+   paper and the call to action's lede are not shown, and only the first
+   FAQs are, with the rest a tap away. The admin's rules (Read before you
+   start) are not shown. */
 export async function generateMetadata(): Promise<Metadata> {
   const a = await getAidmt();
   const paid = a.series.filter((s) => !s.free);
@@ -46,7 +51,21 @@ function lastWordHighlighted(text: string) {
 
 /* The hero's line. The LMS has no admin field for it any more, so the page
    says it here rather than waiting on an LMS release for a copy change. */
-const HERO_LINE = "Sit a mock that feels like the real exam, from home, and see where you stand across India.";
+const HERO_LINE = "Know your rank now, while there’s still time to change it.";
+
+/* FAQs shown before "Show all". */
+const FAQS_SHOWN = 5;
+
+/* "UCEED AIR 2, 4 and 8": the first toppers' ranks, the exam named once when they share it. */
+function ranksOf(toppers: { exam: string; rank: string }[]): string {
+  const list = (items: string[]) => (items.length > 1 ? `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}` : items[0] ?? "");
+  const exams = new Set(toppers.map((t) => t.exam));
+  if (exams.size === 1 && toppers.every((t) => /^AIR\s*\d+$/i.test(t.rank))) {
+    const exam = toppers[0].exam;
+    return `${exam ? `${exam} ` : ""}AIR ${list(toppers.map((t) => t.rank.replace(/^AIR\s*/i, "")))}`;
+  }
+  return list(toppers.map((t) => `${t.exam} ${t.rank}`.trim()));
+}
 
 const Arrow = () => <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg>;
 
@@ -60,7 +79,11 @@ export default async function AidmtPage() {
   const live = posts.map((post) => `/blog/${post.slug}/`);
   const guideUrl = a.hero.guideUrl && (!a.hero.guideUrl.startsWith("/blog/") || live.includes(a.hero.guideUrl)) ? a.hero.guideUrl : null;
   const { pricing } = a;
-  const off = pricing.wasPrice && pricing.wasPrice > pricing.perSitting ? Math.round(100 - (pricing.perSitting * 100) / pricing.wasPrice) : null;
+  /* The bundle to name under Register: the admin's lead offer, else the group price. */
+  const lead = leadOffer(a.offers ?? []);
+  const deal = lead ? (lead.kind === "fixed" ? `Any ${lead.size} for ${rupees(lead.price)}` : lead.name || `Buy ${lead.buy} get ${lead.free} free`) : a.group ? `${a.group.size} for ${rupees(a.group.price)}` : null;
+  const sale = { builtAt: Date.now(), series: a.series, price: pricing.perSitting, wasPrice: pricing.wasPrice, enrolUrl: a.enrolUrl };
+  const proof = a.madeBy.toppers.slice(0, 3);
   const paid = a.series.filter((s) => !s.free);
   const allFree = paid.length === 0 || pricing.perSitting <= 0;
   const register = allFree ? "Register free" : `Register for ${rupees(pricing.perSitting)}`;
@@ -89,11 +112,13 @@ export default async function AidmtPage() {
                   ) : null}
                   <h1 className="h1" id="hero-h">{a.hero.title} {a.hero.highlight ? <span className="hl">{a.hero.highlight}<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span> : null}</h1>
                   <p className="hero-sub">{HERO_LINE}</p>
-                  <div className="hero-ctas">
-                    {registerLink("btn")}
-                    <a className="btn btn--ghost" href="#dates">See the schedule</a>
-                  </div>
-                  {closed ? null : <AidmtRegLine builtAt={Date.now()} series={a.series} off={off} />}
+                  {closed ? null : <AidmtOffer id="hero-offer" deal={deal} {...sale} />}
+                  {proof.length ? (
+                    <p className="am-proof">
+                      <span className="am-proof-faces" aria-hidden="true">{proof.filter((t) => t.photo).map((t) => <img key={t.name} src={t.photo} alt="" width="36" height="36" />)}</span>
+                      <span>From the team behind {ranksOf(proof)}</span>
+                    </p>
+                  ) : null}
                 </div>
                 <div className="hero-media">
                   <ExamToggle />
@@ -104,12 +129,21 @@ export default async function AidmtPage() {
           </div>
         </section>
 
+        {/* One question against the clock: a taste of the paper before anything is explained. */}
+        {closed ? null : (
+          <section className="section am-try" id="try" data-dot="Try one" aria-labelledby="try-h">
+            <div className="wrap">
+              <h2 className="h2" id="try-h">Can you solve this in 60 seconds?</h2>
+              <AidmtChallenge enrolUrl={a.enrolUrl} register={register} />
+            </div>
+          </section>
+        )}
+
         {parts.length ? (
           <section className="section tint am-paper" id="pattern" data-dot="Paper" aria-labelledby="pat-h">
             <div className="wrap">
               <div className="am-head">
                 <h2 className="h2" id="pat-h">{a.pattern.heading}</h2>
-                {a.pattern.intro ? <p className="am-head-p">{a.pattern.intro}</p> : null}
               </div>
               {/* The exam screen itself, a working copy of the app's, right after the hero. */}
               <AidmtExamScreen />
@@ -120,7 +154,6 @@ export default async function AidmtPage() {
                     <p className="am-part-bar"><b>{part.marks}</b><span>marks{partsMarks ? ` · ${Math.round((part.marks * 100) / partsMarks)}%` : ""}</span></p>
                     <h3>{part.name}{part.note ? <small>{part.note}</small> : null}</h3>
                     <ul className="am-topics">{part.topics.map((topic) => <li key={topic.name} title={topic.detail || undefined}>{topic.name}</li>)}</ul>
-                    {part.footnote ? <p className="am-note">{part.footnote}</p> : null}
                   </div>
                 ))}
               </div>
@@ -132,7 +165,7 @@ export default async function AidmtPage() {
           <section className="ft-intro" aria-labelledby="sc-h">
             <div className="wrap">
               <h2 className="h2" id="sc-h">{a.why.heading || "Know where you stand before exam day."}</h2>
-              <p className="lede">Every mock ends with this scorecard. Shown here for a made-up student.</p>
+              <p className="lede">A sample. Yours comes after every mock.</p>
             </div>
           </section>
 
@@ -206,8 +239,7 @@ export default async function AidmtPage() {
               <h2 className="h2" id="faq-h">{lastWordHighlighted(a.faqs.heading)}</h2>
               <div className="am-ask">
                 {faces.length ? <p className="am-ask-faces" aria-hidden="true">{faces.map((m) => <img key={m.id} src={m.photo} alt="" width="44" height="44" loading="lazy" />)}</p> : null}
-                <p className="am-ask-h">Still unsure?</p>
-                <p className="am-ask-p">Tell us which exam you’re preparing for, and we’ll help you pick the right mock.</p>
+                <p className="am-ask-h">Still unsure? Ask a mentor.</p>
                 <div className="am-ask-acts">
                   <a className="btn btn--sm am-ask-wa" href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent("Hi, I have a question about AIDMT.")}`} target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-chat" /></svg>WhatsApp us</a>
                   <a className="btn btn--sm btn--ghost" href={`tel:${CONTACT.phone}`}><svg width="18" height="18" aria-hidden="true"><use href="#i-phone" /></svg>Call</a>
@@ -216,11 +248,12 @@ export default async function AidmtPage() {
               </div>
             </div></div>
             <div>
-              <div className="faq-group">
+              <div className="faq-group" id="aidmt-faqs">
                 {a.faqs.items.map((faq) => (
                   <div className="faq" key={faq.question}><h4><button className="faq-q" type="button" aria-expanded="false">{faq.question}<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>{faq.answer}</p></div></div></div></div>
                 ))}
               </div>
+              {a.faqs.items.length > FAQS_SHOWN ? <AidmtFaqMore group="aidmt-faqs" total={a.faqs.items.length} /> : null}
             </div>
           </div>
         </section>
@@ -234,15 +267,15 @@ export default async function AidmtPage() {
           <div className="arc">
             <div className="wrap">
               <h2 className="h2" id="start-h">{closed ? "Registration is closed. Watch this space for the next AIDMT." : a.cta.heading}</h2>
-              {a.cta.lede && !closed ? <p className="lede">{a.cta.lede}</p> : null}
-              <div className="acts">
-                {registerLink("btn btn--dark")}
-                <a className="btn btn--light" href="/#plans">See the 75-day course</a>
-              </div>
+              {closed ? null : <AidmtOffer id="end-offer" deal={deal} {...sale} />}
+              <p className="am-also"><a href="/#plans">Or see the 75-day course <Arrow /></a></p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* A phone's Register bar, between the hero's offer and the closing one. */}
+      {closed ? null : <AidmtBuyBar away={["#hero-offer", "#end-offer", "footer"]} {...sale} />}
     </div>
   );
 }

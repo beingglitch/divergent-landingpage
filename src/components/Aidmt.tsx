@@ -1,8 +1,7 @@
 "use client";
 
-/* The AIDMT bits that change with the date: the home page strip, the
-   registration line, the closing call to action and the schedule on
-   /aidmt/. They render first with the build time (so the static HTML and
+/* The AIDMT bits that change with the date: the home page strip and line,
+   and the schedule on /aidmt/ (its countdowns are in AidmtPromo). They render first with the build time (so the static HTML and
    the first client render match), then switch to the visitor's clock.
    ?preview-date=2026-11-16 (or 2026-11-16T10:00) shows another day, the
    same switch the home page uses. The series comes from lib/aidmt.ts. */
@@ -74,16 +73,6 @@ export function AidmtStrip({ builtAt, series, price }: { builtAt: number; series
       <span><b>{head}</b><span className="s">{sub.trim()}</span></span>
       <span className="btn btn--sm">See all dates <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></span>
     </a>
-  );
-}
-
-/* "Registration for AIDMT 2 closes 25 Nov, 11:59 pm": the next sitting still taking registrations. */
-export function AidmtRegLine({ builtAt, series, off }: { builtAt: number; series: AidmtSitting[]; off: number | null }) {
-  const t = useNow(builtAt);
-  const s = nextAidmt(series, t);
-  if (!s) return null;
-  return (
-    <p className="aidmt-close"><svg width="18" height="18" aria-hidden="true"><use href="#clock" /></svg>{s.free ? `${s.name} is free, open till` : `Registration for ${s.name} closes`} {aidmtDays(s.closes)}, {aidmtTime(s.closes)}{off && !s.free ? ` · ${off}% off` : ""}</p>
   );
 }
 
