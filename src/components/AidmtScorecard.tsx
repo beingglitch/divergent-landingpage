@@ -119,6 +119,9 @@ function useTip() {
 type Lens = "all" | "class" | "women" | "cat";
 type Sample = {
   s: SampleScorecard;
+  /* The students this page can show: SAMPLES on /aidmt/, one student's three
+     mocks on /nid-masterclass/. */
+  samples: SampleScorecard[];
   pick: (id: string) => void;
   lens: Lens;
   setLens: (l: Lens) => void;
@@ -127,16 +130,16 @@ type Sample = {
 };
 const SampleCtx = createContext<Sample | null>(null);
 
-export function SampleProvider({ children }: { children: ReactNode }) {
-  const [id, setId] = useState(SAMPLES[0].id);
+export function SampleProvider({ children, samples = SAMPLES }: { children: ReactNode; samples?: SampleScorecard[] }) {
+  const [id, setId] = useState(samples[0].id);
   const [lens, setLens] = useState<Lens>("all");
   const [cat, setCat] = useState<CategoryKey>("GEN");
-  const s = SAMPLES.find((x) => x.id === id)!;
+  const s = samples.find((x) => x.id === id) ?? samples[0];
   const pick = (next: string) => {
     setId(next);
-    if (lens === "women" && !SAMPLES.find((x) => x.id === next)!.woman) setLens("all");
+    if (lens === "women" && !samples.find((x) => x.id === next)?.woman) setLens("all");
   };
-  return <SampleCtx.Provider value={{ s, pick, lens, setLens, cat, setCat }}>{children}</SampleCtx.Provider>;
+  return <SampleCtx.Provider value={{ s, samples, pick, lens, setLens, cat, setCat }}>{children}</SampleCtx.Provider>;
 }
 
 /* The corner notes (AidmtNotes) on this page, with the visitor's exam first. */
@@ -145,7 +148,8 @@ export function ExamNotes(props: { lift?: boolean }) {
   return <AidmtNotes scope="aidmt" exam={exam} {...props} />;
 }
 
-function useSample(): Sample {
+/* The student shown and the switch between them, for a page's own picker. */
+export function useSample(): Sample {
   const c = useContext(SampleCtx);
   if (!c) throw new Error("AIDMT scorecard cards need a SampleProvider");
   return c;

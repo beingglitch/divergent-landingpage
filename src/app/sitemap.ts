@@ -12,6 +12,7 @@ const PAGES: { path: string; priority: number; changeFrequency: MetadataRoute.Si
   { path: "/courses/", priority: 0.9, changeFrequency: "weekly" },
   { path: "/uceed/", priority: 0.9, changeFrequency: "monthly" },
   { path: "/nid/", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/nid-masterclass/", priority: 0.9, changeFrequency: "weekly" },
   { path: "/nift/", priority: 0.9, changeFrequency: "monthly" },
   { path: "/aidmt/", priority: 0.9, changeFrequency: "weekly" },
   { path: "/results/", priority: 0.8, changeFrequency: "monthly" },

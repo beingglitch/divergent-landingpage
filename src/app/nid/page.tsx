@@ -19,6 +19,7 @@ export default async function NidPage() {
         <div className="stage">
           <div className="arc">
             <div className="wrap">
+              <p className="hero-ann"><a href="/nid-masterclass/"><span className="hero-ann-b">New</span>21 Days NID Masterclass 2027<svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a></p>
               <p className="pills"><span className="pill">Exam guide</span><span className="pill pill--dark"><span className="dot" aria-hidden="true"></span>NID DAT 2027</span></p>
               <h1 className="h1" id="hero-h">Crack <span className="hl">NID DAT.<svg viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 13C52 6 104 16 150 10S214 7 236 11" /></svg></span></h1>
               <p className="hero-sub">The way into B.Des at the National Institutes of Design.</p>

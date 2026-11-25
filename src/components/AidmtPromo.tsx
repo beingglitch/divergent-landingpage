@@ -13,7 +13,7 @@
    Every number is real: the deadline is the sitting's close from the LMS,
    the old price and the bundle are the admin's. Nothing here invents
    scarcity or a crowd. */
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { APP_URL, ist } from "@/lib/config";
 import { nextAidmt, rupees, type AidmtSitting } from "@/lib/aidmt";
 
@@ -48,13 +48,13 @@ function subscribe(listener: () => void) {
 }
 const snapshot = () => now || (now = read());
 /* The build time first, so the static HTML and the first client render match. */
-const useClock = (builtAt: number) => useSyncExternalStore(subscribe, snapshot, () => builtAt);
+export const useClock = (builtAt: number) => useSyncExternalStore(subscribe, snapshot, () => builtAt);
 
-function split(ms: number) {
+export function split(ms: number) {
   const t = Math.max(0, ms);
   return { d: Math.floor(t / DAY), h: Math.floor(t / HOUR) % 24, m: Math.floor(t / MINUTE) % 60, s: Math.floor(t / SECOND) % 60 };
 }
-const two = (n: number) => String(n).padStart(2, "0");
+export const two = (n: number) => String(n).padStart(2, "0");
 
 const Arrow = () => <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg>;
 
@@ -160,13 +160,13 @@ const LIMIT = 60;
 /* A question the visitor has not had yet (remembered in this browser), and
    never the one just played. Storage can be missing; then any will do. */
 const SEEN = "aidmt-try-seen";
-function nextQuestion(current: number | null): number {
+function nextQuestion(current: number | null, allowed?: number[]): number {
   let seen: number[] = [];
   try {
     const kept = JSON.parse(localStorage.getItem(SEEN) || "[]");
     if (Array.isArray(kept)) seen = kept.filter((n): n is number => typeof n === "number");
   } catch {}
-  const all = QUESTIONS.map((_, n) => n).filter((n) => n !== current);
+  const all = (allowed ?? QUESTIONS.map((_, n) => n)).filter((n) => n !== current);
   let pool = all.filter((n) => !seen.includes(n));
   if (!pool.length) {
     seen = [];
@@ -322,11 +322,16 @@ function CrowdBars({ crowd, youMs, shown }: { crowd: Crowd; youMs: number | null
   );
 }
 
-export function AidmtChallenge({ enrolUrl, register }: { enrolUrl: string; register: string }) {
+/* `only` keeps to the questions with these keys (the NID masterclass page
+   asks the visual ones). `buy` marks the closing link for the page's own buy
+   dialog: AidmtBuy here, MasterclassBuy there. */
+export function AidmtChallenge({ enrolUrl, register, only, buy = { "data-aidmt-buy": "" } }: { enrolUrl: string; register: string; only?: string[]; buy?: Record<string, string> }) {
+  const keys = only?.join("|");
+  const allowed = useMemo(() => (keys ? QUESTIONS.flatMap((q, n) => (keys.split("|").includes(q.key) ? [n] : [])) : undefined), [keys]);
   /* The first question in the static HTML; the visitor's own once the page
      is running. It sits under a blur until the clock starts, so the swap
      never shows. */
-  const [qi, setQi] = useState(0);
+  const [qi, setQi] = useState(allowed?.[0] ?? 0);
   const [phase, setPhase] = useState<"ready" | "on" | "done">("ready");
   const [pick, setPick] = useState<number | null>(null);
   const [left, setLeft] = useState(LIMIT);
@@ -336,8 +341,8 @@ export function AidmtChallenge({ enrolUrl, register }: { enrolUrl: string; regis
   const over = useRef(false);
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    setQi(nextQuestion(null));
-  }, []);
+    setQi(nextQuestion(null, allowed));
+  }, [allowed]);
   /* The answer goes to the LMS, which answers with everyone's counts for this question. */
   const finish = (question: number, choice: number | null) => {
     if (over.current) return;
@@ -426,8 +431,8 @@ export function AidmtChallenge({ enrolUrl, register }: { enrolUrl: string; regis
           </div>
           <CrowdBars crowd={crowd} youMs={done ? tookMs : null} shown={done} />
           <div className="ach-acts">
-            <a className="btn" href={enrolUrl} data-aidmt-buy="">{register} <Arrow /></a>
-            <button type="button" className="btn btn--ghost" onClick={() => begin(nextQuestion(qi))}>Try another</button>
+            <a className="btn" href={enrolUrl} {...buy}>{register} <Arrow /></a>
+            <button type="button" className="btn btn--ghost" onClick={() => begin(nextQuestion(qi, allowed))}>Try another</button>
           </div>
         </div>
       </div>
