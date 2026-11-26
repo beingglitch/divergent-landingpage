@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { ContactPopup } from "@/components/ContactPopup";
 import { Sprite } from "@/components/Sprite";
 import { SiteBehaviour } from "@/components/SiteBehaviour";
+import { TitleTips } from "@/components/TitleTips";
 /* The festival offer, set in the app's admin. Renders nothing when none is on. See src/lib/diwali.ts. */
 import { Diwali } from "@/components/Diwali";
 import { SITE_URL } from "@/lib/meta";
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <ContactPopup />
         <SiteBehaviour />
+        <TitleTips />
         <Diwali />
       </body>
     </html>

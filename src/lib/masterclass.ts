@@ -4,12 +4,13 @@
    slug is here; prices come from the app.
 
    Selling: each program is a course in the app (LMS admin, Courses) under
-   its `course` slug, with one published pricing plan per mode, slugs "live"
-   and "recorded" (each mode's `plan`). The page reads their prices from the
-   app once a minute (getProgramPrices), so the page and checkout always
-   agree, and every Enrol opens the buy dialog (components/MasterclassBuy):
-   a mobile number and Razorpay, no sign-in, as on /aidmt/. Until those plans
-   are published, prices are hidden and Enrol opens WhatsApp instead.
+   its `course` slug, with one published pricing plan per mode (each mode's
+   `plan` is that plan's slug). The page reads their prices from the app once
+   a minute (getProgramPrices), so the page and checkout always agree, and
+   every Enrol opens the buy dialog (components/MasterclassBuy): a mobile
+   number and Razorpay, no sign-in, as on /aidmt/. Until the course is
+   Published and those plans are published, prices are hidden and Enrol opens
+   WhatsApp instead.
 
    The 3 AIDMT mocks: in the LMS admin's AIDMT tab, set the program's
    sittings free for its two plans (freePlanIds), so buyers register in one
@@ -108,7 +109,8 @@ const REVIEW: Program["review"] = {
 export const NID_21: Program = {
   path: "/nid-masterclass/",
   exam: "NID",
-  course: process.env.NEXT_PUBLIC_MASTERCLASS_SLUG || "21-days-nid-masterclass",
+  /* "NID 21 Crash Course (Masterclass) 2027" in the LMS admin, Courses. */
+  course: process.env.NEXT_PUBLIC_MASTERCLASS_SLUG || "nid-21-crash-course-masterclass-2027",
   name: "21 Days NID Masterclass 2027",
   short: "21 Days NID",
   days: 21,
@@ -137,7 +139,8 @@ export const NID_21: Program = {
   modes: [
     {
       key: "live",
-      plan: "live",
+      /* "NID · Recorded class · Live class" */
+      plan: "nid-recorded-class-live-class",
       name: "Live Masterclass",
       short: "Live",
       line: "In the room with your mentor.",
@@ -151,7 +154,8 @@ export const NID_21: Program = {
     },
     {
       key: "recorded",
-      plan: "recorded",
+      /* "NID · Recorded Masterclass" */
+      plan: "nid-recorded-masterclass",
       name: "Recorded Masterclass",
       short: "Recorded",
       line: "The same masterclasses, at your pace.",
