@@ -172,40 +172,47 @@ export function HomeCarousel({ slides }: { slides: Slide[] }) {
 }
 
 function Poster({ s, first }: { s: Slide; first: boolean }) {
+  const load = first ? "eager" : "lazy";
   if (s.poster) {
     return (
       <a className="hc-poster hc-poster--img" href={s.href} draggable={false}>
-        <img src={s.poster.src} alt={s.poster.alt} width={s.poster.w} height={s.poster.h} draggable={false} loading={first ? "eager" : "lazy"} />
+        <img src={s.poster.src} alt={s.poster.alt} width={s.poster.w} height={s.poster.h} draggable={false} loading={load} />
       </a>
     );
   }
+  const faces = s.pictureStyle === "faces";
   return (
-    <a className={`hc-poster hc-${s.theme}`} href={s.href} draggable={false}>
-      <span className="hc-art" aria-hidden="true">
-        {s.art?.map((a, j) => (
-          <img key={a.src} className={`hc-sheet hc-sheet-${j}`} src={a.src} alt="" width={a.w} height={a.h} draggable={false} loading={first ? "eager" : "lazy"} />
-        ))}
-        {s.faces ? (
-          <span className="hc-faces">
-            {s.faces.map((f) => (
-              <span key={f.src} className="hc-face">
-                <img src={f.src} alt="" width="120" height="150" draggable={false} loading={first ? "eager" : "lazy"} />
-                <b>{f.rank}</b>
-              </span>
-            ))}
-          </span>
-        ) : null}
-      </span>
-      <span className="hc-kick">{s.kicker}</span>
-      <span className={"hc-big" + (s.big.length > 2 ? " hc-big--word" : "")}>
-        {s.big}
-        <small>{s.unit}</small>
-      </span>
+    <a className={`hc-poster hc-${s.theme}${faces ? " hc-poster--faces" : ""}`} href={s.href} draggable={false}>
+      {s.pictures.length ? (
+        <span className="hc-art" aria-hidden="true">
+          {faces ? (
+            <span className="hc-faces">
+              {s.pictures.map((f, j) => (
+                <span key={f.src + j} className="hc-face">
+                  <img src={f.src} alt="" width="120" height="150" draggable={false} loading={load} />
+                  {f.caption ? <b>{f.caption}</b> : null}
+                </span>
+              ))}
+            </span>
+          ) : (
+            s.pictures.map((a, j) => (
+              <img key={a.src + j} className={`hc-sheet hc-sheet-${j}`} src={a.src} alt="" width="600" height="800" draggable={false} loading={load} />
+            ))
+          )}
+        </span>
+      ) : null}
+      {s.kicker ? <span className="hc-kick">{s.kicker}</span> : null}
+      {s.big ? (
+        <span className={"hc-big" + (s.big.length > 2 ? " hc-big--word" : "")}>
+          {s.big}
+          {s.unit ? <small>{s.unit}</small> : null}
+        </span>
+      ) : null}
       <span className="hc-foot">
         <span className="hc-title">{s.title}</span>
-        <span className="hc-line">{s.line}</span>
-        <span className="hc-chips">{s.chips.map((c) => <span key={c}>{c}</span>)}</span>
-        <span className="btn hc-cta">{s.cta} <Arrow /></span>
+        {s.line ? <span className="hc-line">{s.line}</span> : null}
+        {s.chips.length ? <span className="hc-chips">{s.chips.map((c) => <span key={c}>{c}</span>)}</span> : null}
+        {s.cta ? <span className="btn hc-cta">{s.cta} <Arrow /></span> : null}
       </span>
     </a>
   );

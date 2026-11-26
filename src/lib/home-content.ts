@@ -1,5 +1,4 @@
-import { NID_21, UCEED_45, getProgramPrices, rupees, shortDate, type Prices, type Program } from "@/lib/masterclass";
-import { APP_URL, COURSE_PATH, FREE_CLASS_URL, fromPrice } from "@/lib/config";
+import { APP_URL, COURSE_PATH, FREE_CLASS_URL } from "@/lib/config";
 
 /* The words and pictures of the home page (app/page.tsx), kept apart from
    its layout so a poster, a topper or a tool can change without touching
@@ -22,9 +21,10 @@ export const EXAM_DAYS: ExamDay[] = [
 
 /* ------------------------------------------------------------ the posters */
 
-/* One slide of the hero carousel. The poster is drawn in code from these
-   fields; set `poster` to a designed image (public/assets/img/posters/) and
-   that shows instead, with the same link. */
+/* The pill above the headline and the posters beside it are set in the app,
+   under Highlights, Home page, and read here (api/public/home, the app's
+   lib/home-page has the rules). Until the app answers, the built-in ones
+   below stand in: the same as the app's defaults. */
 export type SlideTheme = "night" | "paper" | "sun" | "blush";
 export type Slide = {
   key: string;
@@ -40,90 +40,110 @@ export type Slide = {
   line: string;
   chips: string[];
   cta: string;
-  /* Student work pinned to the poster (decorative). */
-  art?: Array<{ src: string; w: number; h: number }>;
-  /* Toppers on the poster instead of work. */
-  faces?: Array<{ src: string; rank: string }>;
+  /* Pinned sheets (student work) or faces with a caption (toppers). */
+  pictures: Array<{ src: string; caption: string }>;
+  pictureStyle: "sheets" | "faces";
+  /* A designed poster: it shows instead of the drawn one, with the same link. */
   poster?: { src: string; alt: string; w: number; h: number };
 };
 
-const work = (n: number, w: number, h: number) => ({ src: `/assets/img/work/work-${String(n).padStart(2, "0")}.webp`, w, h });
+/* auto: the next AIDMT mock (components/Aidmt AidmtHeroLink). */
+export type Announcement = { kind: "auto" } | { kind: "custom"; badge: string; text: string; href: string } | null;
+export type HomeFeed = { announcement: Announcement; slides: Slide[] };
 
-/* The lowest price across a program's modes, once its plans are live in the app. */
-const lowest = (prices: Prices) => {
-  const all = Object.values(prices).map((p) => p?.price).filter((n): n is number => typeof n === "number" && n > 0);
-  return all.length ? Math.min(...all) : null;
+const work = (n: number) => ({ src: `/assets/img/work/work-${String(n).padStart(2, "0")}.webp`, caption: "" });
+
+const BUILT_IN: HomeFeed = {
+  announcement: { kind: "custom", badge: "New launch", text: "21 Days NID Masterclass", href: "/nid-masterclass/" },
+  slides: [
+    {
+      key: "nid-21", tab: "NID 21", href: "/nid-masterclass/", theme: "night",
+      kicker: "New · NID DAT 2027", big: "21", unit: "days", title: "NID Masterclass",
+      line: "Every topic of the Prelims, with a mentor marking your work.",
+      chips: ["Live or recorded", "14 masterclasses", "Prelims 20 Dec"], cta: "See the masterclass",
+      pictures: [work(4), work(11)], pictureStyle: "sheets",
+    },
+    {
+      key: "uceed-45", tab: "UCEED 45", href: "/uceed-45-days/", theme: "paper",
+      kicker: "New · UCEED 2027", big: "45", unit: "days", title: "UCEED Sprint",
+      line: "Part A drills and Part B sketching, all the way to the exam.",
+      chips: ["Live or recorded", "25 masterclasses", "UCEED 17 Jan"], cta: "See the 45-day plan",
+      pictures: [work(1), work(6)], pictureStyle: "sheets",
+    },
+    {
+      key: "75-days", tab: "75 Days", href: COURSE_PATH, theme: "sun",
+      kicker: "UCEED + NID", big: "75", unit: "days", title: "The Crash Course",
+      line: "Live classes, 10 full mocks and weekly feedback.",
+      chips: ["Recorded, Live or Mentor", "Plans from ₹5,999"], cta: "See the plans",
+      pictures: [work(5), work(12)], pictureStyle: "sheets",
+    },
+    {
+      key: "nift-2027", tab: "NIFT 2027", href: "/nift-interest/", theme: "blush",
+      kicker: "Opening soon", big: "NIFT", unit: "2027", title: "Be first in line",
+      line: "Our NIFT program opens soon. Get the plan and the fee first.",
+      chips: ["B.Des · B.FTech", "GAT + CAT"], cta: "Get first access",
+      pictures: [
+        { src: "/assets/img/toppers/kalyani-nift-9.webp", caption: "AIR 9" },
+        { src: "/assets/img/toppers/navya-nift-7.webp", caption: "Cat. AIR 7" },
+        { src: "/assets/img/toppers/manya-nift-14.webp", caption: "Cat. AIR 14" },
+      ],
+      pictureStyle: "faces",
+    },
+  ],
 };
 
-function programSlide(P: Program, prices: Prices, rest: Pick<Slide, "key" | "tab" | "theme" | "kicker" | "title" | "line" | "cta" | "art">): Slide {
-  const from = lowest(prices);
+/* The app's answer, read with care: anything that does not fit is left out. */
+const str = (v: unknown) => (typeof v === "string" ? v : "");
+const THEMES: SlideTheme[] = ["night", "paper", "sun", "blush"];
+const linkOk = (v: string) => v.startsWith("/") || /^https?:\/\//.test(v);
+
+function readSlide(raw: unknown): Slide | null {
+  if (!raw || typeof raw !== "object") return null;
+  const s = raw as Record<string, unknown>;
+  const key = str(s.id), tab = str(s.tab), href = str(s.href);
+  if (!key || !tab || !linkOk(href)) return null;
+  const theme = THEMES.includes(s.theme as SlideTheme) ? (s.theme as SlideTheme) : "night";
+  const pictures = (Array.isArray(s.pictures) ? s.pictures : [])
+    .map((p) => (p && typeof p === "object" ? (p as Record<string, unknown>) : {}))
+    .filter((p) => linkOk(str(p.src)))
+    .map((p) => ({ src: str(p.src), caption: str(p.caption) }))
+    .slice(0, 3);
+  const rawPoster = s.poster && typeof s.poster === "object" ? (s.poster as Record<string, unknown>) : null;
+  const poster = rawPoster && linkOk(str(rawPoster.url))
+    ? { src: str(rawPoster.url), alt: str(rawPoster.alt), w: Number(rawPoster.width) || 1080, h: Number(rawPoster.height) || 1350 }
+    : undefined;
   return {
-    ...rest,
-    href: P.path,
-    big: String(P.days),
-    unit: "days",
-    chips: ["Live or recorded", `${P.classes} masterclasses`, from ? `From ${rupees(from)}` : `${P.examName.replace(/ 20\d\d$/, "")} ${shortDate(P.examDay)}`],
+    key, tab, href, theme,
+    kicker: str(s.kicker), big: str(s.big), unit: str(s.unit), title: str(s.title), line: str(s.line),
+    chips: Array.isArray(s.chips) ? s.chips.map(str).filter(Boolean).slice(0, 3) : [],
+    cta: str(s.cta),
+    pictures,
+    pictureStyle: s.pictureStyle === "faces" ? "faces" : "sheets",
+    poster,
   };
 }
 
-/* NID Masterclass, UCEED 45 Days, the 75-day course and NIFT 2027, in that
-   order: the nearest exam first. */
-export async function homeSlides(now: Date): Promise<Slide[]> {
-  const [nid, uceed] = await Promise.all([getProgramPrices(NID_21), getProgramPrices(UCEED_45)]);
-  return [
-    programSlide(NID_21, nid, {
-      key: "nid-21",
-      tab: "NID 21",
-      theme: "night",
-      kicker: "New · NID DAT 2027",
-      title: "NID Masterclass",
-      line: "Every topic of the Prelims, with a mentor marking your work.",
-      cta: "See the masterclass",
-      art: [work(4, 874, 1280), work(11, 900, 592)],
-    }),
-    programSlide(UCEED_45, uceed, {
-      key: "uceed-45",
-      tab: "UCEED 45",
-      theme: "paper",
-      kicker: "New · UCEED 2027",
-      title: "UCEED Sprint",
-      line: "Part A drills and Part B sketching, all the way to the exam.",
-      cta: "See the 45-day plan",
-      art: [work(1, 900, 1200), work(6, 900, 594)],
-    }),
-    {
-      key: "75-days",
-      tab: "75 Days",
-      href: COURSE_PATH,
-      theme: "sun",
-      kicker: "UCEED + NID",
-      big: "75",
-      unit: "days",
-      title: "The Crash Course",
-      line: "Live classes, 10 full mocks and weekly feedback.",
-      chips: ["Recorded, Live or Mentor", `Plans from ${rupees(fromPrice(now))}`],
-      cta: "See the plans",
-      art: [work(5, 900, 806), work(12, 900, 584)],
-    },
-    {
-      key: "nift-2027",
-      tab: "NIFT 2027",
-      href: "/nift-interest/",
-      theme: "blush",
-      kicker: "Opening soon",
-      big: "NIFT",
-      unit: "2027",
-      title: "Be first in line",
-      line: "Our NIFT program opens soon. Get the plan and the fee first.",
-      chips: ["B.Des · B.FTech", "GAT + CAT"],
-      cta: "Get first access",
-      faces: [
-        { src: "/assets/img/toppers/kalyani-nift-9.webp", rank: "AIR 9" },
-        { src: "/assets/img/toppers/navya-nift-7.webp", rank: "Cat. AIR 7" },
-        { src: "/assets/img/toppers/manya-nift-14.webp", rank: "Cat. AIR 14" },
-      ],
-    },
-  ];
+function readAnnouncement(raw: unknown): Announcement {
+  if (!raw || typeof raw !== "object") return null;
+  const a = raw as Record<string, unknown>;
+  if (a.kind === "auto") return { kind: "auto" };
+  if (a.kind === "custom" && str(a.text) && linkOk(str(a.href))) return { kind: "custom", badge: str(a.badge), text: str(a.text), href: str(a.href) };
+  return null;
+}
+
+/* The pill and the live posters, from the app; the built-in ones when it
+   does not answer. Refreshed with the page, at most once a minute. */
+export async function loadHome(): Promise<HomeFeed> {
+  try {
+    const res = await fetch(`${APP_URL}/api/public/home`, { next: { revalidate: 60 } });
+    const json = await res.json();
+    if (res.ok && json?.success && json.data && typeof json.data === "object") {
+      const data = json.data as Record<string, unknown>;
+      const slides = Array.isArray(data.slides) ? data.slides.map(readSlide).filter((x): x is Slide => x !== null) : [];
+      return { announcement: readAnnouncement(data.announcement), slides };
+    }
+  } catch {}
+  return BUILT_IN;
 }
 
 /* ------------------------------------------------------------ proof */

@@ -6,9 +6,10 @@ import { getAidmt } from "@/lib/aidmt";
 import { STORIES } from "@/lib/testimonials";
 import { samplesFor } from "@/lib/masterclass-sample";
 import { PREDICTOR_SAMPLE } from "@/lib/predictor";
-import { EXAM_CARDS, STATS, TOPPERS, homeSlides, homeTools } from "@/lib/home-content";
+import { EXAM_CARDS, STATS, TOPPERS, homeTools, loadHome } from "@/lib/home-content";
 import { AidmtHeroLink } from "@/components/Aidmt";
 import { HomeCarousel } from "@/components/HomeCarousel";
+import { HomeAnnouncement } from "@/components/HomeAnnouncement";
 import { HomeTools } from "@/components/HomeTools";
 import { FeatureCard, SampleProvider } from "@/components/AidmtScorecard";
 import { MockSwitch } from "@/components/MasterclassPromo";
@@ -16,12 +17,13 @@ import { VideoStories } from "@/components/VideoStories";
 import { MentorCards } from "@/components/MentorCards";
 import { LeadForm } from "@/components/LeadForm";
 
-/* The home page: who we are, in pictures more than words. The new programs
-   in a carousel (components/HomeCarousel), the proof (ranks, numbers, faces,
-   video stories), the three exams, the free tools (components/HomeTools), a
-   sample mock scorecard, the mentors, and a free call. The words and
-   pictures are in lib/home-content. The 75-day course that used to be here
-   is at /75-days/ (lib/config COURSE_PATH). */
+/* The home page: who we are, in pictures more than words. The pill above
+   the headline and the carousel of new programs (components/HomeCarousel),
+   both set in the app under Highlights, Home page; the proof (ranks,
+   numbers, faces, video stories), the three exams, the free tools
+   (components/HomeTools), a sample mock scorecard, the mentors, and a free
+   call. The words and pictures are in lib/home-content. The 75-day course
+   that used to be here is at /75-days/ (lib/config COURSE_PATH). */
 export const metadata: Metadata = pageMeta({
   title: "Divergent Classes | UCEED, NID and NIFT coaching",
   description: "Coaching for UCEED, NID and NIFT by mentors from IIT, NID and NIFT. Live classes, AIDMT mocks with an All India Rank, and free daily practice.",
@@ -40,16 +42,22 @@ const FACES = ["ankit", "priyanka", "rudra", "ameya"];
 
 export default async function HomePage() {
   const builtAt = Date.now();
-  const [mentors, aidmt, slides] = await Promise.all([getMentors(), getAidmt(), homeSlides(new Date(builtAt))]);
+  const [mentors, aidmt, home] = await Promise.all([getMentors(), getAidmt(), loadHome()]);
+  const { announcement, slides } = home;
   const tools = homeTools({ predictorReady: !PREDICTOR_SAMPLE });
   return (
     <>
       <section className="hero hero--split hm-hero" id="top" data-dot="Home" aria-labelledby="hero-h">
         <div className="stage">
           <div className="arc">
-            <div className="wrap hero-grid">
+            <div className={"wrap hero-grid" + (slides.length ? "" : " hm-solo")}>
               <div className="hero-copy">
-                <AidmtHeroLink builtAt={builtAt} series={aidmt.series} price={aidmt.pricing.perSitting} />
+                {/* The pill: the app's own announcement, or the next AIDMT mock, or nothing (Highlights, Home page). */}
+                {announcement?.kind === "custom" ? (
+                  <HomeAnnouncement badge={announcement.badge} text={announcement.text} href={announcement.href} />
+                ) : announcement?.kind === "auto" ? (
+                  <AidmtHeroLink builtAt={builtAt} series={aidmt.series} price={aidmt.pricing.perSitting} />
+                ) : null}
                 <h1 className="h1" id="hero-h"><span className="num">From sketchbook</span> to <span className="hl">design school.<Underline /></span></h1>
                 <p className="hero-sub">Coaching for UCEED, NID and NIFT, by mentors who cleared them.</p>
                 <p className="am-proof hm-proof">
@@ -61,9 +69,11 @@ export default async function HomePage() {
                   <a className="btn btn--ghost" href="#tools">Free tools</a>
                 </div>
               </div>
-              <div className="hero-media">
-                <HomeCarousel slides={slides} />
-              </div>
+              {slides.length ? (
+                <div className="hero-media">
+                  <HomeCarousel slides={slides} />
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="wrap hero-low hm-low">
