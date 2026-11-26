@@ -157,6 +157,15 @@ const QUESTIONS: Question[] = [
 ];
 const LIMIT = 60;
 
+/* The question of the day (/question-of-the-day/): the questions in turn,
+   one per day of the Indian calendar, so everyone gets the same one and it
+   changes at midnight IST. */
+export function questionOfTheDay(at: number): { key: string; topic: string } {
+  const day = Math.floor((at + 5.5 * 3600 * 1000) / 86400000);
+  const q = QUESTIONS[((day % QUESTIONS.length) + QUESTIONS.length) % QUESTIONS.length];
+  return { key: q.key, topic: q.topic };
+}
+
 /* A question the visitor has not had yet (remembered in this browser), and
    never the one just played. Storage can be missing; then any will do. */
 const SEEN = "aidmt-try-seen";
@@ -325,7 +334,9 @@ function CrowdBars({ crowd, youMs, shown }: { crowd: Crowd; youMs: number | null
 /* `only` keeps to the questions with these keys (the NID masterclass page
    asks the visual ones). `buy` marks the closing link for the page's own buy
    dialog: AidmtBuy here, MasterclassBuy there. */
-export function AidmtChallenge({ enrolUrl, register, only, buy = { "data-aidmt-buy": "" } }: { enrolUrl: string; register: string; only?: string[]; buy?: Record<string, string> }) {
+/* `daily`: one question a day, so there is no "Try another"; the next one
+   comes at midnight. */
+export function AidmtChallenge({ enrolUrl, register, only, buy = { "data-aidmt-buy": "" }, daily = false }: { enrolUrl: string; register: string; only?: string[]; buy?: Record<string, string>; daily?: boolean }) {
   const keys = only?.join("|");
   const allowed = useMemo(() => (keys ? QUESTIONS.flatMap((q, n) => (keys.split("|").includes(q.key) ? [n] : [])) : undefined), [keys]);
   /* The first question in the static HTML; the visitor's own once the page
@@ -432,7 +443,11 @@ export function AidmtChallenge({ enrolUrl, register, only, buy = { "data-aidmt-b
           <CrowdBars crowd={crowd} youMs={done ? tookMs : null} shown={done} />
           <div className="ach-acts">
             <a className="btn" href={enrolUrl} {...buy}>{register} <Arrow /></a>
-            <button type="button" className="btn btn--ghost" onClick={() => begin(nextQuestion(qi, allowed))}>Try another</button>
+            {daily || (allowed && allowed.length < 2) ? (
+              <span className="ach-tmrw">A new question tomorrow</span>
+            ) : (
+              <button type="button" className="btn btn--ghost" onClick={() => begin(nextQuestion(qi, allowed))}>Try another</button>
+            )}
           </div>
         </div>
       </div>

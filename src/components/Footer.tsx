@@ -1,3 +1,5 @@
+import { COURSE_PATH } from "@/lib/config";
+
 export function Footer() {
   return (
     <>
@@ -29,7 +31,7 @@ export function Footer() {
                 <li><a href="/nid/">NID DAT</a></li>
                 <li><a href="/nift/">NIFT</a></li>
                 <li><a href="/aidmt/">AIDMT mock test</a></li>
-                <li><a href="/#plans">75-day crash course</a></li>
+                <li><a href={COURSE_PATH}>75-day crash course</a></li>
               </ul>
             </div>
             <div>

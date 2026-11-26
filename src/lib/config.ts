@@ -152,6 +152,13 @@ export function bundleSlug(plan: Plan, batch: Batch, exam: Exam, pack = false): 
 /* The course page in the app, open without signing in. */
 export const COURSE_APP_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}`;
 
+/* The 75-day crash course page. It was the home page until 26 Nov 2026;
+   its plans (#plans) live there now, so links to them use PLANS_HREF.
+   The free-call form (#book) is on both pages. */
+export const COURSE_PATH = "/75-days/";
+export const PLANS_HREF = COURSE_PATH + "#plans";
+export const isCoursePath = (pathname: string) => pathname.replace(/\/+$/, "") === COURSE_PATH.replace(/\/+$/, "");
+
 /* "Attend a free live class": the app asks for the WhatsApp number on the
    course page, then opens the next live class, one per verified number. */
 export const FREE_CLASS_URL = `${APP_URL}/dashboard/courses/${COURSE_SLUG}/free`;

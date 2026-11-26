@@ -11,7 +11,7 @@
    Rendering is in src/components/Diwali.tsx (styles in src/app/diwali.css)
    and the plan cards in src/lib/home.ts. Times shown are IST. */
 
-import { APP_URL, ist } from "./config";
+import { APP_URL, PLANS_HREF, ist } from "./config";
 
 export type FestivalDeal = { name: string; offer: string; how: string; code: string | null; link: string; hot: boolean };
 
@@ -66,7 +66,7 @@ export function istDayTime(d: Date): string {
 /* Where a deal links: "course" is this site's plans, a divergentclasses.com
    link keeps its path so it stays on the site, anything else is as given. */
 export function dealHref(link: string): string {
-  if (link === "course") return "/#plans";
+  if (link === "course") return PLANS_HREF;
   try {
     const u = new URL(link);
     if (/^(www\.)?divergentclasses\.com$/i.test(u.hostname)) return u.pathname + u.search + u.hash;

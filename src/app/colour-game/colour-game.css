@@ -1,0 +1,157 @@
+/* ---------- /colour-game/: Odd colour out (components/ColourGame) ----------
+   The page is one blue card the height of the screen, like the AIDMT and
+   NIFT heroes: copy and game side by side on a wide screen, stacked on a
+   phone with the game inside the first screen. The game card sits on the
+   blue arc, which keeps light colours in both themes (styles.css resets the
+   ink and paper inside .arc), so the card's own greys are fixed light ones
+   rather than the page tokens that flip in the dark theme. */
+
+.hero.cg-hero{padding-bottom:var(--inset)}
+.cg-hero>.stage{display:flex;flex-direction:column;min-height:calc(100svh - var(--nav-h) - var(--promo-h) - 2 * var(--inset))}
+.hero.cg-hero .arc{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;border-radius:0;box-shadow:none;padding:clamp(18px,3.4svh,56px) 0 clamp(24px,4svh,64px)}
+.hero.cg-hero .hero-grid{gap:clamp(16px,2.6svh,40px)}
+.cg-hero .pills{margin-bottom:clamp(10px,1.8svh,22px)}
+.hero.cg-hero .hero-sub{margin-top:clamp(8px,1.4svh,18px)}
+.cg-hero .hero-copy,.cg-hero .hero-media{min-width:0}
+.cg-hero .hero-media{display:grid;justify-items:center}
+
+/* the card */
+.cg-card{
+  --cg-soft:#EEF1F5; --cg-track:#E4E8ED; --cg-red:#E5484D; --cg-green:#1F9D57;
+  --cg-glow:rgba(32,155,210,.6);
+  position:relative;width:min(100%,472px);padding:10px;border-radius:var(--radius-lg);
+  background:var(--paper);color:var(--ink);text-align:left;touch-action:manipulation;
+  box-shadow:0 0 0 1px rgba(255,255,255,.55),0 34px 70px -34px var(--cg-glow),0 26px 50px -36px rgba(11,11,12,.65);
+  transition:box-shadow .6s var(--ease-out);
+}
+:root[data-theme="dark"] .cg-card{color-scheme:light}
+@media (min-width:520px){.cg-card{padding:16px}}
+
+/* level, best and time, then the time bar */
+.cg-hud{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:8px;padding:4px 6px 10px}
+.cg-stat{position:relative;margin:0;display:inline-grid;gap:3px;justify-self:start}
+.cg-stat--mid{justify-self:center;justify-items:center}
+.cg-stat--end{justify-self:end;justify-items:end}
+.cg-stat>span:first-child{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;line-height:1.2;color:var(--ink-3)}
+.cg-stat b{display:block;font-family:var(--f-display);font-size:clamp(25px,6.8vw,31px);font-weight:760;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink);transform-origin:0 100%}
+.cg-stat--mid b{font-size:clamp(19px,5vw,23px);color:var(--ink-2);transition:color .3s}
+.cg-stat--mid.cg-beat b{color:var(--cg-green)}
+.cg-stat--end b{transform-origin:100% 100%;transition:color .3s}
+.cg-stat--end.cg-low b{color:var(--cg-red)}
+.cg-stat b.cg-up{animation:cg-bump .4s var(--ease-back)}
+.cg-float{position:absolute;top:14px;font-family:var(--f-display);font-size:16px;font-weight:780;line-height:1;white-space:nowrap;pointer-events:none;animation:cg-float .8s var(--ease-out) forwards}
+.cg-float--plus{left:calc(100% + 6px);color:var(--cg-green)}
+.cg-float--minus{right:calc(100% + 8px);color:var(--cg-red)}
+
+.cg-bar{position:relative;display:block;height:8px;margin:0 6px 12px;border-radius:999px;background:var(--cg-track);overflow:hidden}
+.cg-bar i{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,var(--blue),#4FBDEB);transform-origin:0 50%;will-change:transform}
+.cg-bar.cg-low i{background:linear-gradient(90deg,var(--cg-red),#FF8A5C)}
+
+/* the board: --n tiles a side, --gap between them, --r round corners */
+.cg-board{position:relative;display:grid;width:100%;aspect-ratio:1;padding:var(--gap);border-radius:calc(var(--radius-lg) - 4px);background:var(--cg-soft);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.cg-board[data-shake="a"]{animation:cg-shake-a .36s ease-out}
+.cg-board[data-shake="b"]{animation:cg-shake-b .36s ease-out}
+.cg-grid{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));grid-template-rows:repeat(var(--n),minmax(0,1fr));gap:var(--gap);min-width:0;min-height:0;animation:cg-in .24s var(--ease-out)}
+.cg-tile{display:block;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;border:0;border-radius:var(--r);box-shadow:inset 0 -3px 0 rgba(11,11,12,.07);touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .14s var(--ease-out),opacity .3s}
+.cg-tile:disabled{cursor:default}
+@media (hover:hover){.cg-tile:not(:disabled):hover{transform:scale(.95)}}
+.cg-tile:not(:disabled):active{transform:scale(.9)}
+.cg-tile:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.cg-tile.cg-hint{animation:cg-hint 1.6s ease-in-out infinite}
+.cg-reveal .cg-tile{opacity:.3}
+.cg-reveal .cg-tile.cg-answer{opacity:1;outline:3px solid var(--ink);outline-offset:3px;animation:cg-hint 1s ease-in-out infinite}
+
+/* a right tap sends out a ring in the odd tile's colour; a wrong one shows
+   a red cross on the tile and shakes the board */
+.cg-fx{position:absolute;inset:var(--gap);pointer-events:none}
+.cg-pop,.cg-miss{position:absolute;left:calc(var(--x) * 100%);top:calc(var(--y) * 100%);width:calc(var(--s) * 100%);aspect-ratio:1;border-radius:var(--r);transform:translate(-50%,-50%)}
+.cg-pop{border:3px solid var(--pc);animation:cg-pop .55s var(--ease-out) forwards}
+.cg-miss{display:grid;place-items:center;background:rgba(229,72,77,.92);animation:cg-miss .65s ease-out forwards}
+.cg-miss svg{width:42%;height:42%;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round}
+
+/* before the first go: the play button over the sample board */
+.cg-start{position:absolute;inset:0;display:grid;place-items:center;padding:12%}
+.cg-start-in{display:grid;justify-items:center;gap:12px;padding:20px 22px 18px;border-radius:22px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 20px 40px -24px rgba(11,11,12,.55)}
+.cg-start-in p{margin:0;max-width:20ch;font-size:14.5px;font-weight:600;line-height:1.35;text-align:center;color:var(--ink-2)}
+.cg-play{display:inline-flex;align-items:center;gap:10px;min-height:60px;padding:0 32px 0 26px;border:0;border-radius:999px;background:var(--yellow);color:#0B0B0C;font-family:var(--f-display);font-size:22px;font-weight:760;letter-spacing:-.01em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 14px 30px -12px rgba(255,197,0,.95),inset 0 -3px 0 rgba(11,11,12,.14);animation:cg-breathe 2.4s ease-in-out infinite}
+.cg-play svg{width:22px;height:22px}
+.cg-play:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+/* the end screen */
+.cg-end{display:grid;justify-items:center;padding:clamp(16px,3vw,24px) 6px 6px;text-align:center;animation:cg-in .35s var(--ease-out)}
+.cg-end-k{margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.cg-end-n{position:relative;display:grid;justify-items:center;margin:2px 0 0;outline:0}
+.cg-end-num{font-family:var(--f-display);font-size:clamp(76px,24vw,108px);font-weight:780;line-height:1;letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:var(--ink);background:linear-gradient(135deg,#0B0B0C 30%,var(--cg-last));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cg-end-lab{margin-top:2px;font-family:var(--f-body);font-size:14px;font-weight:650;letter-spacing:0;color:var(--ink-3)}
+.cg-confetti{position:absolute;left:50%;top:40%;width:0;height:0;pointer-events:none}
+.cg-confetti i{position:absolute;left:-5px;top:-4px;width:10px;height:8px;border-radius:2px;opacity:0;animation:cg-burst 1.1s var(--ease-out) .1s forwards}
+.cg-trail{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;max-width:282px;margin:14px auto 0}
+.cg-trail i{width:12px;height:12px;border-radius:3px}
+.cg-tier{margin:16px 0 0;padding:8px 18px;border-radius:999px;font-family:var(--f-display);font-size:19px;font-weight:740;line-height:1.2}
+.cg-ladder{display:flex;gap:6px;margin:12px 0 0}
+.cg-ladder i{width:34px;height:8px;border-radius:999px;background:var(--cg-track)}
+.cg-next{margin:8px 0 0;font-size:14px;font-weight:600;color:var(--ink-3)}
+.cg-best{display:flex;align-items:center;gap:8px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+.cg-best b{font-family:var(--f-display);font-size:18px;color:var(--ink)}
+.cg-new{padding:3px 9px;border-radius:999px;background:#0B0B0C;color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.cg-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:18px}
+.cg-acts .btn{width:100%;min-height:50px;padding:0 14px}
+.cg-hook{width:100%;margin-top:18px;padding-top:16px;border-top:1px solid var(--cg-track)}
+.cg-hook p{margin:0;font-size:15px;font-weight:650;color:var(--ink)}
+.cg-hook .cg-hook-a{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-top:10px}
+.cg-link{display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:15px;font-weight:650;color:var(--blue-ink);text-decoration:underline;text-underline-offset:4px}
+.cg-link:hover{color:var(--ink)}
+.cg-link .arr{transition:transform .25s var(--ease-out)}
+.cg-link:hover .arr{transform:translateX(3px)}
+
+/* tier colours: the end screen pill and ladder, and the hero chips */
+.cg-tier.cg-t1{background:#EEF1F5;color:#2D3034}
+.cg-tier.cg-t2{background:#E1F2FA;color:#16719A}
+.cg-tier.cg-t3{background:#DFF5EA;color:#17754A}
+.cg-tier.cg-t4{background:#EEEAFD;color:#5B3FC4}
+.cg-tier.cg-t5{background:linear-gradient(100deg,#FFE58A,#FFC500 45%,#FFE58A);background-size:200% 100%;color:#5C4300;animation:cg-shine 2.4s linear infinite}
+.cg-ladder i.cg-on.cg-t1{background:#9AA3AD}
+.cg-ladder i.cg-on.cg-t2{background:#209BD2}
+.cg-ladder i.cg-on.cg-t3{background:#2FB872}
+.cg-ladder i.cg-on.cg-t4{background:#7C5CE6}
+.cg-ladder i.cg-on.cg-t5{background:#FFC500}
+
+/* under the card: the rules, as chips on the blue */
+.cg-rules{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 8px;margin:14px 0 0;padding:0;list-style:none}
+.cg-rules li{padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);font-size:13px;font-weight:650;color:var(--ink)}
+
+/* the hero copy's tier chips: a wide screen only, so on a phone nothing
+   pushes the game below the first screen */
+.cg-tiers{display:none}
+@media (min-width:1000px){
+  .cg-tiers{display:flex;flex-wrap:wrap;gap:8px;margin:clamp(20px,3svh,32px) 0 0;padding:0;list-style:none;max-width:460px}
+  .cg-tiers li{display:inline-flex;align-items:center;gap:8px;padding:5px 13px 5px 5px;border-radius:999px;background:rgba(255,255,255,.9);font-size:14px;font-weight:650;color:var(--ink);box-shadow:0 4px 14px -8px rgba(11,11,12,.4)}
+  .cg-tiers b{display:grid;place-items:center;min-width:32px;height:24px;padding:0 7px;border-radius:999px;font-family:var(--f-display);font-size:12.5px;font-weight:760;color:#fff}
+  .cg-tiers .cg-t1 b{background:#5C6168}
+  .cg-tiers .cg-t2 b{background:#16719A}
+  .cg-tiers .cg-t3 b{background:#17754A}
+  .cg-tiers .cg-t4 b{background:#5B3FC4}
+  .cg-tiers .cg-t5 b{background:#FFC500;color:#0B0B0C}
+}
+
+@keyframes cg-in{from{opacity:.35;transform:scale(.965)}to{opacity:1;transform:none}}
+@keyframes cg-bump{0%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes cg-float{0%{opacity:0;transform:translateY(6px)}20%{opacity:1}100%{opacity:0;transform:translateY(-18px)}}
+@keyframes cg-hint{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes cg-pop{from{opacity:1;transform:translate(-50%,-50%) scale(.8)}to{opacity:0;transform:translate(-50%,-50%) scale(1.9)}}
+@keyframes cg-miss{0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
+@keyframes cg-shake-a{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+@keyframes cg-shake-b{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+@keyframes cg-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+@keyframes cg-burst{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot))}}
+@keyframes cg-shine{from{background-position:200% 0}to{background-position:0 0}}
+
+/* Still motion: no pops, shakes, pulses or floats. The marks still come and
+   go (the component clears them on a timer), so feedback stays. */
+@media (prefers-reduced-motion:reduce){
+  .cg-grid,.cg-end,.cg-play,.cg-tile.cg-hint,.cg-reveal .cg-tile.cg-answer,.cg-stat b.cg-up,.cg-board[data-shake],.cg-tier.cg-t5{animation:none}
+  .cg-pop,.cg-confetti{display:none}
+  .cg-miss{animation:none;opacity:1}
+  .cg-float{animation:none;opacity:1}
+  .cg-tile,.cg-card{transition:none}
+}

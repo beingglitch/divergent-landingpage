@@ -1,4 +1,4 @@
-import { fromPrice } from "@/lib/config";
+import { fromPrice, PLANS_HREF } from "@/lib/config";
 import { getCourses, isMainCourse, type SiteCourse } from "@/lib/courses";
 
 /* The course cards, exactly the courses the app shows on its own course
@@ -11,7 +11,7 @@ const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 
 function CourseCard({ c }: { c: SiteCourse }) {
   const main = isMainCourse(c);
-  const href = main ? "/#plans" : c.href;
+  const href = main ? PLANS_HREF : c.href;
   const ext = !main && c.external ? { target: "_blank", rel: "noopener" } : {};
   const free = c.price === 0 && !c.priceFrom;
   return (

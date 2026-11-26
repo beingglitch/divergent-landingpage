@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Reac
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { dealHref, festivalStage, istDay, istDayTime, loadFestivalOffer, type FestivalOffer, type FestivalStage } from "@/lib/diwali";
+import { COURSE_PATH, PLANS_HREF, isCoursePath } from "@/lib/config";
 
 /* The festival offer (set by admins in the app, loaded by src/lib/diwali.ts):
    lamps, a marigold toran, fireworks over the hero, a rangoli by the plans,
@@ -195,7 +196,7 @@ function OfferPopup({ offer, onClose, onTour }: { offer: FestivalOffer; onClose:
     return () => { window.removeEventListener("keydown", onKey); document.documentElement.classList.remove("dw-locked"); back?.focus?.({ preventScroll: true }); };
   }, [onClose]);
 
-  const home = location.pathname === "/";
+  const home = isCoursePath(location.pathname);
   return (
     <div className="dw-pop-back" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="dw-pop" ref={card} role="dialog" aria-modal="true" aria-labelledby="dw-pop-h" aria-describedby={offer.description ? "dw-pop-d" : undefined}>
@@ -217,7 +218,7 @@ function OfferPopup({ offer, onClose, onTour }: { offer: FestivalOffer; onClose:
                 <li key={i + d.name} className={d.hot ? "hot" : undefined}>
                   <a
                     href={href}
-                    onClick={(e) => { if (home && href === "/#plans") { e.preventDefault(); onTour(); } }}
+                    onClick={(e) => { if (home && href === PLANS_HREF) { e.preventDefault(); onTour(); } }}
                   >
                     {/* What the offer is and how to get it; never a price shown as already applied. */}
                     <span className="dw-deal-t">
@@ -235,7 +236,7 @@ function OfferPopup({ offer, onClose, onTour }: { offer: FestivalOffer; onClose:
           {home ? (
             <button type="button" className="btn btn--block" onClick={onTour}>Show me how to apply it</button>
           ) : (
-            <a className="btn btn--block" href="/?diwali-tour=1#plans">Show me how to apply it</a>
+            <a className="btn btn--block" href={COURSE_PATH + "?diwali-tour=1#plans"}>Show me how to apply it</a>
           )}
         </div>
       </div>
@@ -289,7 +290,7 @@ export function Diwali() {
   // The popup: a few seconds after every page load, never over another dialog.
   useEffect(() => {
     if (!offer || stage !== "offer" || /^\/(privacy|terms)/.test(pathname)) return;
-    if (pathname === "/" && /[?&]diwali-tour=1/.test(location.search)) {
+    if (isCoursePath(pathname) && /[?&]diwali-tour=1/.test(location.search)) {
       const t = window.setTimeout(() => setTour(true), 900);
       return () => clearTimeout(t);
     }
@@ -337,7 +338,8 @@ export function Diwali() {
   const endTour = useCallback(() => setTour(false), []);
 
   if (!offer || stage === "off") return null;
-  const isHome = pathname === "/";
+  // The plans, and so the tour and the hero decorations, are on the 75-day page.
+  const isHome = isCoursePath(pathname);
   return (
     <>
       {/* The marigold toran hangs from the menu on every page. */}

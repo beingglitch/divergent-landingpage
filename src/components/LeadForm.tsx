@@ -28,7 +28,10 @@ function shownPhone(d: string): string {
   return "+91 " + d.slice(0, 5) + " " + d.slice(5);
 }
 
-export function LeadForm() {
+/* `source` tells the Leads list which page sent it ("landing" is the
+   75-day course page, "home" the home page); `withPlan` shows the 75-day
+   plan picker, which only means something on the course page. */
+export function LeadForm({ source = "landing", withPlan = true }: { source?: string; withPlan?: boolean } = {}) {
   const uid = useId();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -101,7 +104,7 @@ export function LeadForm() {
           academicStatus: status,
           exam: exams,
           plan: plan || undefined,
-          source: "landing",
+          source,
           page: window.location.pathname,
           eventId,
           fbp: pixelCookie("_fbp"),
@@ -224,13 +227,15 @@ export function LeadForm() {
           {err("exam")}
         </fieldset>
 
-        <div className="book-f">
-          <label htmlFor={`${uid}-plan`}>Plan you&apos;re considering <span className="book-opt">(optional)</span></label>
-          <select id={`${uid}-plan`} value={plan} onChange={(e) => { planTouched.current = true; setPlan(e.target.value); }}>
-            <option value="">Not sure yet</option>
-            {PLAN_OPTIONS.map((o) => <option key={o.slug} value={o.slug}>{o.label}</option>)}
-          </select>
-        </div>
+        {withPlan ? (
+          <div className="book-f">
+            <label htmlFor={`${uid}-plan`}>Plan you&apos;re considering <span className="book-opt">(optional)</span></label>
+            <select id={`${uid}-plan`} value={plan} onChange={(e) => { planTouched.current = true; setPlan(e.target.value); }}>
+              <option value="">Not sure yet</option>
+              {PLAN_OPTIONS.map((o) => <option key={o.slug} value={o.slug}>{o.label}</option>)}
+            </select>
+          </div>
+        ) : null}
 
         <div className={"book-f book-consent" + (errors.consent ? " err" : "")}>
           <label>

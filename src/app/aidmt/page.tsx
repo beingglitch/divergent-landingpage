@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { CONTACT } from "@/lib/config";
+import { CONTACT, PLANS_HREF } from "@/lib/config";
 import { aidmtDays, getAidmt, leadOffer, rupees } from "@/lib/aidmt";
 import { AidmtSchedule } from "@/components/Aidmt";
 import { AidmtBuyBar, AidmtChallenge, AidmtFaqMore, AidmtOffer } from "@/components/AidmtPromo";
@@ -270,7 +270,7 @@ export default async function AidmtPage() {
             <div className="wrap">
               <h2 className="h2" id="start-h">{closed ? "Registration is closed. Watch this space for the next AIDMT." : a.cta.heading}</h2>
               {closed ? null : <AidmtOffer id="end-offer" deal={deal} {...sale} />}
-              <p className="am-also"><a href="/#plans">Or see the 75-day course <Arrow /></a></p>
+              <p className="am-also"><a href={PLANS_HREF}>Or see the 75-day course <Arrow /></a></p>
             </div>
           </div>
         </div>

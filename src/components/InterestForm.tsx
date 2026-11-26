@@ -29,7 +29,9 @@ function normalisePhone(raw: string): string | null {
 const Arrow = () => <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg>;
 
 export function InterestForm({ exam, plan, source, title, sub, submit, done, choice, id }: {
-  exam: "NID" | "UCEED" | "NIFT";
+  /* "pick": the choice is the exam itself (its options are exam names), for
+     forms that are not about one exam, such as a tool's waitlist. */
+  exam: "NID" | "UCEED" | "NIFT" | "pick";
   /* What the lead is about, as the Leads list shows it ("NIFT 2027"). The choice is added in brackets. */
   plan: string;
   /* Which page or form sent it ("nift-interest"). */
@@ -90,7 +92,7 @@ export function InterestForm({ exam, plan, source, title, sub, submit, done, cho
           name: name.trim(),
           phone: digits,
           academicStatus: status,
-          exam: [exam],
+          exam: exam === "pick" ? [picked] : [exam],
           plan: leadPlan,
           source,
           page: window.location.pathname,

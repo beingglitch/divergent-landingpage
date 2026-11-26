@@ -11,7 +11,7 @@
    again once closed. The visitor's exam (picked in "Preparing for") comes
    first. */
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { APP_URL } from "@/lib/config";
+import { APP_URL, PLANS_HREF } from "@/lib/config";
 
 type Mock = { id: string; name: string; exam: string };
 type Activity = {
@@ -58,7 +58,7 @@ function notesOf(a: Activity, scope: "aidmt" | "home", exam: string | null): Not
       const friends = e.friends ? ` with ${e.friends === 1 ? "a friend" : `${e.friends} friends`}` : "";
       people.push({ key: `m:${e.name}:${e.at}`, who, mark: e.name.charAt(0), line: `registered for ${what}${friends}`, at: e.at, exam: e.mocks[0].exam, href: "/aidmt/", buy: e.mocks[0].id });
     } else if (scope === "home") {
-      people.push({ key: `c:${e.name}:${e.at}`, who, mark: e.name.charAt(0), line: `joined the ${e.course}`, at: e.at, href: "/#plans" });
+      people.push({ key: `c:${e.name}:${e.at}`, who, mark: e.name.charAt(0), line: `joined the ${e.course}`, at: e.at, href: PLANS_HREF });
     }
   }
   /* The visitor's exam first; within each, newest first (the sort is stable). */

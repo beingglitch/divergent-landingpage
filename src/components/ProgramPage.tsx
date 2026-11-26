@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { CONTACT, ist } from "@/lib/config";
+import { CONTACT, ist, PLANS_HREF } from "@/lib/config";
 import { askToJoin, getProgramPrices, programAppUrl, rupees, shortDate, whatsappHref, type MasterclassMode, type ModeKey, type Program } from "@/lib/masterclass";
 import { samplesFor } from "@/lib/masterclass-sample";
 import { getAidmt } from "@/lib/aidmt";
@@ -378,7 +378,7 @@ export async function ProgramPage({ program: P }: { program: Program }) {
             })}
           </ul>
           <p className="pg-both"><span>Both include</span>{P.both.map((b) => <b key={b}>{b}</b>)}</p>
-          <p className="pg-full"><a className="mc-link" href="/#plans">Want a full course instead? See the 75-day plans <Arrow /></a></p>
+          <p className="pg-full"><a className="mc-link" href={PLANS_HREF}>Want a full course instead? See the 75-day plans <Arrow /></a></p>
         </div>
       </section>
 

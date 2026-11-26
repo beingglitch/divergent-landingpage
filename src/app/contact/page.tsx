@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
-import { CONTACT } from "@/lib/config";
+import { CONTACT, PLANS_HREF } from "@/lib/config";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact us | Divergent Classes",
@@ -44,7 +44,7 @@ export default function ContactPage() {
             <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Is Part B (drawing) covered?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes, with sketch reviews from mentors.</p></div></div></div></div>
             <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">How are mocks conducted?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Online, in the real exam pattern, with analysis after.</p></div></div></div></div>
             <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Can I catch up if I join late?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>Yes. Every class so far is waiting as a recording.</p></div></div></div></div>
-            <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do I get one-on-one mentorship?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>On the Mentor plan, every week. <a href="/#plans">Compare plans</a>.</p></div></div></div></div>
+            <div className="faq"><h4><button className="faq-q" type="button" aria-expanded="false">Do I get one-on-one mentorship?<span className="ic" aria-hidden="true"></span></button></h4><div className="faq-a"><div className="clip"><div className="in"><p>On the Mentor plan, every week. <a href={PLANS_HREF}>Compare plans</a>.</p></div></div></div></div>
           </div>
         </div>
       </section>

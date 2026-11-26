@@ -1,0 +1,152 @@
+/* ==========================================================================
+   COLLEGE PREDICTOR (app/college-predictor, components/CollegePredictor)
+   The form is a white card on the blue hero; the results are a light
+   section under it. Bands keep one colour each everywhere: green for
+   likely, amber for borderline, the brand blue for reach.
+   ========================================================================== */
+.cp{
+  --cp-like:#1E9E62; --cp-like-ink:#12704A;
+  --cp-bord:#E5A800; --cp-bord-ink:#7A5600;
+  --cp-reach:#209BD2; --cp-reach-ink:#16719A;
+}
+:root[data-theme="dark"] .cp{
+  --cp-like:#3CC488; --cp-like-ink:#6EDCA8;
+  --cp-bord:#F2C230; --cp-bord-ink:#F5CD55;
+  --cp-reach:#4FBDEB; --cp-reach-ink:#6FCBF0;
+}
+.cp [data-band="likely"]{--cp-c:var(--cp-like);--cp-ink:var(--cp-like-ink);--cp-t:var(--t-mint)}
+.cp [data-band="borderline"]{--cp-c:var(--cp-bord);--cp-ink:var(--cp-bord-ink);--cp-t:var(--t-cream)}
+.cp [data-band="reach"]{--cp-c:var(--cp-reach);--cp-ink:var(--cp-reach-ink);--cp-t:var(--t-sky)}
+
+/* ---------- the hero ---------- */
+.cp-hero .hero-copy,.cp-hero .hero-media{min-width:0}
+.cp-hero .hero-media{display:grid;justify-items:center}
+.cp-hero .h1{max-width:12ch}
+.cp-facts{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:clamp(18px,3svh,26px) 0 0;padding:0}
+.cp-facts li{display:inline-flex;align-items:baseline;gap:6px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.62);font-size:14px;font-weight:650;color:var(--ink)}
+.cp-facts b{font-family:var(--f-display);font-size:18px;font-weight:800;letter-spacing:-.02em}
+/* On a phone the form matters more than the facts: keep it on the first screen. */
+@media (max-width:599px){.cp-facts{display:none}}
+@media (min-width:1000px){.cp-hero .cp-facts{justify-content:flex-start}}
+
+/* ---------- the form card ---------- */
+.cp-card{width:100%;max-width:480px;margin:0 auto;text-align:left;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;padding:clamp(18px,3vw,30px);border-radius:var(--radius-xl);background:var(--paper);color:var(--ink);box-shadow:0 0 0 1px rgba(255,255,255,.4),0 40px 70px -34px rgba(11,11,12,.7)}
+/* The arc gives back the light ink and paper in the dark theme but not the
+   tints, and native inputs follow color-scheme: the card takes them all. */
+:root[data-theme="dark"] .arc .cp-card{color-scheme:light;--blue-50:#F1F9FD;--blue-100:#E1F2FA;--blue-200:#C3E5F5;--yellow-50:#FFF7DA;--paper-2:#F4F6F8;color:var(--ink)}
+.cp-flag{justify-self:start;display:inline-flex;align-items:center;gap:8px;margin:0 0 -4px;padding:5px 12px;border-radius:999px;background:var(--yellow-50);box-shadow:inset 0 0 0 1px #F3D67A;font-size:13px;font-weight:700;color:#7A5600}
+.cp-flag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--yellow)}
+.cp-f{display:grid;gap:8px;margin:0;padding:0;border:0;min-width:0}
+.cp-lab{padding:0;font-size:14.5px;font-weight:650;color:var(--ink)}
+legend.cp-lab{margin-bottom:8px}
+
+/* Exam: a segmented control whose dark thumb slides to the picked exam. */
+.cp-seg{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:16px;background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--line)}
+.cp-seg label{position:relative;z-index:1;display:block}
+.cp-seg input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+.cp-seg span{display:grid;place-items:center;min-height:46px;border-radius:12px;font-family:var(--f-display);font-size:16px;font-weight:750;letter-spacing:-.01em;color:var(--ink-2);transition:color .25s}
+.cp-seg label:hover input:not(:checked)+span{color:var(--ink)}
+.cp-seg input:checked+span{color:#fff}
+.cp-seg input:focus-visible+span{outline:3px solid var(--blue);outline-offset:2px}
+.cp-seg::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 16px) / 3);border-radius:12px;background:var(--fill);box-shadow:0 6px 16px -8px rgba(11,11,12,.6);transition:transform .4s var(--ease-out)}
+.cp-seg:has(label:nth-child(2) input:checked)::before{transform:translateX(calc(100% + 4px))}
+.cp-seg:has(label:nth-child(3) input:checked)::before{transform:translateX(calc(200% + 8px))}
+/* Without :has() the thumb cannot follow, so each pick fills itself instead. */
+@supports not selector(:has(*)){
+  .cp-seg::before{display:none}
+  .cp-seg input:checked+span{background:var(--fill)}
+}
+
+/* Rank: one big number. */
+.cp-rank{display:flex;align-items:center;min-width:0;min-height:62px;border:1.5px solid var(--line-2);border-radius:14px;background:var(--paper);transition:border-color .2s,box-shadow .2s}
+.cp-rank:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(32,155,210,.25)}
+.cp-rank span{padding:0 2px 0 16px;font-family:var(--f-display);font-size:26px;font-weight:700;color:var(--ink-3)}
+.cp-rank input{flex:1;min-width:0;width:100%;height:60px;padding:0 16px 0 2px;border:0;background:transparent;font-family:var(--f-display);font-size:28px;font-weight:750;letter-spacing:-.02em;font-variant-numeric:tabular-nums;outline:none}
+.cp-rank input::placeholder{color:var(--line-2);opacity:1}
+.cp-f.err .cp-rank{border-color:var(--ink);background:var(--yellow-50)}
+.cp-hint{margin:0;font-size:13.5px;color:var(--ink-3)}
+.cp-err{margin:0;font-size:14px;font-weight:650;color:#9B1C1C}
+
+/* Category and course: chips in an even grid. */
+.cp-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cp-chips--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cp-chips label{position:relative;display:grid}
+.cp-chips input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+.cp-chips span{display:grid;place-items:center;min-height:44px;padding:0 8px;border:1.5px solid var(--line-2);border-radius:999px;background:var(--paper);font-size:15px;font-weight:650;line-height:1.1;text-align:center;transition:background-color .2s,border-color .2s,color .2s}
+.cp-chips label:hover span{border-color:var(--ink)}
+.cp-chips input:checked+span{background:var(--fill);border-color:var(--fill);color:#fff}
+.cp-chips input:focus-visible+span{outline:3px solid var(--blue);outline-offset:2px}
+
+/* ---------- the results ---------- */
+.cp-res{padding-block:clamp(40px,6vw,88px)}
+.cp-banner{margin:0 0 clamp(22px,3vw,32px);padding:12px 16px;border-radius:14px;background:var(--yellow-50);box-shadow:inset 0 0 0 1px #F3D67A;font-size:15px;color:var(--ink)}
+:root[data-theme="dark"] .cp-banner{box-shadow:inset 0 0 0 1px #6B5A1E}
+.cp-res-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;margin-bottom:clamp(20px,3vw,30px)}
+.cp-res-head .eyebrow-l{margin-bottom:10px}
+.cp-res-head .h2{outline:none}
+.cp-tags{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0;padding:0}
+.cp-tags li{padding:5px 12px;border-radius:999px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--line);font-size:13.5px;font-weight:650;color:var(--ink-2)}
+.cp-edit{display:inline-flex;align-items:center;min-height:44px;font-weight:650;font-size:15px}
+
+/* Three counts, one per band; each jumps to its list. */
+.cp-sum{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,1.4vw,16px);margin:0 0 clamp(30px,4vw,46px);padding:0}
+.cp-sum a,.cp-sum-0{display:grid;gap:4px;padding:clamp(14px,2vw,22px);border-radius:var(--radius-lg);background:var(--cp-t);color:var(--ink);text-decoration:none;transition:transform .25s var(--ease-out)}
+.cp-sum a:hover{transform:translateY(-2px);color:var(--ink)}
+.cp-sum-0{opacity:.55}
+.cp-sum b{font-family:var(--f-display);font-size:clamp(36px,5vw,58px);font-weight:800;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.cp-sum em{display:flex;align-items:center;gap:7px;font-style:normal;font-size:14px;font-weight:700}
+.cp-sum em::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--cp-c)}
+
+.cp-band+.cp-band{margin-top:clamp(32px,4.5vw,52px)}
+.cp-band-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin-bottom:14px}
+.cp-band-h h3{display:flex;align-items:center;gap:10px;font-size:clamp(22px,2.2vw,28px)}
+.cp-band-h h3 i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--cp-c);box-shadow:0 0 0 4px var(--cp-t)}
+.cp-band-h p{margin:0;font-size:15px;color:var(--ink-3)}
+.cp-grid{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px;margin:0;padding:0}
+
+/* One college. */
+.cp-seat{position:relative;overflow:hidden;display:grid;grid-template-columns:76px minmax(0,1fr);align-items:center;gap:6px 14px;padding:14px 16px 14px 18px;border-radius:var(--radius-lg);background:var(--paper);box-shadow:var(--lift);animation:cp-in .6s var(--ease-out) both;animation-delay:calc(var(--i,0) * 60ms)}
+:root[data-theme="dark"] .cp-seat{box-shadow:inset 0 0 0 1px var(--line)}
+.cp-seat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cp-c)}
+.cp-seat img{width:76px;height:64px;border-radius:12px;object-fit:cover;background:var(--blue-50)}
+.cp-seat-b{min-width:0}
+.cp-seat h4{font-size:18px;line-height:1.15}
+.cp-seat-b p{margin:4px 0 0;font-size:14px;color:var(--ink-3)}
+
+/* The meter: zones from rank 1 to METER_MAX times the closing rank (the
+   component sets --z1, --z2 and the cutoff --t from the band limits), the
+   closing rank as a line, and the student as a dot that slides in. */
+.cp-meter{grid-column:1/-1;position:relative;height:10px;margin:26px 0 22px;border-radius:999px;background:var(--line);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--cp-like) 32%,transparent) 0 var(--z1),color-mix(in srgb,var(--cp-bord) 38%,transparent) var(--z1) var(--z2),color-mix(in srgb,var(--cp-reach) 30%,transparent) var(--z2) 100%)}
+.cp-meter-cut{position:absolute;left:var(--t);top:-5px;bottom:-5px;width:2px;margin-left:-1px;border-radius:2px;background:var(--ink)}
+.cp-meter-cut::after{content:attr(data-k);position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.cp-meter-you{position:absolute;top:50%;left:clamp(9px,var(--w),calc(100% - 9px));width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--cp-c);box-shadow:0 0 0 3px var(--paper),0 4px 10px -2px rgba(11,11,12,.35);transition:left .5s var(--ease-out);animation:cp-slide 1s var(--ease-out) both;animation-delay:calc(var(--i,0) * 60ms + 150ms)}
+.cp-meter-you::after{content:"you";position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cp-ink)}
+.cp-gap{grid-column:1/-1;margin:0;font-size:14px;color:var(--ink-3)}
+.cp-gap b{font-family:var(--f-display);font-size:16px;font-weight:800;color:var(--cp-ink);font-variant-numeric:tabular-nums}
+@keyframes cp-in{from{opacity:0;transform:translate3d(0,14px,0)}}
+@keyframes cp-slide{from{left:9px}}
+
+.cp-none{padding:clamp(22px,3vw,32px);border-radius:var(--radius-lg);background:var(--paper);box-shadow:var(--lift);text-align:center}
+:root[data-theme="dark"] .cp-none{box-shadow:inset 0 0 0 1px var(--line)}
+.cp-none h3{font-size:clamp(22px,2.4vw,28px)}
+.cp-none p{max-width:44ch;margin:8px auto 0;color:var(--ink-2)}
+.cp-beyond{margin:clamp(20px,3vw,28px) 0 0;font-size:15px;color:var(--ink-3)}
+
+/* The way on: a dark card with AIDMT and the exam's course. */
+.cp-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 28px;margin-top:clamp(30px,4.5vw,48px);padding:clamp(22px,3.4vw,36px);border-radius:var(--radius-xl);background:var(--fill);color:#fff;position:relative;overflow:hidden;isolation:isolate}
+.cp-cta::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 120% at 100% 100%,rgba(32,155,210,.55),transparent 70%)}
+:root[data-theme="dark"] .cp-cta{box-shadow:0 0 0 1px var(--line-2)}
+.cp-cta h3{font-size:clamp(24px,2.6vw,32px);color:#fff}
+.cp-cta p{margin:6px 0 0;color:var(--on-dark-2)}
+.cp-cta-acts{display:flex;flex-wrap:wrap;gap:12px}
+.cp-src{margin:16px 0 0}
+@media (max-width:599px){
+  .cp-cta-acts,.cp-cta-acts .btn{width:100%}
+  .cp-sum em{font-size:13px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cp-seat,.cp-meter-you{animation:none}
+  .cp-meter-you,.cp-seg::before,.cp-sum a{transition:none}
+}

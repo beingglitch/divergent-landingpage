@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
+import { PLANS_HREF } from "@/lib/config";
 
 export const metadata: Metadata = pageMeta({
   title: "Community | Divergent Classes",
@@ -84,7 +85,7 @@ export default function CommunityPage() {
               <p className="lede">Book a free call. We'll map your next 75 days.</p>
               <div className="acts">
                 <a className="btn btn--dark" href="/#book">Book a free call <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
-                <a className="btn btn--light" href="/#plans">See the 75-day course</a>
+                <a className="btn btn--light" href={PLANS_HREF}>See the 75-day course</a>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/meta";
 import { VideoStories } from "@/components/VideoStories";
 import { STORIES } from "@/lib/testimonials";
+import { PLANS_HREF } from "@/lib/config";
 
 export const metadata: Metadata = pageMeta({
   title: "Results | Divergent Classes",
@@ -115,7 +116,7 @@ export default function ResultsPage() {
               <h2 className="h2" id="start-h">Your rank could be next.</h2>
               <p className="lede">The 75-day crash course starts 3 November.</p>
               <div className="acts">
-                <a className="btn btn--dark" href="/#plans">See plans <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+                <a className="btn btn--dark" href={PLANS_HREF}>See plans <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
                 <a className="btn btn--light" href="/#book">Book a free call</a>
               </div>
             </div>

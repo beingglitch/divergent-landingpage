@@ -235,8 +235,9 @@ export function initSite(): () => void {
       const a = (e.target as HTMLElement).closest?.("a");
       if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       const href = a.getAttribute("href");
-      if (href !== "#book" && href !== "/#book") return;
-      if (location.pathname !== "/") return;
+      // "#book" is this page's own form; "/#book" is the home page's, so it
+      // is only handled here when this is the home page.
+      if (href !== "#book" && !(href === "/#book" && location.pathname === "/")) return;
       if (goToForm(true)) {
         e.preventDefault();
         history.replaceState(null, "", "#book");

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { CourseCards } from "@/components/CourseCards";
 import { pageMeta } from "@/lib/meta";
+import { PLANS_HREF } from "@/lib/config";
 
 export const metadata: Metadata = pageMeta({
   title: "UCEED 2027: pattern, dates and colleges | Divergent Classes",
@@ -28,7 +29,7 @@ export default function UceedPage() {
               <li><span>Mode</span><b>Computer + drawing</b></li>
             </ul>
             <div className="hero-ctas">
-              <a className="btn" href="/#plans">See the 75-day course <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn" href={PLANS_HREF}>See the 75-day course <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href="/courses/">All UCEED courses</a>
             </div>
           </div>
@@ -139,7 +140,7 @@ export default function UceedPage() {
               <h2 className="h2" id="start-h">UCEED is on 17 January. Start now.</h2>
               <p className="lede">The 75-day crash course starts 3 November.</p>
               <div className="acts">
-                <a className="btn btn--dark" href="/#plans">See plans <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+                <a className="btn btn--dark" href={PLANS_HREF}>See plans <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
                 <a className="btn btn--light" href="/#book">Book a free call</a>
               </div>
             </div>
