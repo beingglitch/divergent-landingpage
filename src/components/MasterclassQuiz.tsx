@@ -1,11 +1,11 @@
 "use client";
 
-/* The NID readiness check on /nid-masterclass/: eight quick questions, all
-   answered with one tap (nothing to draw or upload). Seven are NID-style
-   questions with one right answer (perspective, light and shadow, nets,
+/* The readiness check on the program pages (components/ProgramPage): eight
+   quick questions, all answered with one tap (nothing to draw or upload).
+   Seven are design-entrance questions with one right answer (perspective, light and shadow, nets,
    mirror images, a sequence, colour, counting cubes) and one asks how many
    mock papers they have sat. Then a readiness score out of 100, a level, a
-   skill map against where the 21 days aim, and the masterclasses to start
+   skill map against where the program aims, and the masterclasses to start
    with. It gives a level, never a rank: there is no data behind a rank.
    Nothing is stored or sent; "Ask a mentor" opens WhatsApp with the result
    written out. */
@@ -13,13 +13,14 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 type Axis = "drawing" | "visual" | "observe" | "create" | "design" | "exam";
+/* {exam} in a topic is the program's exam. */
 const AXES: { key: Axis; name: string; topic: string }[] = [
   { key: "drawing", name: "Drawing", topic: "Drawing & sketching" },
   { key: "visual", name: "Visualisation", topic: "Visualization & perspective" },
   { key: "observe", name: "Observation", topic: "Observation & visual understanding" },
   { key: "create", name: "Problem-solving", topic: "Creative thinking & problem-solving" },
   { key: "design", name: "Design sense", topic: "Composition, colour & form" },
-  { key: "exam", name: "Exam craft", topic: "NID question practice & strategy" },
+  { key: "exam", name: "Exam craft", topic: "{exam} question practice & strategy" },
 ];
 
 type Option = { label: ReactNode; say: string; pts: number };
@@ -228,7 +229,7 @@ const QUESTIONS: Question[] = [
   },
   {
     key: "papers", kind: "self", tag: "About you", axes: ["exam"],
-    text: "How many full NID mock papers have you sat against the clock?",
+    text: "How many full {exam} mock papers have you sat against the clock?",
     options: self("Three or more", "One or two", "Only parts of one", "None yet"),
   },
 ];
@@ -248,10 +249,10 @@ function resultOf(picks: number[]): Result {
   return { score, axes, right };
 }
 
-function levelOf(score: number) {
-  if (score >= 75) return { name: "Mains-ready", line: "You have the base. The 21 days add speed, finish and strategy: what turns a pass into a top rank." };
-  if (score >= 45) return { name: "Almost there", line: "You’re closer than you think. Close the gaps below and you’re in the Mains zone." };
-  return { name: "Ready to climb", line: "Good news: almost all of NID can be learnt. 21 focused days move every line on this chart." };
+function levelOf(score: number, exam: string, days: number) {
+  if (score >= 75) return { name: exam === "NID" ? "Mains-ready" : "Exam-ready", line: `You have the base. The ${days} days add speed, finish and strategy: what turns a pass into a top rank.` };
+  if (score >= 45) return { name: "Almost there", line: `You’re closer than you think. Close the gaps below and you’re in the running for ${exam === "NID" ? "Mains" : "a top rank"}.` };
+  return { name: "Ready to climb", line: `Good news: almost all of ${exam} can be learnt. ${days} focused days move every line on this chart.` };
 }
 
 /* 0 to 1 over `ms` once `on`, eased. */
@@ -303,7 +304,9 @@ function Radar({ axes, p }: { axes: Result["axes"]; p: number }) {
   );
 }
 
-export function MasterclassQuiz({ enrolHref, whatsapp }: { enrolHref: string; whatsapp: string }) {
+/* exam: "NID" or "UCEED". days: the program's length. */
+export function MasterclassQuiz({ exam, days, enrolHref, whatsapp }: { exam: string; days: number; enrolHref: string; whatsapp: string }) {
+  const say = (text: string) => text.replace("{exam}", exam);
   const [step, setStep] = useState(-1);
   const [picks, setPicks] = useState<number[]>([]);
   const [chosen, setChosen] = useState<number | null>(null);
@@ -338,7 +341,7 @@ export function MasterclassQuiz({ enrolHref, whatsapp }: { enrolHref: string; wh
           <Radar axes={AXES.map((a, i) => ({ ...a, v: [0.7, 0.45, 0.8, 0.55, 0.65, 0.4][i] }))} p={1} />
         </div>
         <div className="rq-intro-c">
-          <p className="rq-k">NID readiness check</p>
+          <p className="rq-k">{exam} readiness check</p>
           <h3>Find your gaps in 2 minutes.</h3>
           <ul className="rq-facts"><li>8 questions</li><li>One tap each</li><li>No sign-up</li></ul>
           <button type="button" className="btn btn--dark" onClick={() => setStep(0)}>Start the check <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></button>
@@ -348,9 +351,9 @@ export function MasterclassQuiz({ enrolHref, whatsapp }: { enrolHref: string; wh
   }
 
   if (result) {
-    const level = levelOf(result.score);
+    const level = levelOf(result.score, exam, days);
     const weak = [...result.axes].sort((a, b) => a.v - b.v).slice(0, 3);
-    const ask = `Hi, I took the NID readiness check: ${result.score}/100 (${level.name}). Weakest: ${weak.map((w) => w.name).join(", ")}. Which masterclass program suits me?`;
+    const ask = `Hi, I took the ${exam} readiness check: ${result.score}/100 (${level.name}). Weakest: ${weak.map((w) => w.name).join(", ")}. Which program suits me?`;
     return (
       <div className="rq rq--done" role="status">
         <div className="rq-score">
@@ -358,29 +361,29 @@ export function MasterclassQuiz({ enrolHref, whatsapp }: { enrolHref: string; wh
             <b>{Math.round(result.score * p)}</b><small>/100</small>
           </div>
           <div>
-            <p className="rq-k">Your NID readiness</p>
+            <p className="rq-k">Your {exam} readiness</p>
             <p className="rq-level">{level.name}</p>
             <p className="rq-line">{level.line}</p>
             <p className="rq-puz">Correct: <b>{result.right} of {PUZZLES.length}</b> · <button type="button" className="rq-link" aria-expanded={answers} onClick={() => setAnswers((a) => !a)}>{answers ? "Hide the answers" : "See the answers"}</button></p>
           </div>
         </div>
         {answers ? (
-          <ol className="rq-why">{PUZZLES.map((q) => <li key={q.key}><b>{q.text}</b><span>{q.why}</span></li>)}</ol>
+          <ol className="rq-why">{PUZZLES.map((q) => <li key={q.key}><b>{say(q.text)}</b><span>{q.why}</span></li>)}</ol>
         ) : null}
         <div className="rq-grid">
           <figure className="rq-map">
             <Radar axes={result.axes} p={p} />
-            <figcaption><span className="rq-key you"></span>You <span className="rq-key target"></span>Where the 21 days aim</figcaption>
+            <figcaption><span className="rq-key you"></span>You <span className="rq-key target"></span>Where the {days} days aim</figcaption>
           </figure>
           <div className="rq-focus">
-            <p className="rq-k">{result.score >= 75 ? "Sharpen these in the 21 days" : "Start with these masterclasses"}</p>
+            <p className="rq-k">{result.score >= 75 ? `Sharpen these in the ${days} days` : "Start with these masterclasses"}</p>
             <ol>
               {weak.map((w, i) => (
-                <li key={w.key}><span className="rq-n">{i + 1}</span><span><b>{w.topic}</b><small>{w.name} today: {Math.round(w.v * 100)}%</small></span></li>
+                <li key={w.key}><span className="rq-n">{i + 1}</span><span><b>{say(w.topic)}</b><small>{w.name} today: {Math.round(w.v * 100)}%</small></span></li>
               ))}
             </ol>
             <div className="rq-acts">
-              <a className="btn btn--dark" href={enrolHref}>Close these gaps in 21 days <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+              <a className="btn btn--dark" href={enrolHref}>Close these gaps in {days} days <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
               <a className="btn btn--ghost" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(ask)}`} target="_blank" rel="noopener">Ask a mentor about it</a>
             </div>
             <button type="button" className="rq-link rq-again" onClick={restart}>Take it again</button>
@@ -402,7 +405,7 @@ export function MasterclassQuiz({ enrolHref, whatsapp }: { enrolHref: string; wh
       <p className="rq-tag">{q.tag}</p>
       <div className={`rq-body${q.figure ? " has-fig" : ""}`} key={q.key}>
         {q.figure ? <div className="rq-figbox">{q.figure}</div> : null}
-        <p className="rq-q">{q.text}</p>
+        <p className="rq-q">{say(q.text)}</p>
       </div>
       <div className={`rq-opts${q.tiles ? " tiles" : ""}${q.bare ? " bare" : ""}`} role="group" aria-label="Answers">
         {q.options.map((o, n) => (

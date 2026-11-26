@@ -190,7 +190,8 @@ const Icon = {
 
 export type LiveMentor = { name: string; line: string; photo: string | null };
 
-export function MasterclassLive({ mentor, enrolHref }: { mentor: LiveMentor | null; enrolHref: string }) {
+/* program: the course as the app names it ("21 DAYS NID MASTERCLASS"). classes: masterclasses in all. */
+export function MasterclassLive({ mentor, enrolHref, program, classes }: { mentor: LiveMentor | null; enrolHref: string; program: string; classes: number }) {
   const box = useRef<HTMLDivElement>(null);
   const feed = useRef<HTMLOListElement>(null);
   const [mode, setMode] = useState<Mode>("live");
@@ -306,7 +307,7 @@ export function MasterclassLive({ mentor, enrolHref }: { mentor: LiveMentor | nu
             <div>
               <p className={`lc-pill${live ? " live" : ""}`}>{live ? <><span className="lc-dot" aria-hidden="true"></span>Live now</> : "Past class"}</p>
               <p className="lc-title">Perspective &amp; everyday objects by {mentorName}</p>
-              <p className="lc-sub">21 DAYS NID MASTERCLASS · Masterclass 4 of 14 · 2 hrs</p>
+              <p className="lc-sub">{program} · Masterclass 4 of {classes} · 2 hrs</p>
             </div>
           </header>
 
@@ -383,7 +384,7 @@ export function MasterclassLive({ mentor, enrolHref }: { mentor: LiveMentor | nu
                 </>
               ) : tab === "details" ? (
                 <dl className="lc-details">
-                  <div><dt>Masterclass</dt><dd>4 of 14 · Perspective &amp; everyday objects</dd></div>
+                  <div><dt>Masterclass</dt><dd>4 of {classes} · Perspective &amp; everyday objects</dd></div>
                   <div><dt>Mentor</dt><dd>{mentorName}{mentor?.line ? `, ${mentor.line}` : ""}</dd></div>
                   <div><dt>Length</dt><dd>2 hours, with a live review round</dd></div>
                   <div><dt>Homework</dt><dd>Your kettle in 2-point perspective</dd></div>

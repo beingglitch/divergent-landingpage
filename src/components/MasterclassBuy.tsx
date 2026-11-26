@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { APP_URL } from "@/lib/config";
-import { MASTERCLASS_COURSE, rupees, type MasterclassMode, type ModeKey, type Prices } from "@/lib/masterclass";
+import { rupees, type MasterclassMode, type ModeKey, type Prices } from "@/lib/masterclass";
 import { track } from "@/lib/pixel";
 import { savedUtm } from "@/lib/utm";
 
-/* The 21 Days NID Masterclass bought right here, in one tap, as AIDMT is on
-   /aidmt/ (components/AidmtBuy): every Enrol on /nid-masterclass/ is a link
-   to the course in the app marked data-mc-buy (its program, or empty), and
-   this opens the dialog instead. Live or Recorded, a mobile number, then
+/* A program (lib/masterclass) bought right here, in one tap, as AIDMT is on
+   /aidmt/ (components/AidmtBuy): every Enrol on a program page is a link to
+   the course in the app marked data-mc-buy (its mode, or empty), and this
+   opens the dialog instead. Live or Recorded, a mobile number, then
    Razorpay. The order belongs to that number (app lib/guest-checkout and
    api/public/course-checkout), so after paying the buyer signs in with it
    and the course is there. Prices are the app's (lib/masterclass
@@ -21,7 +21,6 @@ import { savedUtm } from "@/lib/utm";
 const CHECKOUT = `${APP_URL}/api/public/course-checkout`;
 const VERIFY = `${APP_URL}/api/public/course-checkout/verify`;
 const RZP_SRC = "https://checkout.razorpay.com/v1/checkout.js";
-const CONTENT = { content_type: "product", content_ids: ["nid-masterclass"], content_name: "21 Days NID Masterclass" };
 
 type Rzp = { open: () => void; on: (e: string, f: (r: { error?: { description?: string } }) => void) => void };
 declare global { interface Window { Razorpay?: new (o: Record<string, unknown>) => Rzp } }
@@ -39,7 +38,10 @@ function loadRazorpay(): Promise<boolean> {
 
 type Step = { k: "pick" } | { k: "paying" } | { k: "done"; next: string; phone: string };
 
-export function MasterclassBuy({ modes, prices, enrolUrl }: { modes: MasterclassMode[]; prices: Prices; enrolUrl: string }) {
+/* course: the app's course slug. name: the program, as the buyer reads it.
+   includes: one line on what every mode has. */
+export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl }: { course: string; name: string; includes: string; modes: MasterclassMode[]; prices: Prices; enrolUrl: string }) {
+  const CONTENT = useMemo(() => ({ content_type: "product", content_ids: [course], content_name: name }), [course, name]);
   const ref = useRef<HTMLDialogElement>(null);
   const sellable = modes.filter((m) => prices[m.key]);
   const [picked, setPicked] = useState<ModeKey | null>(sellable[0]?.key ?? null);
@@ -67,7 +69,7 @@ export function MasterclassBuy({ modes, prices, enrolUrl }: { modes: Masterclass
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, [modes, prices]);
+  }, [modes, prices, CONTENT]);
 
   /* After paying, on to the app: sign in with the same number, then the course. */
   useEffect(() => {
@@ -85,7 +87,7 @@ export function MasterclassBuy({ modes, prices, enrolUrl }: { modes: Masterclass
     try {
       const [ready, res] = await Promise.all([
         loadRazorpay(),
-        fetch(CHECKOUT, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone: digits, course: MASTERCLASS_COURSE, plan: mode.plan, utm: savedUtm() }) }),
+        fetch(CHECKOUT, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone: digits, course, plan: mode.plan, utm: savedUtm() }) }),
       ]);
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.success) {
@@ -102,7 +104,7 @@ export function MasterclassBuy({ modes, prices, enrolUrl }: { modes: Masterclass
       const rzp = new window.Razorpay({
         key: keyId, order_id: orderId, amount, currency,
         name: "Divergent Classes",
-        description: `21 Days NID Masterclass · ${mode.short}`,
+        description: `${name} · ${mode.short}`,
         prefill: { contact: `+91${digits}` },
         theme: { color: "#209bd2" },
         modal: { ondismiss: () => { setStep({ k: "pick" }); ref.current?.showModal(); } },
@@ -128,13 +130,13 @@ export function MasterclassBuy({ modes, prices, enrolUrl }: { modes: Masterclass
       {step.k === "done" ? (
         <div className="buy-in buy-done" role="status">
           <h2 id="mc-buy-h">You’re in.</h2>
-          <p>The masterclass is on <b>+91 {step.phone.slice(0, 5)} {step.phone.slice(5)}</b>. Sign in with this number to see your classes and register for your 3 AIDMT mocks. Taking you there now.</p>
-          <a className="btn" href={step.next}>Go to my masterclass <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
+          <p>The {name} is on <b>+91 {step.phone.slice(0, 5)} {step.phone.slice(5)}</b>. Sign in with this number to see your classes and register for your 3 AIDMT mocks. Taking you there now.</p>
+          <a className="btn" href={step.next}>Go to my classes <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
         </div>
       ) : (
         <form className="buy-in" onSubmit={(e) => { e.preventDefault(); void pay(); }}>
           <div className="buy-top">
-            <h2 id="mc-buy-h" tabIndex={-1}>Join the 21 Days NID Masterclass</h2>
+            <h2 id="mc-buy-h" tabIndex={-1}>Join the {name}</h2>
             <button type="button" className="buy-x" aria-label="Close" onClick={close}><span aria-hidden="true">×</span></button>
           </div>
           <fieldset className="mcb-modes">
@@ -153,7 +155,7 @@ export function MasterclassBuy({ modes, prices, enrolUrl }: { modes: Masterclass
               );
             })}
           </fieldset>
-          <p className="mcb-incl">Both include 13–14 masterclasses, recordings and 3 AIDMT NID mocks.</p>
+          <p className="mcb-incl">{includes}</p>
 
           <div className="book-f buy-phone">
             <label htmlFor="mc-buy-tel">Mobile number</label>

@@ -2065,9 +2065,9 @@ html:has(.trailer-dlg[open]){overflow:hidden}
 
 .mc-sheet{max-width:520px;margin:0 auto;padding:clamp(20px,2.6vw,30px);border-radius:var(--radius-xl);background:#0B0B0C;color:#fff;text-align:left;box-shadow:0 0 0 1px rgba(255,255,255,.35),0 40px 70px -34px rgba(11,11,12,.85);transform:rotate(-1.2deg)}
 .mc-sheet-k{margin:0 0 14px;font-size:12.5px;font-weight:750;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-hi)}
-.mc-days{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.mc-days{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(var(--cols,7),minmax(0,1fr));gap:6px}
 .mc-days li{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;background:var(--blue);border:1px solid var(--blue);color:#0B0B0C;font-family:var(--f-display);font-weight:700;font-size:clamp(12px,1.1vw,15px);font-variant-numeric:tabular-nums}
-html.js .mc-days li{animation:mc-fill .5s var(--ease-out) both;animation-delay:calc(.5s + var(--d) * 70ms)}
+html.js .mc-days li{animation:mc-fill .5s var(--ease-out) both;animation-delay:calc(.5s + var(--d) * var(--step,70ms))}
 @keyframes mc-fill{from{background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.1)}}
 .mc-exam{display:flex;align-items:center;justify-content:space-between;margin:6px 0 0;padding:10px 14px;border-radius:10px;background:var(--yellow);color:#0B0B0C;font-family:var(--f-display);font-weight:760;font-size:16px;letter-spacing:.02em}
 .mc-exam .arr{transform:rotate(90deg)}
@@ -2438,7 +2438,7 @@ html.js .rw-wrap.on .rw-notes li{animation:rw-note .4s forwards;animation-delay:
 .jr-w h3{margin:4px 0 10px;font-size:clamp(22px,2vw,28px);letter-spacing:-.03em}
 .jr-topics{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px;padding:0}
 .jr-topics li{padding:4px 10px;border-radius:999px;background:var(--blue-50);font-size:13px;font-weight:650}
-.jr-days{list-style:none;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:auto 0 0;padding:0}
+.jr-days{list-style:none;display:grid;grid-template-columns:repeat(var(--cols,7),minmax(0,1fr));gap:5px;margin:auto 0 0;padding:0}
 .jr-d{display:grid;justify-items:center;align-content:center;gap:2px;aspect-ratio:.78;border-radius:10px;padding:2px;text-align:center}
 .jr-d b{font-family:var(--f-display);font-size:15px;font-weight:760;line-height:1}
 .jr-d small{font-size:9.5px;font-weight:700;line-height:1.05;letter-spacing:.01em}
@@ -2538,3 +2538,28 @@ html.js .rw-wrap.on .rw-notes li{animation:rw-note .4s forwards;animation-delay:
 .mcb-price s{font-size:13px;color:var(--ink-3)}
 .mcb-incl{margin:-6px 0 0;font-size:14px;color:var(--ink-3)}
 .mcb-hint{font-size:13px;color:var(--ink-3)}
+
+/* ---------- the interest form (components/InterestForm) ---------- */
+.if-card{width:100%;max-width:520px;margin:0 auto;text-align:left}
+.if-band-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,72px);align-items:center}
+.if-band .lede{max-width:48ch}
+.if-band .mc-list{margin-top:22px}
+@media (max-width:899px){.if-band-in{grid-template-columns:1fr}}
+/* on a long sheet of days (45), the squares and numbers shrink */
+.mc-days[style*="--cols: 9"] li,.mc-days[style*="--cols:9"] li{border-radius:8px;font-size:clamp(10.5px,.9vw,13px)}
+.mc-days[style*="--cols: 9"],.mc-days[style*="--cols:9"]{gap:4px}
+
+/* ---------- the NIFT interest page (app/nift-interest) ---------- */
+.nf-hero .hero-media{display:grid;justify-items:center}
+.nf-hero .book-card{box-shadow:0 0 0 1px rgba(255,255,255,.4),0 40px 70px -34px rgba(11,11,12,.7);border:0}
+.nf-hero .hero-copy,.nf-hero .hero-media{min-width:0}
+.nf-points{list-style:none;display:grid;gap:10px;margin:clamp(18px,3svh,26px) auto 0;padding:0;width:fit-content;max-width:100%;text-align:left}
+.nf-points li{display:flex;align-items:center;gap:10px;font-size:16.5px;font-weight:600;color:var(--ink)}
+.nf-points .ic{flex:none;width:24px;height:24px;border-radius:50%;background:#0B0B0C;display:grid;place-items:center}
+.nf-points .ic svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.nf-hero .am-proof{margin-top:clamp(18px,3svh,26px)}
+@media (min-width:1000px){.nf-hero .nf-points{margin-left:0}}
+/* A form on the blue hero keeps the whole light palette in the dark theme:
+   the arc resets ink and paper but not the tints, and native inputs follow
+   color-scheme. */
+:root[data-theme="dark"] .arc .book-card{color-scheme:light;--blue-50:#F1F9FD;--blue-100:#E1F2FA;--blue-200:#C3E5F5;--yellow-50:#FFF7DA;color:var(--ink)}

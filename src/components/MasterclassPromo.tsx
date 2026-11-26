@@ -2,8 +2,8 @@
 
 /* The parts of /nid-masterclass/ that tick or switch.
 
-   ExamCountdown: the time left to NID DAT Prelims, a chip in the hero and
-   the big clock in the closing call to action. It is the real exam date
+   ExamCountdown: the time left to the program's exam, a chip in the hero
+   and the big clock in the closing call to action. It is the real exam date
    (lib/masterclass examDay), nothing invented.
    MasterclassBar: on a phone, Enrol pinned to the foot of the screen while
    neither the hero's nor the closing Enrol is in view, as /aidmt/ does.
@@ -45,7 +45,7 @@ export function ExamCountdown({ builtAt, day, exam, big = false }: { builtAt: nu
 }
 
 /* away: what hides the bar while it is on screen. href and buy as on the page's own Enrol. */
-export function MasterclassBar({ away, builtAt, day, price, href, buy }: { away: string[]; builtAt: number; day: string; price: string | null; href: string; buy: boolean }) {
+export function MasterclassBar({ away, builtAt, day, exam, label, price, href, buy }: { away: string[]; builtAt: number; day: string; exam: string; label: string; price: string | null; href: string; buy: boolean }) {
   const [shown, setShown] = useState(false);
   const t = useClock(builtAt);
   const left = split(ist(`${day}T00:00:00`).getTime() - t);
@@ -66,8 +66,8 @@ export function MasterclassBar({ away, builtAt, day, price, href, buy }: { away:
   return (
     <div className={`abb${shown ? " on" : ""}`} inert={!shown}>
       <p className="abb-t">
-        <b>{price ?? "21 Days NID"}</b>
-        <small>Prelims in {left.d}d {left.h}h {two(left.m)}m</small>
+        <b>{price ?? label}</b>
+        <small>{exam} in {left.d}d {left.h}h {two(left.m)}m</small>
       </p>
       <a className="btn abb-btn" href={href} {...(buy ? { "data-mc-buy": "" } : href.startsWith("https://wa.me") ? { target: "_blank", rel: "noopener" } : {})}>Enrol <Arrow /></a>
     </div>
