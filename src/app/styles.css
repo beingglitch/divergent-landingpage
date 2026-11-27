@@ -2538,6 +2538,20 @@ html.js .rw-wrap.on .rw-notes li{animation:rw-note .4s forwards;animation-delay:
 .mcb-price s{font-size:13px;color:var(--ink-3)}
 .mcb-incl{margin:-6px 0 0;font-size:14px;color:var(--ink-3)}
 .mcb-hint{font-size:13px;color:var(--ink-3)}
+/* On a phone the total and Pay share one row and the rows are tighter, so
+   the mobile number shows above the Pay bar without scrolling (390 by 664,
+   an iPhone with Safari's bars). Shorter still, the bar stops sticking and
+   the dialog scrolls as one. */
+@media (max-width:520px){
+  .mcb-in{gap:14px;padding:18px}
+  .mcb-in .buy-foot{flex-direction:row;align-items:center;margin-top:0;padding-top:10px}
+  .mcb-in .buy-foot .btn{width:auto;flex:none}
+  .mcb-in .buy-total b{font-size:22px}
+  .mcb-in .mcb-mode{min-height:0;padding:10px 12px}
+  .mcb-in .mcb-incl{font-size:13px}
+  .mcb-in .buy-phone{margin-top:0}
+}
+@media (max-width:520px) and (max-height:600px){.mcb-in .buy-foot{position:static}}
 
 /* ---------- the interest form (components/InterestForm) ---------- */
 .if-card{width:100%;max-width:520px;margin:0 auto;text-align:left}

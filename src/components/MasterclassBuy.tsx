@@ -43,6 +43,7 @@ type Step = { k: "pick" } | { k: "paying" } | { k: "done"; next: string; phone: 
 export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl }: { course: string; name: string; includes: string; modes: MasterclassMode[]; prices: Prices; enrolUrl: string }) {
   const CONTENT = useMemo(() => ({ content_type: "product", content_ids: [course], content_name: name }), [course, name]);
   const ref = useRef<HTMLDialogElement>(null);
+  const telRef = useRef<HTMLInputElement>(null);
   const sellable = modes.filter((m) => prices[m.key]);
   const [picked, setPicked] = useState<ModeKey | null>(sellable[0]?.key ?? null);
   const [phone, setPhone] = useState("");
@@ -56,7 +57,8 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const a = (e.target as Element | null)?.closest<HTMLElement>("[data-mc-buy]");
-      if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      // A browser with no <dialog> (Safari before iOS 15.4) follows the link to the course in the app instead.
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey || typeof ref.current?.showModal !== "function") return;
       e.preventDefault();
       const want = a.dataset.mcBuy as ModeKey | "";
       if (want && modes.some((m) => m.key === want && prices[m.key])) setPicked(want);
@@ -81,7 +83,12 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
   async function pay() {
     setError("");
     if (!mode || !price) return setError("Pick Live or Recorded.");
-    if (!/^[6-9]\d{9}$/.test(digits)) return setError("Enter your 10-digit mobile number.");
+    if (!/^[6-9]\d{9}$/.test(digits)) {
+      // On a short phone the field can sit under the Pay bar: bring it up.
+      telRef.current?.scrollIntoView({ block: "center" });
+      telRef.current?.focus({ preventScroll: true });
+      return setError("Enter your 10-digit mobile number.");
+    }
     setStep({ k: "paying" });
     track("InitiateCheckout", { ...CONTENT, currency: "INR", value: price.price, num_items: 1 });
     try {
@@ -134,7 +141,7 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
           <a className="btn" href={step.next}>Go to my classes <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
         </div>
       ) : (
-        <form className="buy-in" onSubmit={(e) => { e.preventDefault(); void pay(); }}>
+        <form className="buy-in mcb-in" onSubmit={(e) => { e.preventDefault(); void pay(); }}>
           <div className="buy-top">
             <h2 id="mc-buy-h" tabIndex={-1}>Join the {name}</h2>
             <button type="button" className="buy-x" aria-label="Close" onClick={close}><span aria-hidden="true">×</span></button>
@@ -161,7 +168,7 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
             <label htmlFor="mc-buy-tel">Mobile number</label>
             <div className="book-tel">
               <span aria-hidden="true">+91</span>
-              <input id="mc-buy-tel" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98765 43210" maxLength={16} value={phone} onChange={(e) => { setPhone(e.target.value); setError(""); }} />
+              <input ref={telRef} id="mc-buy-tel" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98765 43210" maxLength={16} value={phone} onChange={(e) => { setPhone(e.target.value); setError(""); }} />
             </div>
             <small className="mcb-hint">No sign-up. The course goes on this number; sign in with it after paying.</small>
           </div>
