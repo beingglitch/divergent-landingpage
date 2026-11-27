@@ -36,7 +36,11 @@ function loadRazorpay(): Promise<boolean> {
   });
 }
 
-type Step = { k: "pick" } | { k: "paying" } | { k: "done"; next: string; phone: string };
+type Step = { k: "pick" } | { k: "paying" } | { k: "done"; next: string; phone: string; mine: boolean };
+
+/* Signed in to a student account on the app (api/public/session): the order
+   goes on that account, so the dialog asks for no number. */
+const SESSION_URL = `${APP_URL}/api/public/session`;
 
 /* course: the app's course slug. name: the program, as the buyer reads it.
    includes: one line on what every mode has. */
@@ -52,6 +56,16 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
   const mode = sellable.find((m) => m.key === picked) ?? null;
   const price = mode ? prices[mode.key]! : null;
   const digits = phone.replace(/\D/g, "").slice(-10);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    const ctrl = new AbortController();
+    fetch(SESSION_URL, { credentials: "include", signal: ctrl.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setSignedIn(!!d?.signedIn && !!d?.student))
+      .catch(() => {});
+    return () => ctrl.abort();
+  }, []);
 
   /* Every Enrol on the page opens this, its own program picked. */
   useEffect(() => {
@@ -83,7 +97,7 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
   async function pay() {
     setError("");
     if (!mode || !price) return setError("Pick Live or Recorded.");
-    if (!/^[6-9]\d{9}$/.test(digits)) {
+    if (!signedIn && !/^[6-9]\d{9}$/.test(digits)) {
       // On a short phone the field can sit under the Pay bar: bring it up.
       telRef.current?.scrollIntoView({ block: "center" });
       telRef.current?.focus({ preventScroll: true });
@@ -94,11 +108,13 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
     try {
       const [ready, res] = await Promise.all([
         loadRazorpay(),
-        fetch(CHECKOUT, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone: digits, course, plan: mode.plan, utm: savedUtm() }) }),
+        fetch(CHECKOUT, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...(signedIn ? {} : { phone: digits }), course, plan: mode.plan, utm: savedUtm() }) }),
       ]);
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.success) {
         setStep({ k: "pick" });
+        // Signed out since the dialog loaded: ask for the number after all.
+        if (signedIn && /mobile number/i.test(json?.error || "")) setSignedIn(false);
         return setError(json?.error || "Could not start the payment. Please try again.");
       }
       if (!ready || !window.Razorpay) {
@@ -112,7 +128,7 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
         key: keyId, order_id: orderId, amount, currency,
         name: "Divergent Classes",
         description: `${name} · ${mode.short}`,
-        prefill: { contact: `+91${digits}` },
+        ...(signedIn ? {} : { prefill: { contact: `+91${digits}` } }),
         theme: { color: "#209bd2" },
         modal: { ondismiss: () => { setStep({ k: "pick" }); ref.current?.showModal(); } },
         handler: async (r: Record<string, string>) => {
@@ -120,7 +136,7 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
           const v = await fetch(VERIFY, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(r) }).then((x) => x.json()).catch(() => null);
           track("Purchase", { ...CONTENT, currency: "INR", value: amount / 100, num_items: 1 }, orderId);
           // Paid either way: the gateway also tells the app. Only the next step differs.
-          setStep({ k: "done", next: v?.data?.next || enrolUrl, phone: digits });
+          setStep({ k: "done", next: v?.data?.next || enrolUrl, phone: digits, mine: signedIn });
         },
       });
       rzp.on("payment.failed", (r) => setError(r.error?.description ? `Payment failed: ${r.error.description}. No money was taken; try again.` : "Payment failed. No money was taken; try again."));
@@ -137,7 +153,11 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
       {step.k === "done" ? (
         <div className="buy-in buy-done" role="status">
           <h2 id="mc-buy-h">You’re in.</h2>
-          <p>The {name} is on <b>+91 {step.phone.slice(0, 5)} {step.phone.slice(5)}</b>. Sign in with this number to see your classes and register for your 3 AIDMT mocks. Taking you there now.</p>
+          {step.mine ? (
+            <p>The {name} is on your account. Open your classes and register for your 3 AIDMT mocks. Taking you there now.</p>
+          ) : (
+            <p>The {name} is on <b>+91 {step.phone.slice(0, 5)} {step.phone.slice(5)}</b>. Sign in with this number to see your classes and register for your 3 AIDMT mocks. Taking you there now.</p>
+          )}
           <a className="btn" href={step.next}>Go to my classes <svg className="arr" width="16" height="16" aria-hidden="true"><use href="#arrow" /></svg></a>
         </div>
       ) : (
@@ -164,14 +184,14 @@ export function MasterclassBuy({ course, name, includes, modes, prices, enrolUrl
           </fieldset>
           <p className="mcb-incl">{includes}</p>
 
-          <div className="book-f buy-phone">
+          {signedIn ? null : <div className="book-f buy-phone">
             <label htmlFor="mc-buy-tel">Mobile number</label>
             <div className="book-tel">
               <span aria-hidden="true">+91</span>
               <input ref={telRef} id="mc-buy-tel" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98765 43210" maxLength={16} value={phone} onChange={(e) => { setPhone(e.target.value); setError(""); }} />
             </div>
             <small className="mcb-hint">No sign-up. The course goes on this number; sign in with it after paying.</small>
-          </div>
+          </div>}
 
           {error ? <p className="buy-err" role="alert">{error}</p> : null}
           <div className="buy-foot">
