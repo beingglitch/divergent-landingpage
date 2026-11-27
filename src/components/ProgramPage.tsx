@@ -160,7 +160,9 @@ export async function ProgramPage({ program: P }: { program: Program }) {
                 <p className="hero-sub">{P.hero.sub}</p>
                 <div className="hero-ctas" id="hero-enrol">
                   {closed ? <span className="btn btn--dark" aria-disabled="true">Enrolment closed</span> : <a className="btn btn--dark" {...enrol(null)}>{buy ? "Enrol now" : "Enrol on WhatsApp"} <Arrow /></a>}
-                  <a className="btn btn--ghost" href="#class">See a class</a>
+                  {P.freeTrial
+                    ? <a className="btn btn--ghost" href={`${programAppUrl(P)}?tab=live`}>Take free trial</a>
+                    : <a className="btn btn--ghost" href="#class">See a class</a>}
                 </div>
                 <div className="mc-meta">
                   {fromLabel ? <p className="mc-price-h"><b>{fromLabel}</b>{from && from.listPrice > from.price ? <s>{rupees(from.listPrice)}</s> : null}{from?.offer ? <span>{from.offer}</span> : null}</p> : null}

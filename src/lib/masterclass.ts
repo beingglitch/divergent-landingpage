@@ -77,6 +77,8 @@ export type Program = {
   mentors: { heading: string; lede: string; from: string[]; category: "nid" | "uceed" };
   /* The yellow band after the mock cards. */
   firstMock: string;
+  /* The hero's second button: "Take free trial" to the course's classes in the app, instead of "See a class" on the page. */
+  freeTrial?: boolean;
   /* AIDMT questions for the 60 second clock; all of them when unset. */
   questions?: string[];
   faqs: { q: string; a: string }[];
@@ -107,6 +109,7 @@ const REVIEW: Program["review"] = {
 };
 
 export const NID_21: Program = {
+  freeTrial: true,
   path: "/nid-masterclass/",
   exam: "NID",
   /* "NID 21 Crash Course (Masterclass) 2027" in the LMS admin, Courses. */
